@@ -73,6 +73,7 @@
     <Compile Include="ImapKit\ImapClientExtensions.cs" />
     <Compile Include="ImapKit\Models\ImapClientParams.cs" />
     <Compile Include="ImapKit\Models\ImapServerParams.cs" />
+    <Compile Include="ImapKit\Models\Mail.cs" />
     <Compile Include="ImapKit\SupportedImapServers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

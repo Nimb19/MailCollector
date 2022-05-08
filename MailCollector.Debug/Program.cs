@@ -1,8 +1,8 @@
 ﻿using MailCollector.Kit.ImapKit;
 using MailCollector.Kit.ImapKit.Models;
 using MailKit;
-using MailKit.Net.Imap;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,8 +16,8 @@ namespace MailCollector.Debug
             {
                 var cts = new CancellationTokenSource();
 
-                var login = "123";
-                var pass = "123";
+                var login = "TroyHelper@yandex.ru";
+                var pass = "ornqvoiqyinetlxw"; // "QRnVGrTqbxM0j9Q2WshN"; // TODO: uberi!!!!!!!!!!!!!!!!
 
                 var imapClient = new ImapClientParams(login, pass, SupportedImapServers.YandexParams);
 
@@ -60,16 +60,14 @@ namespace MailCollector.Debug
                 {
                     using (var client = imapKitClient.Connect(cancellationToken))
                     {
-                        var inbox = client.GetFolder("Inbox");
-                        inbox.Open(FolderAccess.ReadOnly);
+                        var allFolders = client.GetFolders(new FolderNamespace('0', ""), cancellationToken: cancellationToken)
+                            .Where(x => x.Attributes.HasFlag(FolderAttributes.Marked)).ToArray();
 
-                        Console.WriteLine("Total messages: {0}", inbox.Count);
-                        Console.WriteLine("Recent messages: {0}", inbox.Recent);
-
-                        for (int i = 0; i < inbox.Count; i++)
+                        foreach (var folder in allFolders)
                         {
-                            var message = inbox.GetMessage(i);
-                            Console.WriteLine("Subject: {0}", message.Subject);
+                            folder.Open(FolderAccess.ReadOnly);
+
+                            var mails = folder.FetchLastMails(0, cancellationToken);
                         }
 
                         client.Disconnect(true);

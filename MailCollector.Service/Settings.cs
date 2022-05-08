@@ -10,5 +10,6 @@ namespace MailCollector.Service
     public class Settings
     {
         public int ClientTimeoutInMs { get; set; }
+        public string ConnStrToDb { get; set; }
     }
 }
