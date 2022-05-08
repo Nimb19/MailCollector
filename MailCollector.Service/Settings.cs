@@ -1,15 +1,9 @@
-﻿using MailCollector.Kit.ImapKit.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MailCollector.Kit.SqlKit.Models;
 
 namespace MailCollector.Service
 {
     public class Settings
     {
-        public int ClientTimeoutInMs { get; set; }
-        public string ConnStrToDb { get; set; }
+        public SqlServerSettings SqlServerSettings { get; set; }
     }
 }

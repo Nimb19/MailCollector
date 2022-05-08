@@ -17,7 +17,7 @@ namespace MailCollector.Debug
                 var cts = new CancellationTokenSource();
 
                 var login = "TroyHelper@yandex.ru";
-                var pass = "ornqvoiqyinetlxw"; // "QRnVGrTqbxM0j9Q2WshN"; // TODO: uberi!!!!!!!!!!!!!!!!
+                var pass = "ornqvoiqyinetlxw"; // "QRnVGrTqbxM0j9Q2WshN"
 
                 var imapClient = new ImapClientParams(login, pass, SupportedImapServers.YandexParams);
 
@@ -60,15 +60,7 @@ namespace MailCollector.Debug
                 {
                     using (var client = imapKitClient.Connect(cancellationToken))
                     {
-                        var allFolders = client.GetFolders(new FolderNamespace('0', ""), cancellationToken: cancellationToken)
-                            .Where(x => x.Attributes.HasFlag(FolderAttributes.Marked)).ToArray();
-
-                        foreach (var folder in allFolders)
-                        {
-                            folder.Open(FolderAccess.ReadOnly);
-
-                            var mails = folder.FetchLastMails(0, cancellationToken);
-                        }
+                        
 
                         client.Disconnect(true);
                     }

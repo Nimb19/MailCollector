@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Configs\Settings.Example.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">
@@ -76,5 +77,14 @@
       <Name>MailCollector.Kit</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  <Target Name="CopySourceFiles" AfterTargets="AfterBuild">
+    <ItemGroup>
+      <ConfigFiles Include="$(ProjectDir)\Configs\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Configs\" />
+  </Target>
+  
 </Project>

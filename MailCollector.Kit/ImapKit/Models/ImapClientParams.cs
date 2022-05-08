@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MailCollector.Kit.ImapKit.Models
+﻿namespace MailCollector.Kit.ImapKit.Models
 {
     public class ImapClientParams
     {

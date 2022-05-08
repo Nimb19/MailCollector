@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ImapEmailKit
+namespace MailCollector.Kit.ServiceKit
 {
-    public class Class1
+    public class ImapClientListener
     {
+        public ImapClientListener()
+        {
+
+        }
     }
 }

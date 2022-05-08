@@ -1,0 +1,8 @@
+{
+  "SqlServerSettings": {
+    "ServerName": "localhost",
+    "IntegratedSecurity": true,
+    "Login": null,
+    "Password": null
+  }
+}

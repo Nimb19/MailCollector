@@ -12,6 +12,6 @@ namespace MailCollector.Kit.ImapKit
             new ImapServerParams("imap.yandex.com", port: 0, useSsl: true);
         public static ImapServerParams YandexParams => _yandexParams;
 
-        // TODO: Можно для отчётности gmail добавить и оттестить
+        // Можно для отчётности gmail добавить и оттестить
     }
 }
