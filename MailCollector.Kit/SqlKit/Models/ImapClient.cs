@@ -2,6 +2,8 @@
 
 namespace MailCollector.Kit.SqlKit.Models
 {
+#pragma warning disable CS0659 // Тип переопределяет Object.Equals(object o), но не переопределяет Object.GetHashCode()
+
     public class ImapClient
     {
         internal const string TableName = "ImapClients";
@@ -15,6 +17,18 @@ namespace MailCollector.Kit.SqlKit.Models
         public override string ToString()
         {
             return $"{Login} (Uid={Uid})";
+        }
+
+        public override bool Equals(object obj)
+        {
+            var objT = obj as ImapClient;
+            if (objT == null)
+                return false;
+
+            if (Uid == objT.Uid && Login == objT.Login && Password == objT.Password && ImapServerUid == objT.ImapServerUid)
+                return true;
+            else
+                return false;
         }
     }
 }

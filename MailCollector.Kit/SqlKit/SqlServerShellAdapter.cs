@@ -56,15 +56,16 @@ namespace MailCollector.Kit.SqlKit
             return result.ToArray();
         }
 
-        public static void UpdateClientIsWorking(SqlServerShell shell, bool? isWorkingNow, Guid clientUid)
+        public static void UpdateClientIsWorking(SqlServerShell shell, bool? isWorkingNow, ImapClient client)
         {
             var isClientWorking = shell.ExecuteScalar($"SELECT {nameof(ImapClient.IsWorking)}" +
-                $" FROM {SqlServerShell.InitialCatalog}.dbo.{ImapClient.TableName} WHERE {nameof(ImapClient.Uid)} = '{clientUid}'");
+                $" FROM {SqlServerShell.InitialCatalog}.dbo.{ImapClient.TableName} WHERE {nameof(ImapClient.Uid)} = '{client.Uid}'");
 
             if (isWorkingNow?.ToString() != isClientWorking?.ToString())
             {
                 shell.UpdateCell(nameof(ImapClient.IsWorking), isWorkingNow?.ToString()
-                    , $"WHERE {nameof(ImapClient.Uid)} = '{clientUid}'", ImapClient.TableName);
+                    , $"WHERE {nameof(ImapClient.Uid)} = '{client.Uid}'", ImapClient.TableName);
+                client.IsWorking = isWorkingNow;
             }
         }
 
