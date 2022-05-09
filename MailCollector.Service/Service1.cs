@@ -45,9 +45,9 @@ namespace MailCollector.Service
             do
             {
                 Task.Delay(200).Wait();
-            } while (!_serviceWorker.IsAllTasksCanceled || DateTime.Now - timeeStartCancel < TimeSpan.FromSeconds(seconsForWaitDispose));
+            } while (!_serviceWorker.IsAllTasksCompleted || DateTime.Now - timeeStartCancel < TimeSpan.FromSeconds(seconsForWaitDispose));
 
-            if (!_serviceWorker.IsAllTasksCanceled)
+            if (!_serviceWorker.IsAllTasksCompleted)
                 _logger.Warning($"За {seconsForWaitDispose} секунд таски не успели освободиться");
 
             _serviceWorker.TryDispose(_logger);

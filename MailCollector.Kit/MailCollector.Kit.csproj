@@ -87,6 +87,8 @@
     <Compile Include="Logger\MultiLogger.cs" />
     <Compile Include="ServiceKit\ImapClientListener.cs" />
     <Compile Include="ServiceKit\ServiceWorker.cs" />
+    <Compile Include="ServiceKit\ServiceWorkerExtensions.cs" />
+    <Compile Include="SqlKit\Models\Affected0RowsException.cs" />
     <Compile Include="SqlKit\Models\Folder.cs" />
     <Compile Include="ImapKit\Models\ImapClientParams.cs" />
     <Compile Include="ImapKit\Models\ImapServerParams.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="SqlKit\Models\SqlServerSettings.cs" />
     <Compile Include="SqlKit\Models\ImapClient.cs" />
     <Compile Include="SqlKit\SqlServerShell.cs" />
+    <Compile Include="SqlKit\SqlServerShellAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

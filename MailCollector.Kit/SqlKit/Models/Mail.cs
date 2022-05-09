@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MailCollector.Kit.ImapKit.Models;
+using System;
 
 namespace MailCollector.Kit.SqlKit.Models
 {
@@ -8,7 +9,7 @@ namespace MailCollector.Kit.SqlKit.Models
 
         /// <summary> 
         ///     Ставиться между адресом и именем аккаунта. 
-        ///     Получается, например: "noreply@mail.yandex.ru=Яндекс.Почта". 
+        ///     Получается; например: "noreply@mail.yandex.ru=Яндекс.Почта". 
         /// </summary>
         public const string EmailNamesSeparator = "=";
 
@@ -21,5 +22,20 @@ namespace MailCollector.Kit.SqlKit.Models
         public string MCc { get; set; }
         public string Subject { get; set; }
         public string HtmlBody { get; set; }
+
+        public Mail() { }
+
+        public Mail(ImapMailParams imapMailParams, Guid folderUid)
+        {
+            Uid = Guid.NewGuid();
+            IndexInFolder = imapMailParams.Index;
+            Subject = imapMailParams.Subject;
+            Date = imapMailParams.Date;
+            MFrom = imapMailParams.From;
+            MTo = imapMailParams.To;
+            MCc = imapMailParams.Cc;
+            HtmlBody = imapMailParams.HtmlBody;
+            FolderUid = folderUid;
+        }
     }
 }

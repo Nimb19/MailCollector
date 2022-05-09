@@ -1,4 +1,6 @@
-﻿namespace MailCollector.Kit.ImapKit.Models
+﻿using MailCollector.Kit.SqlKit.Models;
+
+namespace MailCollector.Kit.ImapKit.Models
 {
     public class ImapServerParams
     {
@@ -11,6 +13,13 @@
             Uri = uri;
             Port = port;
             UseSsl = useSsl;
+        }
+
+        public ImapServerParams(ImapServer server)
+        {
+            Uri = server.Uri;
+            Port = server.Port;
+            UseSsl = server.UseSsl;
         }
     }
 }
