@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}</ProjectGuid>
+    <ProjectGuid>{ABA72801-19B6-4A0A-B781-215FC4D94B49}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>MailCollector.Service</RootNamespace>
-    <AssemblyName>MailCollector.Service</AssemblyName>
+    <RootNamespace>MailCollector.Setup</RootNamespace>
+    <AssemblyName>MailCollector.Setup</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -37,57 +37,62 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProjectInstaller.cs">
-      <SubType>Component</SubType>
+    <Compile Include="HelloForm.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProjectInstaller.Designer.cs">
-      <DependentUpon>ProjectInstaller.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Service1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Service1.Designer.cs">
-      <DependentUpon>Service1.cs</DependentUpon>
+    <Compile Include="HelloForm.Designer.cs">
+      <DependentUpon>HelloForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="TemplateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TemplateForm.Designer.cs">
+      <DependentUpon>TemplateForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="HelloForm.resx">
+      <DependentUpon>HelloForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="TemplateForm.resx">
+      <DependentUpon>TemplateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Configs\Settings.Example.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ProjectInstaller.resx">
-      <DependentUpon>ProjectInstaller.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MailCollector.Kit\MailCollector.Kit.csproj">
-      <Project>{5C9BE119-7AD2-4FE9-B92A-65C816749D92}</Project>
-      <Name>MailCollector.Kit</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="MailCollectorIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="CopySourceFiles" AfterTargets="AfterBuild">
-    <ItemGroup>
-      <ConfigFiles Include="$(ProjectDir)\Configs\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\Configs\" />
-  </Target>
 </Project>
