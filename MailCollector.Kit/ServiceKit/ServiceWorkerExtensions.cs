@@ -10,6 +10,9 @@ namespace MailCollector.Kit.ServiceKit
 {
     public static class ServiceWorkerExtensions
     {
+        /// <summary>
+        ///     Подгрузить для каждой папки только их новые письма, если они были.
+        /// </summary>
         public static void FetchAndSaveLastMailsFromAllFolders(this ImapClient client
             , SqlServerShellAdapter shell, ILogger logger, CancellationToken cancellationToken)
         {

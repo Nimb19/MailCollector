@@ -25,7 +25,9 @@ namespace MailCollector.Kit.SqlKit.Models
             if (objT == null)
                 return false;
 
-            if (Uid == objT.Uid && Login == objT.Login && Password == objT.Password && ImapServerUid == objT.ImapServerUid)
+            if (Uid == objT.Uid && Login == objT.Login 
+                && Password == objT.Password 
+                && ImapServerUid == objT.ImapServerUid)
                 return true;
             else
                 return false;

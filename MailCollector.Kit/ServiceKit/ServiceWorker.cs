@@ -21,6 +21,12 @@ namespace MailCollector.Kit.ServiceKit
         private readonly SqlServerShell _sqlServerShell;
         private readonly CancellationToken _cancellationToken;
 
+        private DateTime _lastReconnectTry = DateTime.Now;
+
+        private static readonly TimeSpan _checkerUpdateTime = TimeSpan.FromSeconds(3);
+        private static readonly TimeSpan _checkIfCancelationRequestedTime = TimeSpan.FromMilliseconds(500);
+        private static readonly TimeSpan _timeBeforeTryReconnectDisabledClients = TimeSpan.FromMinutes(10);
+
         /// <summary>
         ///     Под каждого клиента создаётся свой отдельый бесконечный поток. 
         ///     Такие рабочие потоки фиксируются в этот список.
@@ -51,7 +57,7 @@ namespace MailCollector.Kit.ServiceKit
             _logger = logger;
             _sqlServerShell = new SqlServerShell(sqlServerSettings);
             _cancellationToken = cancellationToken;
-
+            
             _workingClients = new List<(Task Worker, CancellationTokenSource Cts, ImapClient Client)>();
             _disabledClients = new List<(ImapClient Client, ImapServer Server)>();
 
@@ -66,11 +72,22 @@ namespace MailCollector.Kit.ServiceKit
             if (IsStarted)
                 return;
 
+            _logger.WriteLine("Подана команда старта сервиса. Клиенты скоро будут запущены");
+
             _clientsWorkersChecker = Task.Factory.StartNew((a) => CheckerWorker()
-                , TaskContinuationOptions.LongRunning, _cancellationToken);
+                , TaskContinuationOptions.LongRunning);
+
+            IsStarted = true;
         }
         
-        //TODO: Команда стоп
+        public void Stop()
+        {
+            if (IsStarted && !_cancellationToken.IsCancellationRequested)
+            {
+                _logger.WriteLine("Поступила команда остановки сервиса. Токен отменён не был");
+                IsStarted = false;
+            }
+        }
 
         /// <summary>
         ///     Запуск дирижёра клиентских потоков. 
@@ -80,17 +97,43 @@ namespace MailCollector.Kit.ServiceKit
             var clientsWithServers = SqlServerShellAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
             StartClientsWorkers(clientsWithServers);
 
-            while (true)
+            var work = Task.Factory.StartNew(() =>
             {
-                if (_cancellationToken.IsCancellationRequested)
+                while (!_cancellationToken.IsCancellationRequested)
                 {
-                    CancelAllClientsTasks();
-                    break;
-                }
-                CheckDisabledClientsAndUpdates();
-                //TODO: Реконнект их
+                    CheckDisabledClientsAndUpdates();
+                    TryReconnectDisabledClients();
 
-                Task.Delay(TimeSpan.FromSeconds(3)).Wait(_cancellationToken);
+                    Task.Delay(_checkerUpdateTime).Wait(_cancellationToken);
+                }
+            }, TaskCreationOptions.LongRunning);
+
+            Task.Factory.StartNew(() =>
+            {
+                while (!_cancellationToken.IsCancellationRequested || !IsStarted)
+                {
+                    Task.Delay(_checkIfCancelationRequestedTime).Wait();
+                }
+            }, TaskCreationOptions.LongRunning).Wait();
+
+            CancelAllClientsTasks();
+        }
+
+        /// <summary>
+        ///     Попытка включения отключённых клиентов.
+        /// </summary>
+        private void TryReconnectDisabledClients()
+        {
+            if (DateTime.Now - _lastReconnectTry > _timeBeforeTryReconnectDisabledClients)
+            {
+                lock (_disabledClients)
+                {
+                    _logger.WriteLine($"Выполняется попытка перезагрузки" +
+                        $" отключённх клиентов: {string.Join(";", _disabledClients)}" +
+                        $"{Environment.NewLine}Каждая попытка проходит" +
+                        $" один раз в {_timeBeforeTryReconnectDisabledClients.TotalMinutes} минут");
+                    StartClientsWorkers(_disabledClients);
+                }
             }
         }
 
@@ -135,8 +178,18 @@ namespace MailCollector.Kit.ServiceKit
             IsAllTasksCompleted = true;
         }
 
-        private void StartClientsWorkers(IEnumerable<(ImapClient Client, ImapServer Server)> clientsWithServers)
+        /// <summary>
+        ///     Старт указанных клиентских потоков.
+        /// </summary>
+        private void StartClientsWorkers(IList<(ImapClient Client, ImapServer Server)> clientsWithServers)
         {
+            if (clientsWithServers.Count == 0)
+            {
+                _logger.Warning($"Пришло нулевое количество клиентов на их старт");
+                return;
+            }
+
+            IsAllTasksCompleted = false;
             foreach (var clientWithServer in clientsWithServers)
             {
                 var cts = new CancellationTokenSource();
@@ -155,7 +208,7 @@ namespace MailCollector.Kit.ServiceKit
         /// </summary>
         private void CheckDisabledClientsAndUpdates()
         {
-            IReadOnlyList<(ImapClient Client, ImapServer Server)> clientsForStart;
+            List<(ImapClient Client, ImapServer Server)> clientsForStart;
 
             lock (_disabledClientsListLock)
             {
@@ -195,7 +248,7 @@ namespace MailCollector.Kit.ServiceKit
             ///    Должен запускаться после выравнивания клиентов по спискам путём метода выше 
             ///    + под локом от отключённого списка клиентов.
             /// </summary>
-            IReadOnlyList<(ImapClient Client, ImapServer Server)> UpdateClientsInfo()
+            List<(ImapClient Client, ImapServer Server)> UpdateClientsInfo()
             {
                 var clientsWithServers = SqlServerShellAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
                 var clientsForStartInternal = new List<(ImapClient Client, ImapServer Server)>();
@@ -254,7 +307,8 @@ namespace MailCollector.Kit.ServiceKit
                 {
                     if (!foundedClientInternal.IsInWorkingList)
                     {
-                        _logger.WriteLine($"Клиент {foundedClientInternal.Client} будет остановлен удалён по причине: {removeArgumentToLog}");
+                        _logger.WriteLine($"Клиент {foundedClientInternal.Client}" +
+                            $" будет остановлен удалён по причине: {removeArgumentToLog}");
                         var iAm = _disabledClients
                                     .FirstOrDefault(x => x.Client.Uid == foundedClientInternal.Client.Uid);
                         _disabledClients.Remove(iAm);
@@ -289,10 +343,11 @@ namespace MailCollector.Kit.ServiceKit
             try
             {
                 imapClient = ImapClientExtensions.Connect(clientWithServer.Client
-                , clientWithServer.Server, _cancellationToken);
-                SqlServerShellAdapter.UpdateClientIsWorking(_sqlServerShell, true, clientWithServer.Client);
+                    , clientWithServer.Server, _cancellationToken);
+                TryUpdateClientIsWorking(clientWithServer.Client, true);
 
-                var clientSqlShell = new SqlServerShellAdapter(_sqlServerShell, clientWithServer.Client, _logger, _cancellationToken);
+                var clientSqlShell = new SqlServerShellAdapter(_sqlServerShell
+                    , clientWithServer.Client, _logger, _cancellationToken);
 
                 while (true)
                 {
