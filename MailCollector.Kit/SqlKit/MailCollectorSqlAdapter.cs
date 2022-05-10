@@ -1,5 +1,4 @@
 ﻿using MailCollector.Kit.ImapKit.Models;
-using MailCollector.Kit.Logger;
 using MailCollector.Kit.SqlKit.Models;
 using MailKit;
 using System;
@@ -15,7 +14,7 @@ namespace MailCollector.Kit.SqlKit
     ///     Для каждого клиента создаётся свой адаптер для удобства, 
     ///     благо соединение с сервером в SqlServerShell потокобезопасно.
     /// </summary>
-    public class SqlServerShellAdapter
+    public class MailCollectorSqlAdapter
     {
         public ImapClient SqlClient { get; }
         public SqlServerShell SqlShell { get; }
@@ -23,14 +22,12 @@ namespace MailCollector.Kit.SqlKit
         private readonly List<Folder> _folders = null; 
         public IReadOnlyList<Folder> Folders => _folders;
 
-        private readonly ILogger _logger;
         private readonly CancellationToken _cancellationToken;
 
-        public SqlServerShellAdapter(SqlServerShell shell, ImapClient sqlClient, ILogger logger, CancellationToken cancellationToken)
+        public MailCollectorSqlAdapter(SqlServerShell shell, ImapClient sqlClient, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             _cancellationToken = cancellationToken;
-            _logger = logger;
             SqlShell = shell;
             SqlClient = sqlClient;
             _folders = GetAllFolders();
@@ -56,6 +53,9 @@ namespace MailCollector.Kit.SqlKit
             return result.ToArray();
         }
 
+        /// <summary>
+        ///     Обновить статус клиента на то в работе он или нет.
+        /// </summary>
         public static void UpdateClientIsWorking(SqlServerShell shell, bool? isWorkingNow, ImapClient client)
         {
             var isClientWorking = shell.ExecuteScalar($"SELECT {nameof(ImapClient.IsWorking)}" +

@@ -1,8 +1,11 @@
 ﻿using MailCollector.Kit.ImapKit;
 using MailCollector.Kit.Logger;
 using MailCollector.Kit.SqlKit;
+using MailCollector.Kit.TelegramBotKit;
 using MailKit;
 using MailKit.Net.Imap;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -14,7 +17,7 @@ namespace MailCollector.Kit.ServiceKit
         ///     Подгрузить для каждой папки только их новые письма, если они были.
         /// </summary>
         public static void FetchAndSaveLastMailsFromAllFolders(this ImapClient client
-            , SqlServerShellAdapter shell, ILogger logger, CancellationToken cancellationToken)
+            , MailCollectorSqlAdapter shell, MailTelegramBot tgBot, ILogger logger, CancellationToken cancellationToken, bool isInited = true)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -39,13 +42,18 @@ namespace MailCollector.Kit.ServiceKit
 
                 foreach (var mail in mails)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
                     shell.SaveMail(mail);
                 }
 
+                if (isInited)
+                    tgBot?.SendMessageToAllSubsAboutNewMails(mails, shell.SqlClient);
+
                 logger.WriteLine($"С почты '{shell.SqlClient.Login}' были успешно сохранены сообщения" +
-                    $" из папки '{sqlFolder.FullName}', в количестве: {mails.Length}");
+                    $" из папки '{sqlFolder.FullName}', в количестве: {mails.Length}. Был ли клиент инициализирован: {isInited}");
             }
+
+            if (!isInited)
+                tgBot?.SendMessageToAllSubsAboutInitComplete(shell.SqlClient);
         }
     }
 }

@@ -2,6 +2,7 @@
 using MailCollector.Kit.Logger;
 using MailCollector.Kit.SqlKit;
 using MailCollector.Kit.SqlKit.Models;
+using MailCollector.Kit.TelegramBotKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,14 @@ namespace MailCollector.Kit.ServiceKit
         private readonly ILogger _logger;
         private readonly SqlServerShell _sqlServerShell;
         private readonly CancellationToken _cancellationToken;
+        private readonly MailTelegramBot _mailTelegramBot = null;
 
         private DateTime _lastReconnectTry = DateTime.Now;
 
-        private static readonly TimeSpan _checkerUpdateTime = TimeSpan.FromSeconds(3);
-        private static readonly TimeSpan _checkIfCancelationRequestedTime = TimeSpan.FromMilliseconds(500);
-        private static readonly TimeSpan _timeBeforeTryReconnectDisabledClients = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan _checkerUpdateDelay = TimeSpan.FromSeconds(3);
+        private static readonly TimeSpan _checkNewMailsDelay = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan _checkIfCancelationRequestedDelay = TimeSpan.FromMilliseconds(500);
+        private static readonly TimeSpan _delayBeforeTryReconnectDisabledClients = TimeSpan.FromMinutes(10);
 
         /// <summary>
         ///     Под каждого клиента создаётся свой отдельый бесконечный поток. 
@@ -52,7 +55,7 @@ namespace MailCollector.Kit.ServiceKit
         public bool IsAllTasksCompleted { get; private set; }
         public bool IsStarted { get; private set; }
 
-        public ServiceWorker(SqlServerSettings sqlServerSettings, ILogger logger, CancellationToken cancellationToken)
+        public ServiceWorker(SqlServerSettings sqlServerSettings, string tgBotToken, ILogger logger, CancellationToken cancellationToken)
         {
             _logger = logger;
             _sqlServerShell = new SqlServerShell(sqlServerSettings);
@@ -60,6 +63,9 @@ namespace MailCollector.Kit.ServiceKit
             
             _workingClients = new List<(Task Worker, CancellationTokenSource Cts, ImapClient Client)>();
             _disabledClients = new List<(ImapClient Client, ImapServer Server)>();
+
+            if (!string.IsNullOrWhiteSpace(tgBotToken))
+                _mailTelegramBot = new MailTelegramBot(tgBotToken, _sqlServerShell, logger);
 
             _logger.WriteLine("ServiceWorker успешно инициализирован");
         }
@@ -94,7 +100,7 @@ namespace MailCollector.Kit.ServiceKit
         /// </summary>
         private void CheckerWorker()
         {
-            var clientsWithServers = SqlServerShellAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
+            var clientsWithServers = MailCollectorSqlAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
             StartClientsWorkers(clientsWithServers);
 
             var work = Task.Factory.StartNew(() =>
@@ -104,7 +110,7 @@ namespace MailCollector.Kit.ServiceKit
                     CheckDisabledClientsAndUpdates();
                     TryReconnectDisabledClients();
 
-                    Task.Delay(_checkerUpdateTime).Wait(_cancellationToken);
+                    Task.Delay(_checkerUpdateDelay).Wait(_cancellationToken);
                 }
             }, TaskCreationOptions.LongRunning);
 
@@ -112,7 +118,7 @@ namespace MailCollector.Kit.ServiceKit
             {
                 while (!_cancellationToken.IsCancellationRequested || !IsStarted)
                 {
-                    Task.Delay(_checkIfCancelationRequestedTime).Wait();
+                    Task.Delay(_checkIfCancelationRequestedDelay).Wait();
                 }
             }, TaskCreationOptions.LongRunning).Wait();
 
@@ -124,14 +130,14 @@ namespace MailCollector.Kit.ServiceKit
         /// </summary>
         private void TryReconnectDisabledClients()
         {
-            if (DateTime.Now - _lastReconnectTry > _timeBeforeTryReconnectDisabledClients)
+            if (DateTime.Now - _lastReconnectTry > _delayBeforeTryReconnectDisabledClients)
             {
                 lock (_disabledClients)
                 {
                     _logger.WriteLine($"Выполняется попытка перезагрузки" +
                         $" отключённх клиентов: {string.Join(";", _disabledClients)}" +
                         $"{Environment.NewLine}Каждая попытка проходит" +
-                        $" один раз в {_timeBeforeTryReconnectDisabledClients.TotalMinutes} минут");
+                        $" один раз в {_delayBeforeTryReconnectDisabledClients.TotalMinutes} минут");
                     StartClientsWorkers(_disabledClients);
                 }
             }
@@ -250,7 +256,7 @@ namespace MailCollector.Kit.ServiceKit
             /// </summary>
             List<(ImapClient Client, ImapServer Server)> UpdateClientsInfo()
             {
-                var clientsWithServers = SqlServerShellAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
+                var clientsWithServers = MailCollectorSqlAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
                 var clientsForStartInternal = new List<(ImapClient Client, ImapServer Server)>();
 
                 lock (_workingClientsListLock)
@@ -328,7 +334,7 @@ namespace MailCollector.Kit.ServiceKit
         {
             try
             {
-                SqlServerShellAdapter.UpdateClientIsWorking(_sqlServerShell, isWorkingNow, client);
+                MailCollectorSqlAdapter.UpdateClientIsWorking(_sqlServerShell, isWorkingNow, client);
             }
             catch (Exception ex)
             {
@@ -346,14 +352,24 @@ namespace MailCollector.Kit.ServiceKit
                     , clientWithServer.Server, _cancellationToken);
                 TryUpdateClientIsWorking(clientWithServer.Client, true);
 
-                var clientSqlShell = new SqlServerShellAdapter(_sqlServerShell
-                    , clientWithServer.Client, _logger, _cancellationToken);
+                var clientSqlShell = new MailCollectorSqlAdapter(_sqlServerShell
+                    , clientWithServer.Client, _cancellationToken);
+
+                var isInited = clientSqlShell.Folders.Any();
+                if (!isInited)
+                {
+                    imapClient.FetchAndSaveLastMailsFromAllFolders(clientSqlShell, _mailTelegramBot
+                        , _logger, _cancellationToken, isInited: false);
+                    Task.Delay(_checkNewMailsDelay).Wait(_cancellationToken);
+                }
 
                 while (true)
                 {
-                    imapClient.FetchAndSaveLastMailsFromAllFolders(clientSqlShell, _logger, _cancellationToken);
-                    Task.Delay(TimeSpan.FromSeconds(5)).Wait(_cancellationToken); 
-                    // Нет необходимости тратить время на поимку событий о новых письмах и отладку такого кода. Ресурсов хватает
+                    imapClient.FetchAndSaveLastMailsFromAllFolders(clientSqlShell, _mailTelegramBot
+                        , _logger, _cancellationToken);
+                    Task.Delay(_checkNewMailsDelay).Wait(_cancellationToken); 
+                    // Нет необходимости тратить время на поимку событий
+                    // о новых письмах и отладку такого кода. Ресурсов хватает
 
                     _cancellationToken.ThrowIfCancellationRequested();
                 }

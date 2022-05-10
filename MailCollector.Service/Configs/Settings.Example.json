@@ -4,5 +4,6 @@
     "IntegratedSecurity": true,
     "Login": null,
     "Password": null
-  }
+  },
+  "TelegramBotApiToken":  ""
 }
