@@ -11,7 +11,11 @@ namespace MailCollector.Kit.Logger
 
         public PrefixLogger(ILogger logger, string prefix)
         {
-            _logger = logger;
+            if (logger is PrefixLogger prefixLogger)
+                _logger = prefixLogger._logger;
+            else
+                _logger = logger;
+
             _prefix = prefix;
         }
 

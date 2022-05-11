@@ -11,10 +11,8 @@ namespace MailCollector.Service
     public partial class Service1 : ServiceBase
     {
         private ServiceWorker _serviceWorker;
-        
-        private const string ConfigFileName = "Configs\\Settings.json";
 
-        private readonly ILogger _logger = new MultiLogger(FileLogger.Instance);
+        private readonly ILogger _logger = new MultiLogger(new FileLogger(Constants.ModuleName));
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         public Service1()
@@ -26,8 +24,9 @@ namespace MailCollector.Service
         {
             try
             {
-                var config = CommonExtensions.DeserializeFile<Settings>(ConfigFileName);
-                _serviceWorker = new ServiceWorker(config.SqlServerSettings, config.TelegramBotApiToken, _logger, _cts.Token);
+                var config = CommonExtensions.DeserializeFile<Settings>(Constants.ConfigFileName);
+                _serviceWorker = new ServiceWorker(config.SqlServerSettings, config.TelegramBotApiToken
+                    , _logger, Constants.ModuleName, _cts.Token);
             }catch (Exception ex)
             {
                 _logger.Error(ex);

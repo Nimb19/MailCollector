@@ -59,7 +59,7 @@ namespace MailCollector.Kit.SqlKit
         public static void UpdateClientIsWorking(SqlServerShell shell, bool? isWorkingNow, ImapClient client)
         {
             var isClientWorking = shell.ExecuteScalar($"SELECT {nameof(ImapClient.IsWorking)}" +
-                $" FROM {SqlServerShell.InitialCatalog}.dbo.{ImapClient.TableName} WHERE {nameof(ImapClient.Uid)} = '{client.Uid}'");
+                $" FROM {shell.InitialCatalog}.dbo.{ImapClient.TableName} WHERE {nameof(ImapClient.Uid)} = '{client.Uid}'");
 
             if (isWorkingNow?.ToString() != isClientWorking?.ToString())
             {
@@ -77,7 +77,7 @@ namespace MailCollector.Kit.SqlKit
             _cancellationToken.ThrowIfCancellationRequested();
 
             var maxFolderIndex = SqlShell.ExecuteScalar($"SELECT MAX({nameof(Mail.IndexInFolder)}) " +
-                $"FROM {SqlServerShell.InitialCatalog}.dbo.{Mail.TableName} WHERE {nameof(Mail.FolderUid)} = '{folderUid}'");
+                $"FROM {SqlShell.InitialCatalog}.dbo.{Mail.TableName} WHERE {nameof(Mail.FolderUid)} = '{folderUid}'");
 
             if (int.TryParse(maxFolderIndex?.ToString(), out var result))
             {

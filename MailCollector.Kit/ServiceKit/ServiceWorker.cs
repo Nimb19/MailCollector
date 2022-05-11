@@ -55,10 +55,11 @@ namespace MailCollector.Kit.ServiceKit
         public bool IsAllTasksCompleted { get; private set; }
         public bool IsStarted { get; private set; }
 
-        public ServiceWorker(SqlServerSettings sqlServerSettings, string tgBotToken, ILogger logger, CancellationToken cancellationToken)
+        public ServiceWorker(SqlServerSettings sqlServerSettings, string tgBotToken
+            , ILogger logger, string moduleName, CancellationToken cancellationToken)
         {
             _logger = logger;
-            _sqlServerShell = new SqlServerShell(sqlServerSettings);
+            _sqlServerShell = new SqlServerShell(sqlServerSettings, logger, moduleName, KitConstants.DbName);
             _cancellationToken = cancellationToken;
             
             _workingClients = new List<(Task Worker, CancellationTokenSource Cts, ImapClient Client)>();
@@ -66,6 +67,8 @@ namespace MailCollector.Kit.ServiceKit
 
             if (!string.IsNullOrWhiteSpace(tgBotToken))
                 _mailTelegramBot = new MailTelegramBot(tgBotToken, _sqlServerShell, logger);
+
+            _mailTelegramBot.Start(_cancellationToken);
 
             _logger.WriteLine("ServiceWorker успешно инициализирован");
         }

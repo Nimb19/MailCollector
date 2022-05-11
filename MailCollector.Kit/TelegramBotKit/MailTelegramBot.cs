@@ -31,7 +31,7 @@ namespace MailCollector.Kit.TelegramBotKit
         private ITelegramBotClient _bot;
         private TelegramBotSqlAdapter _tgSqlAdapter;
 
-        public User BotInfo { get; private set; }
+        public Telegram.Bot.Types.User BotInfo { get; private set; }
         public bool IsStarted { get; private set; }
 
         public MailTelegramBot(string token, SqlServerShell sqlServerShell, ILogger logger)

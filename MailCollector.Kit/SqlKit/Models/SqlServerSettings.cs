@@ -6,5 +6,6 @@
         public bool? IntegratedSecurity { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+        public int? CommandTimeoutInSeconds { get; set; }
     }
 }

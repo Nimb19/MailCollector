@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MailCollector.Kit.Logger;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,9 +15,11 @@ namespace MailCollector.Setup
         [STAThread]
         static void Main()
         {
+            var logger = FileLogger.Instance;
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new HelloForm());
+            Application.Run(new GetSqlInfoForm(logger));
         }
     }
 }

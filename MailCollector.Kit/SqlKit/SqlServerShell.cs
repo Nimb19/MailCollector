@@ -1,11 +1,12 @@
 ﻿using FastMember;
+using MailCollector.Kit.Logger;
 using MailCollector.Kit.SqlKit.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace MailCollector.Kit.SqlKit
 {
@@ -15,47 +16,137 @@ namespace MailCollector.Kit.SqlKit
     /// </summary>
     public class SqlServerShell : IDisposable
     {
-        internal const int CommandTimeout = 30;
-        internal const string InitialCatalog = "master";
-        internal const string DbName = "MailCollectorStorage";
-
-        private readonly SqlConnection _sqlConn;
-        private readonly SqlServerSettings _sqlServerSettings;
-
+        private readonly ILogger _logger;
+        private readonly string _moduleInfo = "SqlServerShell";
+        
         private object _lock = new object();
+        
+        public readonly string DbName;
+        public readonly int CommandTimeoutInSeconds = 30;
+        public readonly string InitialCatalog = "master";
+        public readonly SqlServerSettings SqlServerSettings;
 
-        public SqlServerShell(SqlServerSettings sqlServerSettings)
+        private DbmsType DbType { get; set; } = DbmsType.Mssql; // Пока не придираемся к типу, потом доделаю
+        public SqlConnection SqlCon { get; private set; }
+        
+        public SqlServerShell(SqlServerSettings sqlServerSettings, ILogger logger
+            , string moduleInfo, string dbName)
         {
-            _sqlServerSettings = sqlServerSettings;
+            _logger = logger;
+            DbName = string.IsNullOrWhiteSpace(dbName) ? null : dbName.Trim();
+            SqlServerSettings = sqlServerSettings;
+            
+            if (!string.IsNullOrWhiteSpace(moduleInfo))
+                _moduleInfo = moduleInfo;
 
-            var sqlStringBuilder = new SqlConnectionStringBuilder()
-            {
-                DataSource = _sqlServerSettings.ServerName,
-                InitialCatalog = InitialCatalog,
-                IntegratedSecurity = _sqlServerSettings.IntegratedSecurity ?? true,
-                ConnectTimeout = CommandTimeout,
-            };
+            if (sqlServerSettings.CommandTimeoutInSeconds.HasValue)
+                CommandTimeoutInSeconds = sqlServerSettings.CommandTimeoutInSeconds.Value;
 
-            if (!sqlStringBuilder.IntegratedSecurity)
-            {
-                sqlStringBuilder.UserID = _sqlServerSettings.Login;
-                sqlStringBuilder.Password = _sqlServerSettings.Password;
-            }
+            GetConnection();
 
-            _sqlConn = new SqlConnection(sqlStringBuilder.ConnectionString);
-            _sqlConn.Open();
-
-            ThrowDBIfItDoesNotExist();
+            if (DbName != null)
+                ThrowDBIfItDoesNotExist();
         }
 
         private void ThrowDBIfItDoesNotExist()
         {
-            var cmdtxt = $"SELECT * FROM {InitialCatalog}.dbo.sysdatabases WHERE name = '{DbName}'";
-            if (ReadArrayOfStrings(cmdtxt).Length == 0)
+            //var cmdtxt = $"SELECT * FROM {InitialCatalog}.dbo.sysdatabases WHERE name = '{DbName}'";
+            if (IsDbExist(DbName))
             {
                 Dispose();
-                throw new DbDoesNotExistException($"Базы данных '{DbName}' не существует. Создайте её дистрибутивом.");
+                throw new DbDoesNotExistException($"Базы данных '{DbName}' не существует");
             }
+        }
+
+        private void GetConnection()
+        {
+            var scsb = new SqlConnectionStringBuilder()
+            {
+                DataSource = SqlServerSettings.ServerName,
+                InitialCatalog = InitialCatalog,
+                ApplicationName = _moduleInfo,
+                ConnectTimeout = CommandTimeoutInSeconds,
+            };
+
+            if (SqlServerSettings.IntegratedSecurity.HasValue
+                && SqlServerSettings.IntegratedSecurity.Value == true)
+            {
+                scsb.IntegratedSecurity = true;
+            }
+            else
+            {
+                scsb.IntegratedSecurity = false;
+                scsb.UserID = SqlServerSettings.Login;
+                scsb.Password = SqlServerSettings.Password;
+            }
+
+            SqlCon = new SqlConnection(scsb.ToString());
+            SqlCon.Open();
+
+            //var splitedSqlString = SqlServerSettings.ServerName.Split('@');
+            //if (splitedSqlString.Length > 1)
+            //{
+            //    DbType = splitedSqlString.Last().Contains("mssql") ? DbmsType.Mssql : DbmsType.Unknown;
+            //}
+            //else
+            //{
+            //    DbType = DbmsType.Mssql;
+            //}
+
+            //if (DbType == DbmsType.Mssql)
+            //{
+            //    var scsb = new SqlConnectionStringBuilder()
+            //    {
+            //        DataSource = SqlServerSettings.ServerName,
+            //        InitialCatalog = InitialCatalog,
+            //        ApplicationName = _moduleInfo,
+            //        ConnectTimeout = CommandTimeoutInSeconds,
+            //    };
+
+            //    if ((SqlServerSettings.IntegratedSecurity.HasValue 
+            //        && SqlServerSettings.IntegratedSecurity.Value == true))
+            //    {
+            //        scsb.IntegratedSecurity = true;
+            //    }
+            //    else
+            //    {
+            //        scsb.IntegratedSecurity = false;
+            //        scsb.UserID = SqlServerSettings.Login;
+            //        scsb.Password = SqlServerSettings.Password;
+            //    }
+
+            //    SqlCon = new SqlConnection(scsb.ToString());
+            //    SqlCon.Open();
+            //}
+            //else if (DBType == DbmsType.Pgsql) // когда понадобится доделаю
+            //{
+            //    var pscsb = new NpgsqlConnectionStringBuilder()
+            //    {
+            //        Host = ServerName,
+            //        Database = "postgres",
+            //        InternalCommandTimeout = _commandTimeoutInSeconds,
+            //        Timeout = _commandTimeoutInSeconds,
+            //    };
+
+            //    if (Password == null)
+            //    {
+            //        pscsb.IntegratedSecurity = true;
+            //        pscsb.Username = Login.IsNullOrWhiteSpace() ? "" : Login;
+            //    }
+            //    else
+            //    {
+            //        pscsb.IntegratedSecurity = false;
+            //        pscsb.Username = Login;
+            //        pscsb.Password = Password;
+            //    }
+
+            //    SqlCon = new NpgsqlConnection(pscsb.ToString());
+            //    SqlCon.Open();
+            //}
+            //else
+            //{
+            //    throw new NotImplementedException($"Тип базы {DbType} не поддерживается");
+            //}
         }
 
         //public void Update<T>(T entity, T etalonEntity, string tableName) where T : class, new() // TODO: переделаю потом
@@ -272,15 +363,371 @@ namespace MailCollector.Kit.SqlKit
             return list.ToArray();
         }
 
+        #region CommonExtensions
+
+        /// <summary> Возвращает версию SQL Server </summary>
+        public Version GetSqlServerVersion()
+        {
+            Version version = null;
+            try
+            {
+                if (SqlCon.State != ConnectionState.Open)
+                    SqlCon.Open();
+                version = new Version(SqlCon.ServerVersion.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Не удалось получить версию SQL Server {SqlCon.DataSource}. {ex}");
+            }
+            return version;
+        }
+
+        /// <summary> Возращает расположение файла БД </summary>
+        public string GetPhysicalDbLocation(string dbName)
+        {
+            var scriptGetLocation = $@"SELECT mdf.physical_name 
+                FROM (SELECT * FROM sys.master_files WHERE type_desc = 'ROWS' ) mdf
+                WHERE mdf.name = '{dbName}'";
+
+            return ExecuteScalar(scriptGetLocation) as string;
+        }
+
+        /// <summary> Восстановить бэкап </summary>
+        public void RestoreBackup(string dbName, string pathToBakFolder, bool withNoRecovery = true)
+        {
+            var createBakScript = CreateScript_RestoreDB(dbName, pathToBakFolder, withNoRecovery);
+            ExecuteNonQuery(createBakScript);
+        }
+
+        /// <summary> Сделать бэкап </summary>
+        public string CreateBackup(string dbName, string pathToBakFolder)
+        {
+            var createBakScript = CreateScript_BackupDB(dbName, pathToBakFolder, out var backupDirectory, out var bakFullPath);
+            if (!Directory.Exists(backupDirectory))
+                Directory.CreateDirectory(backupDirectory);
+
+            ExecuteNonQuery(createBakScript);
+
+            return bakFullPath;
+        }
+
+        /// <summary> Выставить режим восстановления </summary>
+        public void SetRecoveryMode(string dbName, RecoveryMode recoveryMode)
+        {
+            var scriptSetMode = CreateScript_SetRecoveryMode(dbName, recoveryMode);
+            ExecuteNonQuery(scriptSetMode);
+        }
+
+        /// <summary> Существует ли указанная БД </summary>
+        public bool IsDbExist(string dbName)
+        {
+            var script = CreateScript_IsDbExist(dbName);
+            var objResult = ExecuteScalar(script);
+            var result = Convert.ToString(objResult);
+            return objResult != null && !string.IsNullOrWhiteSpace(result) && result.ToLower() != "null";
+        }
+
+        /// <summary> Получить список имён планов обслуживания </summary>
+        public List<string> GetSubPlansNames()
+        {
+            var script = CreateScript_GetSubPlansNames();
+            var names = GetList(script);
+            return names;
+        }
+
+        #region CommonCreationScripts
+
+        private string CreateScript_IsDbExist(string dbName)
+        {
+            if (DbType == DbmsType.Mssql)
+                return $"SELECT DB_ID('{dbName}')";
+            else
+                return $@"SELECT 1 FROM pg_database WHERE datname='{dbName}'";
+        }
+
+        private string CreateScript_GetSubPlansNames()
+        {
+            return "use msdb select name from sysmaintplan_plans";
+        }
+
+        private string CreateScript_BackupDB(string dbName, string pathToBakFolder, out string backupDirectory, out string bakFullPath)
+        {
+            backupDirectory = Path.Combine(pathToBakFolder, SqlServerSettings.ServerName);
+            if (backupDirectory.Last() != Path.DirectorySeparatorChar)
+                backupDirectory += Path.DirectorySeparatorChar;
+
+            var bakName = $"{dbName}_{DateTime.UtcNow:dd.MM.yyyy_(HH.mm)}.bak";
+            bakFullPath = Path.Combine(backupDirectory, bakName);
+
+            return $@"BACKUP DATABASE {dbName} TO DISK = '{bakFullPath}'";
+        }
+
+        private string CreateScript_SetRecoveryMode(string dbName, RecoveryMode recovereMode)
+        {
+            return $@"ALTER DATABASE [{dbName}] SET RECOVERY {recovereMode.ToString().ToUpper()}";
+        }
+
+        private string CreateScript_RestoreDB(string dbName, string pathToBakFolder, bool withNoRecovery)
+        {
+            var res = $@"RESTORE DATABASE [{dbName}] FROM DISK = '{pathToBakFolder}'";
+            if (withNoRecovery)
+                res += $@" WITH NORECOVERY";
+
+            return res;
+        }
+
+        #endregion CommonCreationScripts
+
+        #endregion CommonExtensions
+
+        #region AgExtensions
+
+        /// <summary> Взять имена AG групп </summary>
+        public List<string> GetAgGroupsNames()
+        {
+            var scriptGetGroups = CreateScript_GetAgGroups();
+            return GetList(scriptGetGroups);
+        }
+
+        public void SetHADRAGroup(string dbname, string agName)
+        {
+            var scriptSetHADR = $"ALTER DATABASE [{dbname}] SET HADR AVAILABILITY GROUP = [{agName}]";
+            ExecuteNonQuery(scriptSetHADR);
+        }
+
+        public void AddDbToAg(string groupName, string dbName)
+        {
+            var addToAgScript = $"USE MASTER ALTER AVAILABILITY GROUP [{groupName}] ADD DATABASE [{dbName}]";
+            ExecuteNonQuery(addToAgScript);
+        }
+
+        public string TakeAgFromSpecifiedDb(string dbName)
+        {
+            var takeScript = CreateScript_TakeAgFromSpecifiedDb(dbName);
+            var agName = ExecuteScalar(takeScript);
+
+            return Convert.ToString(agName);
+        }
+
+        #region AgCreationScripts
+
+        private string CreateScript_GetAgGroups()
+        {
+            return $@"SELECT Groups.[Name] AS AGname
+                FROM sys.dm_hadr_availability_group_states States
+                INNER JOIN master.sys.availability_groups Groups ON States.group_id = Groups.group_id";
+        }
+
+        private string CreateScript_TakeAgFromSpecifiedDb(string dbName)
+        {
+            return $@"SELECT
+                AG.name AS [AvailabilityGroupName],
+                dbcs.database_name AS [DatabaseName]
+                FROM master.sys.availability_groups AS AG
+                INNER JOIN master.sys.availability_replicas AS AR
+                   ON AG.group_id = AR.group_id
+                INNER JOIN master.sys.dm_hadr_availability_replica_states AS arstates
+                   ON AR.replica_id = arstates.replica_id AND arstates.is_local = 1
+                INNER JOIN master.sys.dm_hadr_database_replica_cluster_states AS dbcs
+                   ON arstates.replica_id = dbcs.replica_id
+                WHERE dbcs.database_name = '{dbName}'";
+        }
+
+        #endregion AgCreationScripts
+
+        #endregion AgExtensions
+
+        #region PrincipalsExtensions
+
+        /// <summary> Создаёт пользователей по подобию из sourceDB. Выдаёт те же права. </summary>
+        public void CreateUsersBySourceDb(string sourceDb, string dbName)
+        {
+            var sourceDBUsers = GetUsers(sourceDb);
+
+            var sourceUsers = new List<User>();
+            foreach (var sourceUser in sourceDBUsers)
+            {
+                var roles = GetUserRoles(sourceDb, sourceUser);
+                sourceUsers.Add(new User(sourceUser, roles));
+            }
+
+            CreateUsers(dbName, sourceUsers);
+        }
+
+        public List<string> GetUserRoles(string dbName, string userName)
+        {
+            var getRolesScript = CreateScript_GetUserRoles(dbName, userName);
+            var roles = GetList(getRolesScript);
+            return roles;
+        }
+
+        public List<string> GetUsers(string dbName)
+        {
+            var getSourceUsersScript = CreateScript_GetUsers(dbName);
+            var sourceDBUsers = GetList(getSourceUsersScript);
+            return sourceDBUsers;
+        }
+
+        public void CreateUsers(string dbName, IEnumerable<User> users)
+        {
+            var existingUsersName = GetUsers(dbName);
+
+            foreach (var user in users)
+            {
+                // Если пользователь уже имеется, то убираем из списка добавляемых роли, которые у него уже есть
+                if (existingUsersName.Any(x => x.Trim().ToLower() == user.Name.Trim().ToLower()))
+                {
+                    var getSlaveRolesScript = CreateScript_GetUserRoles(dbName, user.Name);
+                    var existingRoles = GetList(getSlaveRolesScript);
+
+                    foreach (var existingRole in existingRoles)
+                    {
+                        if (user.Roles.Contains(existingRole))
+                            user.Roles.Remove(existingRole);
+                    }
+                }
+                else
+                {
+                    var createUserScript = CreateScript_CreateUser(dbName, user.Name);
+                    _logger.Trace($"createUserScript=>{createUserScript}");
+                    ExecuteNonQuery(createUserScript);
+                }
+
+                foreach (var role in user.Roles)
+                {
+                    var addRoleScript = CreateScript_AddRoleToUser(dbName, role, user.Name);
+                    _logger.Trace($"addRoleScript=>{addRoleScript}");
+                    ExecuteNonQuery(addRoleScript);
+                }
+            }
+        }
+
+        /// <summary> Выставляет owner как и у БД источника. </summary>
+        public void SetOwnerBySourceDb(string sourceDb, string db)
+        {
+            var owner = GetOwner(sourceDb);
+            SetOwner(db, owner);
+        }
+
+        public string GetOwner(string db)
+        {
+            var scriptGetOwner = CreateScript_GetOwner(db);
+            var owner = Convert.ToString(ExecuteScalar(scriptGetOwner));
+            return owner;
+        }
+
+        public void SetOwner(string db, string owner)
+        {
+            var scriptSetOwner = CreateScript_SetOwner(db, owner);
+            ExecuteNonQuery(scriptSetOwner);
+        }
+
+        #region PrincipalsCreationScripts
+
+        private string CreateScript_SetOwner(string db, string owner)
+        {
+            if (DbType == DbmsType.Mssql)
+                return $"use [{db}]; exec sp_changedbowner [{owner}]";
+            else
+                return $@"ALTER DATABASE {db} OWNER TO {owner}";
+        }
+
+        private static string CreateScript_AddRoleToUser(string db, string role, string user)
+        {
+            return $@"use [{db}]
+                EXEC sp_AddRoleMember '{role}', '{user}'";
+        }
+
+        private static string CreateScript_CreateUser(string db, string userName)
+        {
+            return $@"use [{db}]
+                CREATE USER [{userName}] FOR LOGIN [{userName}];";
+        }
+
+        private static string CreateScript_GetUsers(string db)
+        {
+            return $@"use [{db}]
+                SELECT NAME
+                FROM sys.database_principals
+                WHERE Type IN (
+                		'U'
+                		,'S'
+                		)
+                	AND NAME NOT IN (
+                		'dbo'
+                		,'guest'
+                		,'sys'
+                		,'INFORMATION_SCHEMA'
+                		)";
+        }
+
+        private static string CreateScript_GetUserRoles(string dbname, string user)
+        {
+            return $@"use [{dbname}]
+                SELECT DBRole.name
+                FROM sys.database_principals DBUser
+                INNER JOIN sys.database_role_members DBM ON DBM.member_principal_id = DBUser.principal_id
+                INNER JOIN sys.database_principals DBRole ON DBRole.principal_id = DBM.role_principal_id
+                WHERE DBUser.name = '{user}'";
+        }
+
+        private string CreateScript_GetOwner(string dbname)
+        {
+            if (DbType == DbmsType.Mssql)
+                return $@"use [{dbname}]
+                    select sp.name [SQL Login Name] from sys.databases db left join sys.server_principals sp on db.owner_sid=sp.sid
+                    where db.name='{dbname}'";
+            else
+                return $@"SELECT pg_catalog.pg_get_userbyid(d.datdba) FROM pg_catalog.pg_database d WHERE d.datname = '{dbname}'";
+        }
+
+        #endregion PrincipalsCreationScripts
+
+        #endregion PrincipalsExtensions
+
+        #region ReadExtensions
+
+        private List<string> GetList(string script)
+        {
+            var list = new List<string>();
+            using (var reader = ExecuteReader(script))
+            {
+                while (reader.Read())
+                {
+                    var user = reader.GetValue(0);
+                    list.Add(Convert.ToString(user));
+                }
+            }
+            return list;
+        }
+
+        private List<T> GetList<T>(string script)
+        {
+            var list = new List<T>();
+            using (var reader = ExecuteReader(script))
+            {
+                while (reader.Read())
+                {
+                    var user = reader.GetValue(0);
+                    list.Add((T)user);
+                }
+            }
+            return list;
+        }
+
+        #endregion ReadExtensions
+
+        #region ExecuteCommands
+
         public SqlCommand CreateCommand(string command, CommandType commandType = CommandType.Text)
         {
             SqlCommand cmd;
             lock (_lock)
             {
-                cmd = _sqlConn.CreateCommand();
+                cmd = SqlCon.CreateCommand();
             }
 
-            cmd.CommandTimeout = CommandTimeout;
+            cmd.CommandTimeout = CommandTimeoutInSeconds;
             cmd.CommandType = commandType;
             cmd.CommandText = command;
 
@@ -320,9 +767,36 @@ namespace MailCollector.Kit.SqlKit
             }
         }
 
+        #endregion ExecuteCommands
+
         public void Dispose()
         {
-            _sqlConn?.Dispose();
+            SqlCon?.Dispose();
+        }
+    }
+
+    public enum DbmsType : short
+    {
+        Unknown,
+        Mssql,
+        Pgsql
+    }
+
+    public enum RecoveryMode
+    {
+        SIMPLE,
+        FULL
+    }
+
+    public class User
+    {
+        public string Name { get; set; }
+        public List<string> Roles { get; set; }
+
+        public User(string name, List<string> roles)
+        {
+            Name = name;
+            Roles = roles;
         }
     }
 }

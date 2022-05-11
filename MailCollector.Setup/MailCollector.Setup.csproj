@@ -49,6 +49,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="GetSqlInfoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GetSqlInfoForm.Designer.cs">
+      <DependentUpon>GetSqlInfoForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="HelloForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -63,6 +70,9 @@
     <Compile Include="TemplateForm.Designer.cs">
       <DependentUpon>TemplateForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="GetSqlInfoForm.resx">
+      <DependentUpon>GetSqlInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HelloForm.resx">
       <DependentUpon>HelloForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -93,6 +103,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MailCollectorIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MailCollector.Kit\MailCollector.Kit.csproj">
+      <Project>{5c9be119-7ad2-4fe9-b92a-65c816749d92}</Project>
+      <Name>MailCollector.Kit</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
