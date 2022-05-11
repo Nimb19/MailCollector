@@ -66,9 +66,16 @@ namespace MailCollector.Kit.ServiceKit
             _disabledClients = new List<(ImapClient Client, ImapServer Server)>();
 
             if (!string.IsNullOrWhiteSpace(tgBotToken))
-                _mailTelegramBot = new MailTelegramBot(tgBotToken, _sqlServerShell, logger);
-
-            _mailTelegramBot.Start(_cancellationToken);
+            {
+                try
+                {
+                    _mailTelegramBot = new MailTelegramBot(tgBotToken, _sqlServerShell, logger);
+                    _mailTelegramBot.Start(_cancellationToken);
+                }catch (Exception ex)
+                {
+                    _logger.Error($"Ошибка при инициализации телеграм-бота: {ex}");
+                }
+            }
 
             _logger.WriteLine("ServiceWorker успешно инициализирован");
         }
