@@ -14,29 +14,34 @@ namespace MailCollector.Setup
     public partial class TemplateForm : Form
     {
         protected readonly ILogger Logger;
-        protected new readonly Form ParentForm;
+        protected readonly Form ParForm;
+        protected Form NextForm;
 
-        public TemplateForm(ILogger logger, Form parentForm)
+        public TemplateForm()
         {
             InitializeComponent();
             buttonBack.Click += ButtonBack_Click;
             FormClosed += TemplateForm_FormClosed;
 
             this.MaximizeBox = false;
-
-            Logger = logger;
-            ParentForm = parentForm;
         }
 
-        private void TemplateForm_FormClosed(object sender, FormClosedEventArgs e)
+        public TemplateForm(ILogger logger, Form parentForm) : this()
+        {
+            Logger = logger;
+            ParForm = parentForm;
+        }
+
+        protected virtual void TemplateForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Environment.Exit(0);
         }
 
         protected virtual void ButtonBack_Click(object sender, EventArgs e)
         {
+            ParForm.Show();
+            Task.Delay(50).Wait();
             this.Hide();
-            ParentForm.Show();
         }
     }
 }

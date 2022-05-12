@@ -21,7 +21,10 @@ namespace MailCollector.Setup
         private static readonly Color _lableSqlConnStateFailedColor = Color.Maroon;
 
         private SqlServerSettings _sqlServerSettings = null;
-        private bool _canPressNext = false;
+
+        public GetSqlInfoForm() : base()
+        {
+        }
 
         public GetSqlInfoForm(ILogger logger, Form parentForm) : base(logger, parentForm)
         {
@@ -29,14 +32,15 @@ namespace MailCollector.Setup
             buttonNext.Click += ButtonNext_Click;
 
             buttonNext.Enabled = false;
-            labelSqlConnIsSuccess.Enabled = false;
         }
 
-        private void ButtonNext_Click(object sender, EventArgs e)
+        private async void ButtonNext_Click(object sender, EventArgs e)
         {
+            if (NextForm == null)
+                NextForm = new InstallationForm(Logger, this);
+            NextForm.Show();
+            await Task.Delay(Constants.DelayAfterFormHide);
             this.Hide();
-            var sqlForm = new InstallationForm(Logger, this);
-            sqlForm.Show();
         }
 
         private void CheckBoxUseIntegratedSecurity_CheckedChanged(object sender, EventArgs e)
@@ -59,6 +63,9 @@ namespace MailCollector.Setup
         private async void ButtonCheckSqlConn_Click(object sender, EventArgs e)
         {
             buttonCheckSqlConn.Enabled = false;
+            buttonNext.Enabled = false;
+            buttonBack.Enabled = false;
+
             try
             {
                 if (!TryGetSqlServerSettings(out var sqlServerSettings))
@@ -68,21 +75,26 @@ namespace MailCollector.Setup
                 {
                     // Чисто тест подключения
                     var sqlShell = new SqlServerShell(sqlServerSettings, Logger, Constants.ModuleName, null);
+                    sqlShell.Dispose();
                 });
 
-                labelSqlConnIsSuccess.Text = _lableSqlConnStateSuccessText;
                 labelSqlConnIsSuccess.ForeColor = _lableSqlConnStateSuccessColor;
+                labelSqlConnIsSuccess.Text = _lableSqlConnStateSuccessText;
+
+                buttonNext.Enabled = true;
             }
             catch (Exception ex)
             {
                 ShowWarningBox($"Текст ошибки: {ex}", "Ошибка во время соединения подключения");
 
+                buttonNext.Enabled = false;
                 labelSqlConnIsSuccess.Text = _lableSqlConnStateFailedText;
                 labelSqlConnIsSuccess.ForeColor = _lableSqlConnStateFailedColor;
             }
             finally
             {
                 buttonCheckSqlConn.Enabled = true;
+                buttonBack.Enabled = true;
             }
         }
 

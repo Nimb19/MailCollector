@@ -1,5 +1,6 @@
 ﻿using MailCollector.Kit.Logger;
 using System;
+using System.Threading.Tasks;
 
 namespace MailCollector.Setup
 {
@@ -13,11 +14,13 @@ namespace MailCollector.Setup
             buttonBack.Enabled = false;
         }
 
-        private void ButtonNext_Click(object sender, EventArgs e)
+        private async void ButtonNext_Click(object sender, EventArgs e)
         {
+            if (NextForm == null)
+                NextForm = new GetSqlInfoForm(Logger, this);
+            NextForm.Show();
+            await Task.Delay(Constants.DelayAfterFormHide);
             this.Hide();
-            var sqlForm = new GetSqlInfoForm(Logger, this);
-            sqlForm.Show();
         }
     }
 }

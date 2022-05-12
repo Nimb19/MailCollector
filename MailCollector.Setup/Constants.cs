@@ -9,5 +9,6 @@ namespace MailCollector.Setup
     public static class Constants
     {
         public const string ModuleName = "MailCollector.Setup";
+        public const int DelayAfterFormHide = 100;
     }
 }
