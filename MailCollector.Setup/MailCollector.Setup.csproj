@@ -62,8 +62,15 @@
     <Compile Include="HelloForm.Designer.cs">
       <DependentUpon>HelloForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="InstallationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstallationForm.Designer.cs">
+      <DependentUpon>InstallationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupSettings.cs" />
     <Compile Include="TemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,6 +82,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="HelloForm.resx">
       <DependentUpon>HelloForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstallationForm.resx">
+      <DependentUpon>InstallationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

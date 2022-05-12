@@ -15,11 +15,11 @@ namespace MailCollector.Setup
         [STAThread]
         static void Main()
         {
-            var logger = FileLogger.Instance;
+            ILogger logger = FileLogger.Instance;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GetSqlInfoForm(logger));
+            Application.Run(new HelloForm(logger));
         }
     }
 }

@@ -11,8 +11,8 @@ using System.Linq;
 namespace MailCollector.Kit.SqlKit
 {
     /// <summary>
-    ///     Потокобезопасная оболочка для работы с БД. 
-    ///     Не содержит бизнес логики, вся она находится в SqlServerShellAdapter.
+    ///     Потокобезопасная оболочка для работы с СУБД и выбранной БД. 
+    ///     Не содержит бизнес логики, вся она находится в адаптерах рядом с этим классом.
     /// </summary>
     public class SqlServerShell : IDisposable
     {
@@ -21,6 +21,8 @@ namespace MailCollector.Kit.SqlKit
         
         private object _lock = new object();
         
+        public const int ConnectionTimeoutInSeconds = 3;
+
         public readonly string DbName;
         public readonly int CommandTimeoutInSeconds = 30;
         public readonly string InitialCatalog = "master";
@@ -65,7 +67,7 @@ namespace MailCollector.Kit.SqlKit
                 DataSource = SqlServerSettings.ServerName,
                 InitialCatalog = InitialCatalog,
                 ApplicationName = _moduleInfo,
-                ConnectTimeout = CommandTimeoutInSeconds,
+                ConnectTimeout = ConnectionTimeoutInSeconds,
             };
 
             if (SqlServerSettings.IntegratedSecurity.HasValue

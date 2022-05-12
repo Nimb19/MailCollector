@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GetSqlInfoForm));
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxSqlServerConnStr = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -38,6 +39,8 @@
             this.buttonCheckSqlConn = new System.Windows.Forms.Button();
             this.checkBoxIntegratedSecurity = new System.Windows.Forms.CheckBox();
             this.labelSqlConnIsSuccess = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -45,10 +48,10 @@
             this.label1.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(12, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(518, 69);
+            this.label1.Size = new System.Drawing.Size(432, 69);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Впишите данные для подключения к СУБД. \r\nВ ней будет создана учётная запись для с" +
-    "ервиса (MailCollectorAdmin) и размещена БД для работы сервиса.";
+            this.label1.Text = "Впишите данные для подключения к СУБД. \r\nВ ней будет размещена БД \'MailCollectorS" +
+    "torage\', она будет нужна для работы сервиса.";
             // 
             // textBoxSqlServerConnStr
             // 
@@ -56,6 +59,7 @@
             this.textBoxSqlServerConnStr.Name = "textBoxSqlServerConnStr";
             this.textBoxSqlServerConnStr.Size = new System.Drawing.Size(432, 26);
             this.textBoxSqlServerConnStr.TabIndex = 4;
+            this.textBoxSqlServerConnStr.Text = "localhost";
             this.textBoxSqlServerConnStr.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
@@ -78,6 +82,7 @@
             // 
             // textBoxLogin
             // 
+            this.textBoxLogin.Enabled = false;
             this.textBoxLogin.Location = new System.Drawing.Point(48, 236);
             this.textBoxLogin.Name = "textBoxLogin";
             this.textBoxLogin.Size = new System.Drawing.Size(432, 26);
@@ -95,6 +100,7 @@
             // 
             // textBoxPassword
             // 
+            this.textBoxPassword.Enabled = false;
             this.textBoxPassword.Location = new System.Drawing.Point(48, 306);
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.Size = new System.Drawing.Size(432, 26);
@@ -112,18 +118,18 @@
             this.buttonCheckSqlConn.UseVisualStyleBackColor = true;
             this.buttonCheckSqlConn.Click += new System.EventHandler(this.ButtonCheckSqlConn_Click);
             // 
-            // checkBoxUseNtAuth
+            // checkBoxIntegratedSecurity
             // 
             this.checkBoxIntegratedSecurity.AutoSize = true;
             this.checkBoxIntegratedSecurity.Checked = true;
             this.checkBoxIntegratedSecurity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxIntegratedSecurity.Location = new System.Drawing.Point(68, 165);
-            this.checkBoxIntegratedSecurity.Name = "checkBoxUseNtAuth";
+            this.checkBoxIntegratedSecurity.Name = "checkBoxIntegratedSecurity";
             this.checkBoxIntegratedSecurity.Size = new System.Drawing.Size(401, 24);
             this.checkBoxIntegratedSecurity.TabIndex = 11;
             this.checkBoxIntegratedSecurity.Text = "Подключиться с помощью вашей учётной записи";
             this.checkBoxIntegratedSecurity.UseVisualStyleBackColor = true;
-            this.checkBoxIntegratedSecurity.CheckedChanged += new System.EventHandler(this.CheckBoxUseNtAuth_CheckedChanged);
+            this.checkBoxIntegratedSecurity.CheckedChanged += new System.EventHandler(this.CheckBoxUseIntegratedSecurity_CheckedChanged);
             // 
             // labelSqlConnIsSuccess
             // 
@@ -136,11 +142,22 @@
             this.labelSqlConnIsSuccess.Text = "Статуст: нет подключения";
             this.labelSqlConnIsSuccess.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(424, 11);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(90, 90);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 13;
+            this.pictureBox1.TabStop = false;
+            // 
             // GetSqlInfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 511);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.labelSqlConnIsSuccess);
             this.Controls.Add(this.checkBoxIntegratedSecurity);
             this.Controls.Add(this.buttonCheckSqlConn);
@@ -163,6 +180,8 @@
             this.Controls.SetChildIndex(this.buttonCheckSqlConn, 0);
             this.Controls.SetChildIndex(this.checkBoxIntegratedSecurity, 0);
             this.Controls.SetChildIndex(this.labelSqlConnIsSuccess, 0);
+            this.Controls.SetChildIndex(this.pictureBox1, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -180,5 +199,6 @@
         internal System.Windows.Forms.Button buttonCheckSqlConn;
         private System.Windows.Forms.CheckBox checkBoxIntegratedSecurity;
         private System.Windows.Forms.Label labelSqlConnIsSuccess;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

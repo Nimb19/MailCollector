@@ -77,7 +77,7 @@ namespace MailCollector.Kit.TelegramBotKit
 
                 if (cancelationToken.IsCancellationRequested)
                 {
-                    _logger.WriteLine($"Поступила команда отмены работы телеграмм бота '{BotInfo.FirstName}'");
+                    _logger.WriteLine($"Поступила команда отмены работы Telegram бота '{BotInfo.FirstName}'");
                     await SendTextMessageAsync(botClient, message.Chat, "Поступила команда отмены работы телеграмм бота. Прощайте :(");
                     IsStarted = false;
                     return;
@@ -178,7 +178,7 @@ namespace MailCollector.Kit.TelegramBotKit
 
         public void SendMessageToAllSubsAboutInitComplete(ImapClient imapClient)
         {
-            string tgMessage = $"Клиент {imapClient.Login} успешно инициализирован вперввые." +
+            string tgMessage = $"Клиент {imapClient.Login} успешно инициализирован впервые." +
                 $" Его прошлые сообщения успешно сохранены.";
             SendMessageToAllSubs(tgMessage);
         }
@@ -192,7 +192,7 @@ namespace MailCollector.Kit.TelegramBotKit
                 {
                     _logger.Warning($"Сообщение от телеграмм бота не было отправлено" +
                         $", так как не было ни одного подписчика." +
-                        $" Превью сообщения: {new string(tgMessage.Take(12).ToArray())}");
+                        $" Начало сообщения: {new string(tgMessage.Take(12).ToArray())}");
                     return;
                 }
                 foreach (var sub in subs)
@@ -209,7 +209,7 @@ namespace MailCollector.Kit.TelegramBotKit
 
                     SendTextMessageAsync(_bot, chatId, tgMessage).Wait();
                 }
-                _logger.WriteLine($"Сообщения подписчикам в телеграме о новых письмах успешно высланы");
+                _logger.WriteLine($"Сообщения подписчикам в Telegram о новых письмах успешно высланы");
             }
             catch (Exception ex)
             {
@@ -237,7 +237,7 @@ namespace MailCollector.Kit.TelegramBotKit
         //{
         //    if (!IsStarted)
         //    {
-        //        _logger.Warning("Была попытка выключения бота, когда он выключён");
+        //        _logger.Warning("Была попытка выключения бота, когда он выключен");
         //        return;
         //    }
 
