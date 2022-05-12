@@ -125,9 +125,9 @@
             this.checkBoxIntegratedSecurity.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxIntegratedSecurity.Location = new System.Drawing.Point(68, 165);
             this.checkBoxIntegratedSecurity.Name = "checkBoxIntegratedSecurity";
-            this.checkBoxIntegratedSecurity.Size = new System.Drawing.Size(401, 24);
+            this.checkBoxIntegratedSecurity.Size = new System.Drawing.Size(403, 24);
             this.checkBoxIntegratedSecurity.TabIndex = 11;
-            this.checkBoxIntegratedSecurity.Text = "Подключиться с помощью вашей учётной записи";
+            this.checkBoxIntegratedSecurity.Text = "Подключиться с помощью Вашей учётной записи";
             this.checkBoxIntegratedSecurity.UseVisualStyleBackColor = true;
             this.checkBoxIntegratedSecurity.CheckedChanged += new System.EventHandler(this.CheckBoxUseIntegratedSecurity_CheckedChanged);
             // 
@@ -169,7 +169,7 @@
             this.Controls.Add(this.textBoxSqlServerConnStr);
             this.Controls.Add(this.label1);
             this.Name = "GetSqlInfoForm";
-            this.Text = "Установщик сервиса MailCollector";
+            this.Text = "Впишите данные для подключения к СУБД";
             this.Controls.SetChildIndex(this.label1, 0);
             this.Controls.SetChildIndex(this.textBoxSqlServerConnStr, 0);
             this.Controls.SetChildIndex(this.label2, 0);

@@ -6,7 +6,8 @@ namespace MailCollector.Setup
 {
     public partial class HelloForm : TemplateForm
     {
-        public HelloForm(ILogger logger) : base(logger, null)
+        public HelloForm(ILogger logger, SetupSettings setupSettings)
+            : base(logger, null, setupSettings)
         {
             InitializeComponent();
             buttonNext.Click += ButtonNext_Click;
@@ -17,7 +18,7 @@ namespace MailCollector.Setup
         private async void ButtonNext_Click(object sender, EventArgs e)
         {
             if (NextForm == null)
-                NextForm = new GetSqlInfoForm(Logger, this);
+                NextForm = new SelectInstalStepsForm(Logger, this, InstallerSettings);
             NextForm.Show();
             await Task.Delay(Constants.DelayAfterFormHide);
             this.Hide();

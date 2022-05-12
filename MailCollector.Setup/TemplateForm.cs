@@ -1,11 +1,5 @@
 ﻿using MailCollector.Kit.Logger;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +9,7 @@ namespace MailCollector.Setup
     {
         protected readonly ILogger Logger;
         protected readonly Form ParForm;
+        protected readonly SetupSettings InstallerSettings;
         protected Form NextForm;
 
         public TemplateForm()
@@ -26,10 +21,11 @@ namespace MailCollector.Setup
             this.MaximizeBox = false;
         }
 
-        public TemplateForm(ILogger logger, Form parentForm) : this()
+        public TemplateForm(ILogger logger, Form parentForm, SetupSettings setupSettings) : this()
         {
             Logger = logger;
             ParForm = parentForm;
+            InstallerSettings = setupSettings;
         }
 
         protected virtual void TemplateForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -42,6 +38,13 @@ namespace MailCollector.Setup
             ParForm.Show();
             Task.Delay(50).Wait();
             this.Hide();
+        }
+
+        protected void ShowWarningBox(string text, string header = "Ошибка во время проверки значений"
+            , bool isError = false)
+        {
+            MessageBox.Show(text, header, MessageBoxButtons.OK
+                , isError ? MessageBoxIcon.Error : MessageBoxIcon.Warning);
         }
     }
 }

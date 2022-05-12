@@ -2,12 +2,7 @@
 using MailCollector.Kit.SqlKit;
 using MailCollector.Kit.SqlKit.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,13 +15,13 @@ namespace MailCollector.Setup
         private const string _lableSqlConnStateFailedText = "Не удалось подключиться к СУБД";
         private static readonly Color _lableSqlConnStateFailedColor = Color.Maroon;
 
-        private SqlServerSettings _sqlServerSettings = null;
-
         public GetSqlInfoForm() : base()
         {
+            InitializeComponent();
         }
 
-        public GetSqlInfoForm(ILogger logger, Form parentForm) : base(logger, parentForm)
+        public GetSqlInfoForm(ILogger logger, Form parentForm, SetupSettings setupSettings) 
+            : base(logger, parentForm, setupSettings)
         {
             InitializeComponent();
             buttonNext.Click += ButtonNext_Click;
@@ -37,7 +32,7 @@ namespace MailCollector.Setup
         private async void ButtonNext_Click(object sender, EventArgs e)
         {
             if (NextForm == null)
-                NextForm = new InstallationForm(Logger, this);
+                NextForm = new ChoosePathInstallForm(Logger, this, InstallerSettings);
             NextForm.Show();
             await Task.Delay(Constants.DelayAfterFormHide);
             this.Hide();
@@ -73,10 +68,12 @@ namespace MailCollector.Setup
 
                 await Task.Run(() =>
                 {
-                    // Чисто тест подключения
+                    // Тест подключения
                     var sqlShell = new SqlServerShell(sqlServerSettings, Logger, Constants.ModuleName, null);
                     sqlShell.Dispose();
                 });
+
+                InstallerSettings.SqlServerSettings = sqlServerSettings;
 
                 labelSqlConnIsSuccess.ForeColor = _lableSqlConnStateSuccessColor;
                 labelSqlConnIsSuccess.Text = _lableSqlConnStateSuccessText;
@@ -134,11 +131,6 @@ namespace MailCollector.Setup
                 Password = password,
             };
             return true;
-        }
-
-        private void ShowWarningBox(string text, string header = "Ошибка во время проверки значений")
-        {
-            MessageBox.Show(text, header, MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
     }
 }

@@ -13,7 +13,8 @@ namespace MailCollector.Setup
 {
     public partial class InstallationForm : TemplateForm
     {
-        public InstallationForm(ILogger logger, Form parentForm) : base(logger, parentForm)
+        public InstallationForm(ILogger logger, Form parentForm, SetupSettings setupSettings)
+            : base(logger, parentForm, setupSettings)
         {
             InitializeComponent();
         }
