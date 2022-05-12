@@ -169,7 +169,7 @@
             this.Controls.Add(this.textBoxSqlServerConnStr);
             this.Controls.Add(this.label1);
             this.Name = "GetSqlInfoForm";
-            this.Text = "GetSqlInfoForm";
+            this.Text = "Установщик сервиса MailCollector";
             this.Controls.SetChildIndex(this.label1, 0);
             this.Controls.SetChildIndex(this.textBoxSqlServerConnStr, 0);
             this.Controls.SetChildIndex(this.label2, 0);

@@ -36,7 +36,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 511);
             this.Name = "InstallationForm";
-            this.Text = "InstallationForm";
+            this.Text = "Установщик сервиса MailCollector";
             this.ResumeLayout(false);
 
         }
