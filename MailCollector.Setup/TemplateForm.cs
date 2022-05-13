@@ -9,7 +9,7 @@ namespace MailCollector.Setup
     {
         protected readonly ILogger Logger;
         protected readonly Form ParForm;
-        protected readonly SetupSettings InstallerSettings;
+        protected readonly InstallerSettings InstallerSettings;
         protected Form NextForm;
 
         public TemplateForm()
@@ -21,7 +21,7 @@ namespace MailCollector.Setup
             this.MaximizeBox = false;
         }
 
-        public TemplateForm(ILogger logger, Form parentForm, SetupSettings setupSettings) : this()
+        public TemplateForm(ILogger logger, Form parentForm, InstallerSettings setupSettings) : this()
         {
             Logger = logger;
             ParForm = parentForm;

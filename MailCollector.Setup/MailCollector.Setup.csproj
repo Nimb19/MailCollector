@@ -35,6 +35,9 @@
   <PropertyGroup>
     <ApplicationIcon>MailCollectorIcon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Activities" />
@@ -50,11 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChoosePathInstallForm.cs">
+    <Compile Include="ChooseInstallPathForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChoosePathInstallForm.Designer.cs">
-      <DependentUpon>ChoosePathInstallForm.cs</DependentUpon>
+    <Compile Include="ChooseInstallPathForm.Designer.cs">
+      <DependentUpon>ChooseInstallPathForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="GetSqlInfoForm.cs">
@@ -62,6 +65,12 @@
     </Compile>
     <Compile Include="GetSqlInfoForm.Designer.cs">
       <DependentUpon>GetSqlInfoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GetTelegramBotTokenForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GetTelegramBotTokenForm.Designer.cs">
+      <DependentUpon>GetTelegramBotTokenForm.cs</DependentUpon>
     </Compile>
     <Compile Include="HelloForm.cs">
       <SubType>Form</SubType>
@@ -83,7 +92,7 @@
     <Compile Include="SelectInstalStepsForm.Designer.cs">
       <DependentUpon>SelectInstalStepsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="SetupSettings.cs" />
+    <Compile Include="InstallerSettings.cs" />
     <Compile Include="SetupSteps.cs" />
     <Compile Include="TemplateForm.cs">
       <SubType>Form</SubType>
@@ -91,11 +100,14 @@
     <Compile Include="TemplateForm.Designer.cs">
       <DependentUpon>TemplateForm.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ChoosePathInstallForm.resx">
-      <DependentUpon>ChoosePathInstallForm.cs</DependentUpon>
+    <EmbeddedResource Include="ChooseInstallPathForm.resx">
+      <DependentUpon>ChooseInstallPathForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GetSqlInfoForm.resx">
       <DependentUpon>GetSqlInfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GetTelegramBotTokenForm.resx">
+      <DependentUpon>GetTelegramBotTokenForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelloForm.resx">
       <DependentUpon>HelloForm.cs</DependentUpon>
@@ -118,6 +130,7 @@
     <EmbeddedResource Include="TemplateForm.resx">
       <DependentUpon>TemplateForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

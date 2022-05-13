@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MailCollector.Setup
+﻿namespace MailCollector.Setup
 {
     public static class Constants
     {
         public const string ModuleName = "MailCollector.Setup";
+        /// <summary>
+        ///     Что бы переключение форм было плавным и без мерцания, добавлена небольшая задержка
+        /// </summary>
         public const int DelayAfterFormHide = 100;
     }
 }

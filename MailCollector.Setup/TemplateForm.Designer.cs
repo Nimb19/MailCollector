@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TemplateForm));
             this.buttonNext = new System.Windows.Forms.Button();
             this.buttonBack = new System.Windows.Forms.Button();
+            this.buttonSkip = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonNext
@@ -51,12 +52,23 @@
             this.buttonBack.Text = "Назад";
             this.buttonBack.UseVisualStyleBackColor = true;
             // 
+            // buttonSkip
+            // 
+            this.buttonSkip.Location = new System.Drawing.Point(233, 455);
+            this.buttonSkip.Name = "buttonSkip";
+            this.buttonSkip.Size = new System.Drawing.Size(142, 35);
+            this.buttonSkip.TabIndex = 2;
+            this.buttonSkip.Text = "Пропустить";
+            this.buttonSkip.UseVisualStyleBackColor = true;
+            this.buttonSkip.Visible = false;
+            // 
             // TemplateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(534, 511);
+            this.Controls.Add(this.buttonSkip);
             this.Controls.Add(this.buttonBack);
             this.Controls.Add(this.buttonNext);
             this.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -75,5 +87,6 @@
 
         internal System.Windows.Forms.Button buttonNext;
         internal System.Windows.Forms.Button buttonBack;
+        internal System.Windows.Forms.Button buttonSkip;
     }
 }

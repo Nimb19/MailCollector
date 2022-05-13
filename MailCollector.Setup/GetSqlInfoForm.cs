@@ -20,19 +20,26 @@ namespace MailCollector.Setup
             InitializeComponent();
         }
 
-        public GetSqlInfoForm(ILogger logger, Form parentForm, SetupSettings setupSettings) 
+        public GetSqlInfoForm(ILogger logger, Form parentForm, InstallerSettings setupSettings) 
             : base(logger, parentForm, setupSettings)
         {
             InitializeComponent();
             buttonNext.Click += ButtonNext_Click;
 
             buttonNext.Enabled = false;
+
+            if (!InstallerSettings.InstallSteps.HasFlag(SetupSteps.CreateDb))
+            {
+                labelInfo.Text = $"Впишите данные для подключения к СУБД, где " +
+                    $"расположена БД 'MailCollectorStorage'." +
+                    $"{Environment.NewLine}Она нужна для работы серверной и клиентской части.";
+            }
         }
 
         private async void ButtonNext_Click(object sender, EventArgs e)
         {
             if (NextForm == null)
-                NextForm = new ChoosePathInstallForm(Logger, this, InstallerSettings);
+                NextForm = new ChooseInstallPathForm(Logger, this, InstallerSettings);
             NextForm.Show();
             await Task.Delay(Constants.DelayAfterFormHide);
             this.Hide();

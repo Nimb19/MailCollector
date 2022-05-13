@@ -19,7 +19,7 @@ namespace MailCollector.Setup
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new HelloForm(logger, new SetupSettings()));
+            Application.Run(new HelloForm(logger, new InstallerSettings()));
         }
     }
 }

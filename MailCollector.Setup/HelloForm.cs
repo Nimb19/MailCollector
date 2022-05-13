@@ -6,7 +6,7 @@ namespace MailCollector.Setup
 {
     public partial class HelloForm : TemplateForm
     {
-        public HelloForm(ILogger logger, SetupSettings setupSettings)
+        public HelloForm(ILogger logger, InstallerSettings setupSettings)
             : base(logger, null, setupSettings)
         {
             InitializeComponent();

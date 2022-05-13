@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GetSqlInfoForm));
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelInfo = new System.Windows.Forms.Label();
             this.textBoxSqlServerConnStr = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -43,14 +43,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // label1
+            // labelInfo
             // 
-            this.label1.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(12, 11);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(432, 69);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Впишите данные для подключения к СУБД. \r\nВ ней будет размещена БД \'MailCollectorS" +
+            this.labelInfo.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelInfo.Location = new System.Drawing.Point(12, 11);
+            this.labelInfo.Name = "labelInfo";
+            this.labelInfo.Size = new System.Drawing.Size(416, 69);
+            this.labelInfo.TabIndex = 3;
+            this.labelInfo.Text = "Впишите данные для подключения к СУБД. \r\nВ ней будет размещена БД \'MailCollectorS" +
     "torage\', она будет нужна для работы сервиса.";
             // 
             // textBoxSqlServerConnStr
@@ -167,10 +167,10 @@
             this.Controls.Add(this.textBoxLogin);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBoxSqlServerConnStr);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelInfo);
             this.Name = "GetSqlInfoForm";
             this.Text = "Впишите данные для подключения к СУБД";
-            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.labelInfo, 0);
             this.Controls.SetChildIndex(this.textBoxSqlServerConnStr, 0);
             this.Controls.SetChildIndex(this.label2, 0);
             this.Controls.SetChildIndex(this.textBoxLogin, 0);
@@ -189,7 +189,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelInfo;
         private System.Windows.Forms.TextBox textBoxSqlServerConnStr;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;

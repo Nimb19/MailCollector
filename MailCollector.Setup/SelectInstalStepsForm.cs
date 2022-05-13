@@ -12,7 +12,7 @@ namespace MailCollector.Setup
             InitializeComponent();
         }
 
-        public SelectInstalStepsForm(ILogger logger, Form parentForm, SetupSettings setupSettings)
+        public SelectInstalStepsForm(ILogger logger, Form parentForm, InstallerSettings setupSettings)
             : base(logger, parentForm, setupSettings)
         {
             InitializeComponent();
@@ -43,8 +43,16 @@ namespace MailCollector.Setup
             }
             InstallerSettings.InstallSteps = setupSteps;
 
-            if (NextForm == null)
+            if (InstallerSettings.InstallSteps.HasFlag(SetupSteps.CreateDb)
+                    || InstallerSettings.InstallSteps.HasFlag(SetupSteps.InstallService)
+                    || InstallerSettings.InstallSteps.HasFlag(SetupSteps.InstallClient))
+            {
                 NextForm = new GetSqlInfoForm(Logger, this, InstallerSettings);
+            }
+            else
+            {
+                NextForm = new ChooseInstallPathForm(Logger, this, InstallerSettings);
+            }
             NextForm.Show();
             await Task.Delay(Constants.DelayAfterFormHide);
             this.Hide();

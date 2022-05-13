@@ -1,6 +1,6 @@
 ﻿namespace MailCollector.Setup
 {
-    partial class ChoosePathInstallForm
+    partial class ChooseInstallPathForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChoosePathInstallForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChooseInstallPathForm));
             this.labelInfo = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelSelectServicePath = new System.Windows.Forms.Panel();
@@ -150,7 +150,7 @@
             this.label2.Text = "Расположение клиентской части:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // ChoosePathInstallForm
+            // ChooseInstallPathForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -159,7 +159,7 @@
             this.Controls.Add(this.panelSelectServicePath);
             this.Controls.Add(this.labelInfo);
             this.Controls.Add(this.pictureBox1);
-            this.Name = "ChoosePathInstallForm";
+            this.Name = "ChooseInstallPathForm";
             this.Text = "Выберите путь устаноки";
             this.Controls.SetChildIndex(this.pictureBox1, 0);
             this.Controls.SetChildIndex(this.labelInfo, 0);
