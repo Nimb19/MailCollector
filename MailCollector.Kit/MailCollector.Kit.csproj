@@ -92,6 +92,7 @@
     <Compile Include="Logger\NullLogger.cs" />
     <Compile Include="Logger\PrefixLogger.cs" />
     <Compile Include="ServiceKit\ImapClientListener.cs" />
+    <Compile Include="ServiceKit\ServiceConfig.cs" />
     <Compile Include="ServiceKit\ServiceWorker.cs" />
     <Compile Include="ServiceKit\ServiceWorkerExtensions.cs" />
     <Compile Include="SqlKit\Models\Affected0RowsException.cs" />

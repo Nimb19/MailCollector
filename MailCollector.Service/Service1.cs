@@ -24,7 +24,7 @@ namespace MailCollector.Service
         {
             try
             {
-                var config = CommonExtensions.DeserializeFile<Settings>(Constants.ConfigFileName);
+                var config = CommonExtensions.DeserializeFile<ServiceConfig>(Constants.ConfigFileName);
                 _serviceWorker = new ServiceWorker(config.SqlServerSettings, config.TelegramBotApiToken
                     , _logger, Constants.ModuleName, _cts.Token);
             }catch (Exception ex)

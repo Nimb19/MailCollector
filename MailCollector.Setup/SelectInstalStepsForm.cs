@@ -38,7 +38,7 @@ namespace MailCollector.Setup
 
             if (setupSteps == 0)
             {
-                ShowWarningBox("Вы не отметили ни одного компонента для установки");
+                ShowWarningBox("Вы не отметили ни одного компонента для установки.");
                 return;
             }
             InstallerSettings.InstallSteps = setupSteps;
@@ -47,7 +47,7 @@ namespace MailCollector.Setup
                     || InstallerSettings.InstallSteps.HasFlag(SetupSteps.InstallService)
                     || InstallerSettings.InstallSteps.HasFlag(SetupSteps.InstallClient))
             {
-                NextForm = new GetSqlInfoForm(Logger, this, InstallerSettings);
+                NextForm = new GetImapClientsForm(Logger, this, InstallerSettings);
             }
             else
             {

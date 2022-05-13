@@ -68,7 +68,7 @@ namespace MailCollector.Setup
                 }
                 else
                 {
-                    ShowWarningBox("Открылась форма ввода пути установки, но устанавливать нечего"
+                    ShowWarningBox("Открылась форма ввода пути установки, но устанавливать нечего."
                         , "Внутренняя ошибка", true);
                     Close();
                 }
@@ -96,7 +96,7 @@ namespace MailCollector.Setup
                             dirInfo = new DirectoryInfo(servicePath);
                             if (!dirInfo.Exists)
                             {
-                                ShowWarningBox("Путь к папке сервиса указан не верно, папки не существует");
+                                ShowWarningBox("Путь к папке сервиса указан не верно, папки не существует.");
                                 return;
                             }
                         }
@@ -105,9 +105,9 @@ namespace MailCollector.Setup
                     else
                     {
                         if (_hasFlagInstService)
-                            ShowWarningBox("Путь для установки сервиса не указан");
+                            ShowWarningBox("Путь для установки сервиса не указан.");
                         else
-                            ShowWarningBox("Путь к папке сервиса не указан");
+                            ShowWarningBox("Путь к папке сервиса не указан.");
                         return;
                     }
                 }
@@ -122,7 +122,7 @@ namespace MailCollector.Setup
                     }
                     else
                     {
-                        ShowWarningBox("Путь для установки клиентской части не указан");
+                        ShowWarningBox("Путь для установки клиентской части не указан.");
                         return;
                     }
                 }

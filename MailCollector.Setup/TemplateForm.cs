@@ -46,5 +46,10 @@ namespace MailCollector.Setup
             MessageBox.Show(text, header, MessageBoxButtons.OK
                 , isError ? MessageBoxIcon.Error : MessageBoxIcon.Warning);
         }
+
+        protected void ShowSuccessBox(string text, string header = "Успешно!")
+        {
+            MessageBox.Show(text, header, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }

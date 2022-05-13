@@ -1,8 +1,8 @@
 ﻿using MailCollector.Kit.SqlKit.Models;
 
-namespace MailCollector.Service
+namespace MailCollector.Kit.ServiceKit
 {
-    public class Settings
+    public class ServiceConfig
     {
         public SqlServerSettings SqlServerSettings { get; set; }
         public string TelegramBotApiToken { get; set; }

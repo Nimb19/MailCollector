@@ -1,4 +1,5 @@
-﻿using MailCollector.Kit.SqlKit.Models;
+﻿using MailCollector.Kit.ImapKit.Models;
+using MailCollector.Kit.SqlKit.Models;
 
 namespace MailCollector.Setup
 {
@@ -6,8 +7,10 @@ namespace MailCollector.Setup
     {
         public SetupSteps InstallSteps { get; set; }
         public SqlServerSettings SqlServerSettings { get; set; }
+
         public string TelegramBotToken { get; set; }
-        public string InstallServicePath { get; set; }
         public string InstallClientPath { get; set; }
+        public string InstallServicePath { get; set; }
+        public ImapClientParams[] ImapClients { get; set; }
     }
 }

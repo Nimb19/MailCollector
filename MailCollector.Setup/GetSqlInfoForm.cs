@@ -108,7 +108,7 @@ namespace MailCollector.Setup
             var sqlConnString = textBoxSqlServerConnStr.Text.Trim();
             if (string.IsNullOrWhiteSpace(sqlConnString))
             {
-                ShowWarningBox($"Поле строки подключения к СУБД было пустым");
+                ShowWarningBox($"Поле строки подключения к СУБД было пустым.");
                 return false;
             }
 
@@ -119,13 +119,13 @@ namespace MailCollector.Setup
                 login = textBoxLogin.Text.Trim();
                 if (string.IsNullOrWhiteSpace(login))
                 {
-                    ShowWarningBox($"Поле логина было пустым");
+                    ShowWarningBox($"Поле логина было пустым.");
                     return false;
                 }
                 password = textBoxLogin.Text.Trim();
                 if (string.IsNullOrWhiteSpace(password))
                 {
-                    ShowWarningBox($"Поле пароля было пустым");
+                    ShowWarningBox($"Поле пароля было пустым.");
                     return false;
                 }
             }

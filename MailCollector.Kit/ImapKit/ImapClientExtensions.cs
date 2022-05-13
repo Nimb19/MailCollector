@@ -5,6 +5,7 @@ using MimeKit;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MailCollector.Kit.ImapKit
 {
@@ -20,6 +21,19 @@ namespace MailCollector.Kit.ImapKit
                     , imapClientParams.ImapServerParams.UseSsl, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             client.Authenticate(imapClientParams.Login, imapClientParams.Password, cancellationToken);
+            return client;
+        }
+
+        public static async Task<ImapClient> ConnectAsync(this ImapClientParams imapClientParams,
+            CancellationToken cancellationToken = default, int timeout = 8000)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var client = new ImapClient();
+            client.Timeout = timeout;
+            await client.ConnectAsync(imapClientParams.ImapServerParams.Uri, imapClientParams.ImapServerParams.Port
+                    , imapClientParams.ImapServerParams.UseSsl, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            await client.AuthenticateAsync(imapClientParams.Login, imapClientParams.Password, cancellationToken);
             return client;
         }
 

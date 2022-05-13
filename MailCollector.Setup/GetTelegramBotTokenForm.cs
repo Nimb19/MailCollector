@@ -61,7 +61,7 @@ namespace MailCollector.Setup
             }
             else
             {
-                ShowWarningBox("Заполните поле с токеном или пропустите этот шаг");
+                ShowWarningBox("Заполните поле с токеном или пропустите этот шаг.");
                 return;
             }
         }
