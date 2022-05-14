@@ -88,7 +88,7 @@ namespace MailCollector.Kit.ImapKit
                 $"{(string.IsNullOrWhiteSpace(x.Name) ? string.Empty : $"{SqlKit.Models.Mail.EmailNamesSeparator}{x.Name}")}")
             .ToArray();
 
-            return string.Join(";", addreses);
+            return string.Join(SqlKit.Models.Mail.EmailsSeparator, addreses);
         }
     }
 }

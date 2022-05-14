@@ -13,10 +13,29 @@ namespace MailCollector.Setup
 {
     public partial class InstallationForm : TemplateForm
     {
+        public InstallationForm() : base()
+        {
+            InitializeComponent();
+        }
+
         public InstallationForm(ILogger logger, Form parentForm, InstallerSettings setupSettings)
             : base(logger, parentForm, setupSettings)
         {
             InitializeComponent();
+            buttonNext.Click += ButtonFinish_Click;
+            buttonNext.Text = "Готово!";
+
+            buttonNext.Enabled = false;
+            buttonNext.Enabled = false;
+        }
+
+        private async void ButtonFinish_Click(object sender, EventArgs e)
+        {
+            if (NextForm == null)
+                NextForm = new ChooseInstallPathForm(Logger, this, InstallerSettings);
+            NextForm.Show();
+            await Task.Delay(Constants.DelayAfterFormHide);
+            this.Hide();
         }
 
         // TODO: Создать БД

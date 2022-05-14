@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Kit", "MailCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Setup", "MailCollector.Setup\MailCollector.Setup.csproj", "{ABA72801-19B6-4A0A-B781-215FC4D94B49}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Client", "MailCollector.Client\MailCollector.Client.csproj", "{EC319055-85FA-439B-B6F6-4D7044576ED8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{ABA72801-19B6-4A0A-B781-215FC4D94B49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ABA72801-19B6-4A0A-B781-215FC4D94B49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ABA72801-19B6-4A0A-B781-215FC4D94B49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC319055-85FA-439B-B6F6-4D7044576ED8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC319055-85FA-439B-B6F6-4D7044576ED8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC319055-85FA-439B-B6F6-4D7044576ED8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC319055-85FA-439B-B6F6-4D7044576ED8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

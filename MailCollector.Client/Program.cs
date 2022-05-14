@@ -1,11 +1,8 @@
 ﻿using MailCollector.Kit.Logger;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MailCollector.Setup
+namespace MailCollector.Client
 {
     internal static class Program
     {
@@ -15,11 +12,9 @@ namespace MailCollector.Setup
         [STAThread]
         static void Main()
         {
-            ILogger logger = new MultiLogger(FileLogger.Instance);
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new HelloForm(logger, new InstallerSettings()));
+            Application.Run(new TemplateForm());
         }
     }
 }
