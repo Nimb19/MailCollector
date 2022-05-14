@@ -6,7 +6,7 @@ namespace MailCollector.Kit.SqlKit.Models
 {
     public class Mail
     {
-        internal const string TableName = "Mails";
+        public const string TableName = "Mails";
 
         /// <summary> 
         ///     Ставится между адресом и именем аккаунта. 

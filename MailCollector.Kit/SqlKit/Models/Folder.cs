@@ -5,7 +5,7 @@ namespace MailCollector.Kit.SqlKit.Models
 {
     public class Folder
     {
-        internal const string TableName = "Folders";
+        public const string TableName = "Folders";
 
         public Guid Uid { get; set; }
         public string Name { get; set; }

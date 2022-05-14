@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Configs\Config.Example.json" />
+    <None Include="FilesToCopyInBuild\Config.Example.json" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">

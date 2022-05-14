@@ -1,12 +1,6 @@
 ﻿using MailCollector.Kit.SqlKit.Models;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MailCollector.Client
@@ -23,16 +17,35 @@ namespace MailCollector.Client
         public MailControl(Mail mail) : this()
         {
             Mail = mail;
-
             InitMailData();
+        }
+
+        public void OnPanelActivated(object sender, EventArgs e)
+        {
+            panel1.BorderStyle = BorderStyle.None;
+        }
+
+        public void OnPanelDeactivated(object sender, EventArgs e)
+        {
+            panel1.BorderStyle = BorderStyle.FixedSingle;
         }
 
         private void InitMailData()
         {
-            labelDate.Text = Mail.Date.Date.ToLocalTime().ToString("D");
             labelFrom.Text = Mail.AccsToString(Mail.MFrom);
             labelTo.Text = Mail.AccsToString(Mail.MTo);
             labelSubject.Text = Mail.Subject;
+            labelDate.Text = Mail.Date.Date.ToLocalTime().ToString("f");
+        }
+
+        private void Panel_MouseDown(object sender, MouseEventArgs e)
+        {
+            panel1.BackColor = Color.White;
+        }
+
+        private void Panel_MouseLeave(object sender, EventArgs e)
+        {
+            panel1.BackColor = SystemColors.InactiveBorder;
         }
     }
 }

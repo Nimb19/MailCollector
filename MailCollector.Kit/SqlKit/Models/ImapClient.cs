@@ -6,7 +6,7 @@ namespace MailCollector.Kit.SqlKit.Models
 
     public class ImapClient
     {
-        internal const string TableName = "ImapClients";
+        public const string TableName = "ImapClients";
 
         public Guid Uid { get; set; }
         public string Login { get; set; }

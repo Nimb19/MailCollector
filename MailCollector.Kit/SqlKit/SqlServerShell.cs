@@ -217,12 +217,15 @@ namespace MailCollector.Kit.SqlKit
             return ReadAs<T>(cmdTxt);
         }
 
-        public T[] GetArrayOf<T>(string tableName, string where = null) where T : class, new()
+        public T[] GetArrayOf<T>(string tableName, string where = null, string orderBy = null) where T : class, new()
         {
             var getTableValuesCmd = $"select * from [{DbName}].[dbo].[{tableName}] ";
 
             if (where != null)
                 getTableValuesCmd += where;
+
+            if (orderBy != null)
+                getTableValuesCmd += orderBy;
 
             return ReadArrayOf<T>(getTableValuesCmd);
         }

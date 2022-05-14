@@ -1,0 +1,9 @@
+{
+  "SqlServerSettings": {
+    "ServerName": "localhost",
+    "IntegratedSecurity": true,
+    "Login": null,
+    "Password": null
+  },
+  "UpdateMailsTimeImMs": 2000
+}

@@ -4,7 +4,7 @@ namespace MailCollector.Kit.SqlKit.Models
 {
     public class TelegramBotSubscriber
     {
-        internal const string TableName = "TelegramBotSubscribers";
+        public const string TableName = "TelegramBotSubscribers";
 
         public long? ChatId { get; set; }
         public string Username { get; set; }
