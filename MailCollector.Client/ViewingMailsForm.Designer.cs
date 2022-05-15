@@ -29,12 +29,28 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.buttonGetBackAllMails = new System.Windows.Forms.Button();
             this.buttonUpdateMails = new System.Windows.Forms.Button();
             this.buttonFindByKeyWord = new System.Windows.Forms.Button();
             this.textBoxKeyWord = new System.Windows.Forms.TextBox();
             this.panelMailsBox = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.webBrowser = new System.Windows.Forms.WebBrowser();
+            this.label1 = new System.Windows.Forms.Label();
+            this.labelMailsCount = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.labelCc = new System.Windows.Forms.Label();
+            this.labelDate = new System.Windows.Forms.Label();
+            this.labelSubject = new System.Windows.Forms.Label();
+            this.labelTo = new System.Windows.Forms.Label();
+            this.labelFrom = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -42,26 +58,16 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.buttonGetBackAllMails);
+            this.panel1.Controls.Add(this.labelMailsCount);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.buttonUpdateMails);
             this.panel1.Controls.Add(this.buttonFindByKeyWord);
             this.panel1.Controls.Add(this.textBoxKeyWord);
             this.panel1.Controls.Add(this.panelMailsBox);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(426, 694);
+            this.panel1.Size = new System.Drawing.Size(426, 778);
             this.panel1.TabIndex = 0;
-            // 
-            // buttonGetBackAllMails
-            // 
-            this.buttonGetBackAllMails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonGetBackAllMails.Location = new System.Drawing.Point(242, 78);
-            this.buttonGetBackAllMails.Name = "buttonGetBackAllMails";
-            this.buttonGetBackAllMails.Size = new System.Drawing.Size(177, 32);
-            this.buttonGetBackAllMails.TabIndex = 13;
-            this.buttonGetBackAllMails.Text = "Вернуть всю почту";
-            this.buttonGetBackAllMails.UseVisualStyleBackColor = true;
-            this.buttonGetBackAllMails.Click += new System.EventHandler(this.ButtonGetBackAllMails_Click);
             // 
             // buttonUpdateMails
             // 
@@ -71,7 +77,7 @@
             this.buttonUpdateMails.Name = "buttonUpdateMails";
             this.buttonUpdateMails.Size = new System.Drawing.Size(414, 32);
             this.buttonUpdateMails.TabIndex = 12;
-            this.buttonUpdateMails.Text = "Обновить почту";
+            this.buttonUpdateMails.Text = "Обновить список писем";
             this.buttonUpdateMails.UseVisualStyleBackColor = true;
             this.buttonUpdateMails.Click += new System.EventHandler(this.ButtonUpdateMails_Click);
             // 
@@ -79,7 +85,7 @@
             // 
             this.buttonFindByKeyWord.Location = new System.Drawing.Point(5, 78);
             this.buttonFindByKeyWord.Name = "buttonFindByKeyWord";
-            this.buttonFindByKeyWord.Size = new System.Drawing.Size(231, 32);
+            this.buttonFindByKeyWord.Size = new System.Drawing.Size(258, 32);
             this.buttonFindByKeyWord.TabIndex = 11;
             this.buttonFindByKeyWord.Text = "Найти по ключевому слову";
             this.buttonFindByKeyWord.UseVisualStyleBackColor = true;
@@ -103,19 +109,183 @@
             this.panelMailsBox.AutoScroll = true;
             this.panelMailsBox.Location = new System.Drawing.Point(3, 116);
             this.panelMailsBox.Name = "panelMailsBox";
-            this.panelMailsBox.Size = new System.Drawing.Size(418, 573);
+            this.panelMailsBox.Size = new System.Drawing.Size(418, 657);
             this.panelMailsBox.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.labelCc);
+            this.panel2.Controls.Add(this.labelDate);
+            this.panel2.Controls.Add(this.labelSubject);
+            this.panel2.Controls.Add(this.labelTo);
+            this.panel2.Controls.Add(this.labelFrom);
+            this.panel2.Controls.Add(this.label6);
+            this.panel2.Controls.Add(this.label5);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.panel3);
+            this.panel2.Location = new System.Drawing.Point(444, 12);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(697, 778);
+            this.panel2.TabIndex = 1;
+            // 
+            // panel3
+            // 
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3.Controls.Add(this.webBrowser);
+            this.panel3.Location = new System.Drawing.Point(-1, 116);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(697, 661);
+            this.panel3.TabIndex = 2;
+            // 
+            // webBrowser
+            // 
+            this.webBrowser.AllowNavigation = false;
+            this.webBrowser.AllowWebBrowserDrop = false;
+            this.webBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.webBrowser.IsWebBrowserContextMenuEnabled = false;
+            this.webBrowser.Location = new System.Drawing.Point(0, 0);
+            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser.Name = "webBrowser";
+            this.webBrowser.Size = new System.Drawing.Size(695, 659);
+            this.webBrowser.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(269, 84);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(99, 20);
+            this.label1.TabIndex = 13;
+            this.label1.Text = "Количество:";
+            // 
+            // labelMailsCount
+            // 
+            this.labelMailsCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelMailsCount.AutoSize = true;
+            this.labelMailsCount.Location = new System.Drawing.Point(374, 84);
+            this.labelMailsCount.Name = "labelMailsCount";
+            this.labelMailsCount.Size = new System.Drawing.Size(0, 20);
+            this.labelMailsCount.TabIndex = 14;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 24);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(32, 20);
+            this.label2.TabIndex = 15;
+            this.label2.Text = "От:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 45);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(53, 20);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Кому:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 3);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(51, 20);
+            this.label4.TabIndex = 17;
+            this.label4.Text = "Тема:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(3, 90);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(50, 20);
+            this.label5.TabIndex = 18;
+            this.label5.Text = "Дата:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(3, 68);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(57, 20);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Копия:";
+            // 
+            // labelCc
+            // 
+            this.labelCc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelCc.AutoSize = true;
+            this.labelCc.Location = new System.Drawing.Point(77, 68);
+            this.labelCc.Name = "labelCc";
+            this.labelCc.Size = new System.Drawing.Size(0, 20);
+            this.labelCc.TabIndex = 24;
+            // 
+            // labelDate
+            // 
+            this.labelDate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelDate.AutoSize = true;
+            this.labelDate.Location = new System.Drawing.Point(77, 90);
+            this.labelDate.Name = "labelDate";
+            this.labelDate.Size = new System.Drawing.Size(0, 20);
+            this.labelDate.TabIndex = 23;
+            // 
+            // labelSubject
+            // 
+            this.labelSubject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelSubject.AutoSize = true;
+            this.labelSubject.Location = new System.Drawing.Point(77, 3);
+            this.labelSubject.Name = "labelSubject";
+            this.labelSubject.Size = new System.Drawing.Size(0, 20);
+            this.labelSubject.TabIndex = 22;
+            // 
+            // labelTo
+            // 
+            this.labelTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelTo.AutoSize = true;
+            this.labelTo.Location = new System.Drawing.Point(77, 45);
+            this.labelTo.Name = "labelTo";
+            this.labelTo.Size = new System.Drawing.Size(0, 20);
+            this.labelTo.TabIndex = 21;
+            // 
+            // labelFrom
+            // 
+            this.labelFrom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelFrom.AutoSize = true;
+            this.labelFrom.Location = new System.Drawing.Point(77, 24);
+            this.labelFrom.Name = "labelFrom";
+            this.labelFrom.Size = new System.Drawing.Size(0, 20);
+            this.labelFrom.TabIndex = 20;
             // 
             // ViewingMailsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1153, 718);
+            this.ClientSize = new System.Drawing.Size(1153, 802);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "ViewingMailsForm";
             this.Text = "Форма просмотра писем";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -127,6 +297,20 @@
         private System.Windows.Forms.TextBox textBoxKeyWord;
         internal System.Windows.Forms.Button buttonFindByKeyWord;
         internal System.Windows.Forms.Button buttonUpdateMails;
-        internal System.Windows.Forms.Button buttonGetBackAllMails;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.WebBrowser webBrowser;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelMailsCount;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label labelCc;
+        private System.Windows.Forms.Label labelDate;
+        private System.Windows.Forms.Label labelSubject;
+        private System.Windows.Forms.Label labelTo;
+        private System.Windows.Forms.Label labelFrom;
     }
 }

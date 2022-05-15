@@ -33,8 +33,7 @@ namespace MailCollector.Client
                 if (config.SqlServerSettings == null)
                     throw new ArgumentNullException($"Укажите параметры подключения к sql серверу с БД '{KitConstants.DbName}'");
 
-                if (config.UpdateMailsTimeImMs == default)
-                    config.UpdateMailsTimeImMs = Constants.DefaultUpdatemailsTime;
+                Constants.Config = config;
             }
             catch (Exception ex)
             {

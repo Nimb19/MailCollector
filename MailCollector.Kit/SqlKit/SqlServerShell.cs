@@ -53,7 +53,7 @@ namespace MailCollector.Kit.SqlKit
         private void ThrowDBIfItDoesNotExist()
         {
             //var cmdtxt = $"SELECT * FROM {InitialCatalog}.dbo.sysdatabases WHERE name = '{DbName}'";
-            if (IsDbExist(DbName))
+            if (!IsDbExist(DbName))
             {
                 Dispose();
                 throw new DbDoesNotExistException($"Базы данных '{DbName}' не существует");
@@ -429,7 +429,7 @@ namespace MailCollector.Kit.SqlKit
             var script = CreateScript_IsDbExist(dbName);
             var objResult = ExecuteScalar(script);
             var result = Convert.ToString(objResult);
-            return objResult != null && !string.IsNullOrWhiteSpace(result) && result.ToLower() != "null";
+            return objResult != null && !string.IsNullOrWhiteSpace(result);
         }
 
         /// <summary> Получить список имён планов обслуживания </summary>

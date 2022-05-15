@@ -107,4 +107,12 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
+  <Target Name="CopySourceFiles" AfterTargets="AfterBuild">
+    <ItemGroup>
+      <DataFiles Include="$(ProjectDir)\FilesToCopyInBuild\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)" />
+  </Target>
+  
 </Project>

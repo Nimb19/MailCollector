@@ -4,6 +4,5 @@
     "IntegratedSecurity": true,
     "Login": null,
     "Password": null
-  },
-  "UpdateMailsTimeImMs": 2000
+  }
 }

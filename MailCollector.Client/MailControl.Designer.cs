@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.ClickPanel = new System.Windows.Forms.Panel();
             this.labelDate = new System.Windows.Forms.Label();
             this.labelSubject = new System.Windows.Forms.Label();
             this.labelTo = new System.Windows.Forms.Label();
@@ -37,30 +37,30 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.panel1.SuspendLayout();
+            this.ClickPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // ClickPanel
             // 
-            this.panel1.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.labelDate);
-            this.panel1.Controls.Add(this.labelSubject);
-            this.panel1.Controls.Add(this.labelTo);
-            this.panel1.Controls.Add(this.labelFrom);
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(418, 88);
-            this.panel1.TabIndex = 0;
-            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Panel_MouseDown);
-            this.panel1.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
+            this.ClickPanel.BackColor = System.Drawing.SystemColors.InactiveBorder;
+            this.ClickPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ClickPanel.Controls.Add(this.labelDate);
+            this.ClickPanel.Controls.Add(this.labelSubject);
+            this.ClickPanel.Controls.Add(this.labelTo);
+            this.ClickPanel.Controls.Add(this.labelFrom);
+            this.ClickPanel.Controls.Add(this.label4);
+            this.ClickPanel.Controls.Add(this.label3);
+            this.ClickPanel.Controls.Add(this.label2);
+            this.ClickPanel.Controls.Add(this.label1);
+            this.ClickPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ClickPanel.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ClickPanel.Location = new System.Drawing.Point(0, 0);
+            this.ClickPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.ClickPanel.Name = "ClickPanel";
+            this.ClickPanel.Size = new System.Drawing.Size(418, 88);
+            this.ClickPanel.TabIndex = 0;
+            this.ClickPanel.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.ClickPanel.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // labelDate
             // 
@@ -135,20 +135,20 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.ClickPanel);
             this.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MailControl";
             this.Size = new System.Drawing.Size(418, 88);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.ClickPanel.ResumeLayout(false);
+            this.ClickPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
+        public System.Windows.Forms.Panel ClickPanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;

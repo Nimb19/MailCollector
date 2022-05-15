@@ -8,6 +8,7 @@ namespace MailCollector.Client
     public partial class MailControl : UserControl
     {
         public Mail Mail { get; }
+        public bool Activated { get; private set; }
 
         public MailControl()
         {
@@ -20,14 +21,18 @@ namespace MailCollector.Client
             InitMailData();
         }
 
-        public void OnPanelActivated(object sender, EventArgs e)
+        public void OnPanelActivated()
         {
-            panel1.BorderStyle = BorderStyle.None;
+            Activated = true;
+            ClickPanel.BackColor = Color.Linen;
+            ClickPanel.BorderStyle = BorderStyle.None;
         }
 
-        public void OnPanelDeactivated(object sender, EventArgs e)
+        public void OnPanelDeactivated()
         {
-            panel1.BorderStyle = BorderStyle.FixedSingle;
+            Activated = false;
+            ClickPanel.BackColor = SystemColors.InactiveBorder;
+            ClickPanel.BorderStyle = BorderStyle.FixedSingle;
         }
 
         private void InitMailData()
@@ -38,14 +43,16 @@ namespace MailCollector.Client
             labelDate.Text = Mail.Date.Date.ToLocalTime().ToString("f");
         }
 
-        private void Panel_MouseDown(object sender, MouseEventArgs e)
-        {
-            panel1.BackColor = Color.White;
-        }
-
         private void Panel_MouseLeave(object sender, EventArgs e)
         {
-            panel1.BackColor = SystemColors.InactiveBorder;
+            if (!Activated)
+                ClickPanel.BackColor = SystemColors.InactiveBorder;
+        }
+
+        private void Panel_MouseEnter(object sender, EventArgs e)
+        {
+            if (!Activated)
+                ClickPanel.BackColor = Color.White;
         }
     }
 }
