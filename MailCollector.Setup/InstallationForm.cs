@@ -58,6 +58,7 @@ namespace MailCollector.Setup
             }
             catch (Exception ex)
             {
+                Logger.Error(ex);
                 ShowWarningBox(ex.ToString(), "Ошибка во время установки", true);
                 buttonSkip.Enabled = false;
             }
