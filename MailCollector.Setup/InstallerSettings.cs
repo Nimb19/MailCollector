@@ -8,6 +8,10 @@ namespace MailCollector.Setup
         public SetupSteps InstallSteps { get; set; }
         public SqlServerSettings SqlServerSettings { get; set; }
 
+        public string PathToServiceBuild { get; set; }
+        public string PathToClientBuild { get; set; }
+        public string PathToCreateDbScript { get; set; }
+
         public string TelegramBotToken { get; set; }
         public string InstallClientPath { get; set; }
         public string InstallServicePath { get; set; }

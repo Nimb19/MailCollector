@@ -12,5 +12,9 @@
         ///     Таймаут подключения к IMAP-серверу. В миллисекундах
         /// </summary>
         public const int ImapConnectTimeout = 7000;
+
+        public const string PathToClientBuild = "Sources\\Client";
+        public const string PathToServiceBuild = "Sources\\Service";
+        public const string PathToCreateDbScript = "Sources\\CreateDbScript.sql";
     }
 }

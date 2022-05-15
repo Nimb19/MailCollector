@@ -19,7 +19,7 @@ namespace MailCollector.Setup
             _installerSettings = installerSettings;
         }
 
-        public void StartInstall(CancellationToken cancellationToken) 
+        public async Task StartInstall(CancellationToken cancellationToken) 
         {
             cancellationToken.ThrowIfCancellationRequested();
 

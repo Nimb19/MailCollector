@@ -19,7 +19,14 @@ namespace MailCollector.Setup
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new HelloForm(logger, new InstallerSettings()));
+
+            var installerSettings = new InstallerSettings()
+            {
+                PathToClientBuild = Constants.PathToClientBuild,
+                PathToServiceBuild = Constants.PathToServiceBuild,
+                PathToCreateDbScript = Constants.PathToCreateDbScript,
+            };
+            Application.Run(new HelloForm(logger, installerSettings));
         }
     }
 }

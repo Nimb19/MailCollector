@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InstallationForm));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.labelInfo = new System.Windows.Forms.Label();
+            this.textBoxLog = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -53,19 +54,32 @@
             this.labelInfo.TabIndex = 14;
             this.labelInfo.Text = "Установка сервиса MailCollector:";
             // 
+            // textBox1
+            // 
+            this.textBoxLog.Location = new System.Drawing.Point(16, 122);
+            this.textBoxLog.Multiline = true;
+            this.textBoxLog.Name = "textBox1";
+            this.textBoxLog.ReadOnly = true;
+            this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxLog.Size = new System.Drawing.Size(498, 313);
+            this.textBoxLog.TabIndex = 16;
+            // 
             // InstallationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 511);
+            this.Controls.Add(this.textBoxLog);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.labelInfo);
             this.Name = "InstallationForm";
             this.Text = "Установка сервиса MailCollector";
             this.Controls.SetChildIndex(this.labelInfo, 0);
             this.Controls.SetChildIndex(this.pictureBox1, 0);
+            this.Controls.SetChildIndex(this.textBoxLog, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -73,5 +87,6 @@
 
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label labelInfo;
+        private System.Windows.Forms.TextBox textBoxLog;
     }
 }
