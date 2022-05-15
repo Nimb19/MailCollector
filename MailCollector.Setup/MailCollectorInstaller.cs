@@ -46,30 +46,31 @@ namespace MailCollector.Setup
 
             if (_isCreateDb)
             {
-                await CreateDb();
+                await CreateDb(cancellationToken);
             }
 
             if (_isSetupService)
             {
-                await SetupService();
+                await SetupService(cancellationToken);
             }
 
             if (_isSetupClient)
             {
-                await SetupClient();
+                await SetupClient(cancellationToken);
             }
 
             if (!_isSetupService && _isAddTgBot)
             {
-                AddTelegramBotToken();
+                AddTelegramBotToken(cancellationToken);
             }
 
             _logger.WriteLine("Установка успешно завершена!");
         }
 
-        private void AddTelegramBotToken()
+        private void AddTelegramBotToken(CancellationToken cancellationToken)
         {
             _logger.WriteLine($"Начало добавления Telegram-бота");
+            cancellationToken.ThrowIfCancellationRequested();
 
             // По пути сервиса находится конфиг, он десериализуется и добавляется токен тг-бота.
             var configPath = _installerSettings.InstallServicePath + "\\Config.json";
@@ -83,9 +84,10 @@ namespace MailCollector.Setup
             _logger.WriteLine($"");
         }
 
-        private async Task SetupClient()
+        private async Task SetupClient(CancellationToken cancellationToken)
         {
             _logger.WriteLine($"Начало установки клиента 'MailCollector.Client'");
+            cancellationToken.ThrowIfCancellationRequested();
 
             // Копируется билд клиента в выбранный путь
             await Task.Run(() =>
@@ -104,9 +106,10 @@ namespace MailCollector.Setup
             _logger.WriteLine($"");
         }
 
-        private async Task SetupService()
+        private async Task SetupService(CancellationToken cancellationToken)
         {
             _logger.WriteLine($"Начало установки сервиса 'MailCollector.Service'");
+            cancellationToken.ThrowIfCancellationRequested();
 
             // Копируется билд сервиса в выбранный путь
             await Task.Run(() =>
@@ -124,6 +127,7 @@ namespace MailCollector.Setup
             _logger.WriteLine($"Сервис успешно скопирован, конфиг к нему успешно сгенерирован и выложен");
 
             // Регистрация службы
+            cancellationToken.ThrowIfCancellationRequested();
             var args = $"{InstallUtilPath} {_installerSettings.InstallServicePath}\\MailCollector.Service.exe";
             CommonExtensions.StartProcess(_logger, $"&& {args}", Assembly.GetExecutingAssembly().Location
                 , encoding: CommonExtensions.Encoding);
@@ -134,9 +138,10 @@ namespace MailCollector.Setup
             _logger.WriteLine($"");
         }
 
-        private async Task CreateDb()
+        private async Task CreateDb(CancellationToken cancellationToken)
         {
             _logger.WriteLine($"Начало создания БД '{KitConstants.DbName}'");
+            cancellationToken.ThrowIfCancellationRequested();
 
             // Создание БД
             var sqlShell = new SqlServerShell(_installerSettings.SqlServerSettings
@@ -145,6 +150,7 @@ namespace MailCollector.Setup
             var commands = cmdCreate.Split(new[] { "GO" }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var command in commands)
             {
+                cancellationToken.ThrowIfCancellationRequested();
                 await Task.Run(() => sqlShell.ExecuteNonQuery(command));
             }
             sqlShell.DbName = KitConstants.DbName;
@@ -155,6 +161,7 @@ namespace MailCollector.Setup
             {
                 foreach (var imapClientData in _installerSettings.ImapClients)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     var serverUid = Guid.NewGuid();
                     var server = new ImapServer()
                     {

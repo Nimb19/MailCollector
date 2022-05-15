@@ -29,6 +29,8 @@ namespace MailCollector.Setup
             buttonNext.Click += ButtonStart_Click;
             buttonNext.Text = "Начать";
             buttonSkip.Click += ButtonSkip_Click;
+            buttonSkip.Text = "Остановить";
+            buttonSkip.Visible = true;
         }
 
         private void ButtonSkip_Click(object sender, EventArgs e)

@@ -14,7 +14,7 @@ namespace MailCollector.Kit.Logger
         {
             if (LogLevel >= logLevel)
             {
-                var fullMasg = $"{DateTime.Now} [AIKernel] [{logLevel.ToString().ToUpper()}] {msg}";
+                var fullMasg = $"{DateTime.Now} [{logLevel.ToString().ToUpper()}] {msg}";
                 PrivateWrite(fullMasg);
             }
         }

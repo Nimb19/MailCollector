@@ -54,11 +54,11 @@
             this.labelInfo.TabIndex = 14;
             this.labelInfo.Text = "Установка сервиса MailCollector:";
             // 
-            // textBox1
+            // textBoxLog
             // 
             this.textBoxLog.Location = new System.Drawing.Point(16, 122);
             this.textBoxLog.Multiline = true;
-            this.textBoxLog.Name = "textBox1";
+            this.textBoxLog.Name = "textBoxLog";
             this.textBoxLog.ReadOnly = true;
             this.textBoxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxLog.Size = new System.Drawing.Size(498, 313);

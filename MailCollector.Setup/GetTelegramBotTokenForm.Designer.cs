@@ -32,10 +32,10 @@
             this.labelInfo = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panelSelectServicePath = new System.Windows.Forms.Panel();
+            this.buttonConfirmToken = new System.Windows.Forms.Button();
             this.buttonPaste = new System.Windows.Forms.Button();
             this.textBoxToken = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.buttonConfirmToken = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelSelectServicePath.SuspendLayout();
             this.SuspendLayout();
@@ -72,6 +72,16 @@
             this.panelSelectServicePath.Size = new System.Drawing.Size(510, 118);
             this.panelSelectServicePath.TabIndex = 20;
             // 
+            // buttonConfirmToken
+            // 
+            this.buttonConfirmToken.Location = new System.Drawing.Point(144, 77);
+            this.buttonConfirmToken.Name = "buttonConfirmToken";
+            this.buttonConfirmToken.Size = new System.Drawing.Size(218, 32);
+            this.buttonConfirmToken.TabIndex = 22;
+            this.buttonConfirmToken.Text = "Подтвердить токен";
+            this.buttonConfirmToken.UseVisualStyleBackColor = true;
+            this.buttonConfirmToken.Click += new System.EventHandler(this.ButtonConfirmToken_Click);
+            // 
             // buttonPaste
             // 
             this.buttonPaste.Location = new System.Drawing.Point(348, 5);
@@ -85,10 +95,10 @@
             // textBoxToken
             // 
             this.textBoxToken.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBoxToken.Font = new System.Drawing.Font("Corbel", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBoxToken.Location = new System.Drawing.Point(10, 43);
+            this.textBoxToken.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBoxToken.Location = new System.Drawing.Point(10, 44);
             this.textBoxToken.Name = "textBoxToken";
-            this.textBoxToken.Size = new System.Drawing.Size(491, 28);
+            this.textBoxToken.Size = new System.Drawing.Size(491, 27);
             this.textBoxToken.TabIndex = 20;
             // 
             // label1
@@ -100,16 +110,6 @@
             this.label1.TabIndex = 19;
             this.label1.Text = "Скопируйте токен в это поле:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // buttonConfirmToken
-            // 
-            this.buttonConfirmToken.Location = new System.Drawing.Point(144, 77);
-            this.buttonConfirmToken.Name = "buttonConfirmToken";
-            this.buttonConfirmToken.Size = new System.Drawing.Size(218, 32);
-            this.buttonConfirmToken.TabIndex = 22;
-            this.buttonConfirmToken.Text = "Подтвердить токен";
-            this.buttonConfirmToken.UseVisualStyleBackColor = true;
-            this.buttonConfirmToken.Click += new System.EventHandler(this.ButtonConfirmToken_Click);
             // 
             // GetTelegramBotTokenForm
             // 

@@ -18,6 +18,7 @@ namespace MailCollector.Debug
 
                 var login = "TroyHelper@yandex.ru";
                 var pass = "ornqvoiqyinetlxw"; // "QRnVGrTqbxM0j9Q2WshN"
+                // 5398105719:AAGGG10I3-PWkeBf-6BK3TDGC9ghvqnZ44s
 
                 var imapClient = new ImapClientParams(login, pass, SupportedImapServers.YandexParams);
 
