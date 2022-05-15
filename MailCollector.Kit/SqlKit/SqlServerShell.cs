@@ -23,7 +23,7 @@ namespace MailCollector.Kit.SqlKit
         
         public const int ConnectionTimeoutInSeconds = 3;
 
-        public readonly string DbName;
+        public string DbName { get; set; }
         public readonly int CommandTimeoutInSeconds = 30;
         public readonly string InitialCatalog = "master";
         public readonly SqlServerSettings SqlServerSettings;

@@ -1,6 +1,6 @@
 USE [master]
 
-/****** Object:  Database [MailCollectorStorage]    Script Date: 15.05.2022 15:58:23 ******/
+/****** Object:  Database [MailCollectorStorage]    Script Date: 15.05.2022 17:21:42 ******/
 CREATE DATABASE [MailCollectorStorage]
  CONTAINMENT = NONE
  WITH CATALOG_COLLATION = DATABASE_DEFAULT
@@ -76,9 +76,24 @@ EXEC sys.sp_db_vardecimal_storage_format N'MailCollectorStorage', N'ON'
 
 ALTER DATABASE [MailCollectorStorage] SET QUERY_STORE = OFF
 
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT SERVICE\Winmgmt]
+
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT SERVICE\SQLWriter]
+
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT SERVICE\SQLSERVERAGENT]
+
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT Service\MSSQLSERVER]
+
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT AUTHORITY\—»—“≈Ã¿]
+
+GO
 USE [MailCollectorStorage]
 
-/****** Object:  Table [dbo].[Folders]    Script Date: 15.05.2022 15:58:23 ******/
+GRANT VIEW ANY COLUMN ENCRYPTION KEY DEFINITION TO [public] AS [dbo]
+
+GRANT VIEW ANY COLUMN MASTER KEY DEFINITION TO [public] AS [dbo]
+
+/****** Object:  Table [dbo].[Folders]    Script Date: 15.05.2022 17:21:43 ******/
 SET ANSI_NULLS ON
 
 SET QUOTED_IDENTIFIER ON
@@ -94,7 +109,7 @@ CREATE TABLE [dbo].[Folders](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[ImapClients]    Script Date: 15.05.2022 15:58:24 ******/
+/****** Object:  Table [dbo].[ImapClients]    Script Date: 15.05.2022 17:21:43 ******/
 SET ANSI_NULLS ON
 
 SET QUOTED_IDENTIFIER ON
@@ -111,7 +126,7 @@ CREATE TABLE [dbo].[ImapClients](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[ImapServers]    Script Date: 15.05.2022 15:58:24 ******/
+/****** Object:  Table [dbo].[ImapServers]    Script Date: 15.05.2022 17:21:43 ******/
 SET ANSI_NULLS ON
 
 SET QUOTED_IDENTIFIER ON
@@ -127,7 +142,7 @@ CREATE TABLE [dbo].[ImapServers](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[Mails]    Script Date: 15.05.2022 15:58:24 ******/
+/****** Object:  Table [dbo].[Mails]    Script Date: 15.05.2022 17:21:43 ******/
 SET ANSI_NULLS ON
 
 SET QUOTED_IDENTIFIER ON
@@ -148,7 +163,7 @@ CREATE TABLE [dbo].[Mails](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 
-/****** Object:  Table [dbo].[TelegramBotSubscribers]    Script Date: 15.05.2022 15:58:24 ******/
+/****** Object:  Table [dbo].[TelegramBotSubscribers]    Script Date: 15.05.2022 17:21:43 ******/
 SET ANSI_NULLS ON
 
 SET QUOTED_IDENTIFIER ON
