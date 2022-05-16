@@ -16,6 +16,7 @@ namespace MailCollector.Setup
         protected override void PrivateWrite(string fullMsg)
         {
             TextBox.Text +=  fullMsg + Environment.NewLine;
+            TextBox.SelectionStart = TextBox.Text.Length;
         }
     }
 }

@@ -306,6 +306,10 @@ namespace MailCollector.Kit.SqlKit
                 return "NULL";
             else if (type.Name == nameof(String))
                 return $"N'{(string)obj}'";
+            else if (type.Name == nameof(Guid))
+                return $"N'{obj}'";
+            else if (type.Name == nameof(Boolean))
+                return ((bool)obj) ? "1" : "0";
             else if (type.IsEnum)
                 return Convert.ToString((int)obj);
             else if (DateTime.TryParse(obj.ToString(), out var dt))

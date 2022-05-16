@@ -56,6 +56,7 @@
             // 
             // textBoxLog
             // 
+            this.textBoxLog.Font = new System.Drawing.Font("Century Gothic", 8.75F);
             this.textBoxLog.Location = new System.Drawing.Point(16, 122);
             this.textBoxLog.Multiline = true;
             this.textBoxLog.Name = "textBoxLog";

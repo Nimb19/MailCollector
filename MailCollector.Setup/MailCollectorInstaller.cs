@@ -13,6 +13,8 @@ namespace MailCollector.Setup
     public class MailCollectorInstaller
     {
         private const string InstallUtilPath = @"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe";
+        private const string MailServiceName = "MailCollector.Service";
+        private const string MailClientName = "MailCollector.Client";
 
         private readonly ILogger _logger;
         private readonly InstallerSettings _installerSettings;
@@ -39,7 +41,7 @@ namespace MailCollector.Setup
             _logger.WriteLine("Начало установки проекта MailCollector!");
             _logger.WriteLine("Были выбраны следующие параметры установки:");
             _logger.WriteLine($"\tСоздание БД '{KitConstants.DbName}': {_isCreateDb}");
-            _logger.WriteLine($"\tУстановка сервиса 'MailCollector.Service': {_isSetupService}");
+            _logger.WriteLine($"\tУстановка сервиса '{MailServiceName}': {_isSetupService}");
             _logger.WriteLine($"\tУстановка клиента: {_isSetupClient}");
             _logger.WriteLine($"\tДобавление Telegram-бота: {_isAddTgBot}");
             _logger.WriteLine($"");
@@ -70,6 +72,12 @@ namespace MailCollector.Setup
         private void AddTelegramBotToken(CancellationToken cancellationToken)
         {
             _logger.WriteLine($"Начало добавления Telegram-бота");
+            if (string.IsNullOrWhiteSpace(_installerSettings.TelegramBotToken))
+            {
+                _logger.WriteLine("Установка Telegram-бота была пропущена, так как вы не указали токен для подключения");
+                _logger.WriteLine($"");
+                return;
+            }
             cancellationToken.ThrowIfCancellationRequested();
 
             // По пути сервиса находится конфиг, он десериализуется и добавляется токен тг-бота.
@@ -86,7 +94,7 @@ namespace MailCollector.Setup
 
         private async Task SetupClient(CancellationToken cancellationToken)
         {
-            _logger.WriteLine($"Начало установки клиента 'MailCollector.Client'");
+            _logger.WriteLine($"Начало установки клиента '{MailClientName}'");
             cancellationToken.ThrowIfCancellationRequested();
 
             // Копируется билд клиента в выбранный путь
@@ -102,13 +110,13 @@ namespace MailCollector.Setup
             CommonExtensions.SerializeToFile(serviceConfig, configPath);
             _logger.WriteLine($"Клиент успешно скопирован, конфиг к нему успешно сгенерирован и выложен");
 
-            _logger.WriteLine($"Клиент 'MailCollector.Client' успешно установлен");
+            _logger.WriteLine($"Клиент '{MailClientName}' успешно установлен");
             _logger.WriteLine($"");
         }
 
         private async Task SetupService(CancellationToken cancellationToken)
         {
-            _logger.WriteLine($"Начало установки сервиса 'MailCollector.Service'");
+            _logger.WriteLine($"Начало установки сервиса '{MailServiceName}'");
             cancellationToken.ThrowIfCancellationRequested();
 
             // Копируется билд сервиса в выбранный путь
@@ -128,12 +136,47 @@ namespace MailCollector.Setup
 
             // Регистрация службы
             cancellationToken.ThrowIfCancellationRequested();
-            var args = $"{InstallUtilPath} {_installerSettings.InstallServicePath}\\MailCollector.Service.exe";
-            CommonExtensions.StartProcess(_logger, $"&& {args}", Assembly.GetExecutingAssembly().Location
-                , encoding: CommonExtensions.Encoding);
-            _logger.WriteLine($"Сервис успешно зарегистрирован");
+            var args = $"\"{_installerSettings.InstallServicePath}\\{MailServiceName}.exe\"";
+            var exitCode = await Task.Run(() => CommonExtensions.StartProcess(null, $" {args}", null
+                , fileName: $"\"{InstallUtilPath}\" ", encoding: CommonExtensions.Encoding, useAdminRights: true));
+            if (exitCode != 0)
+            {
+                _logger.Warning($"Процесс регистрации службы вернул не нулевой код: {exitCode}");
+            }
+            else
+            {
+                _logger.WriteLine($"Сервис успешно зарегистрирован");
+            }
 
-            _logger.WriteLine($"Сервис 'MailCollector.Service' успешно установлен " +
+            // Пробуем запустить службу
+            // (3 попытки, у каждой по 4 секунды ожидания статуса Running у сервиса, после запуска + интервал секунда между попытками)
+            // Итог задержка дистра на 15 секунд, если сервис не рабочий, но в проде должно за секунды 3 запуститься
+            var trys = 3;
+            var isStarted = false;
+            Exception exception = null;
+            _logger.WriteLine($"Пробуем запустить сервис '{MailServiceName}'...");
+            for (int i = 0; i < trys; i++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                isStarted = await Task.Run(() => CommonExtensions.StartService(MailServiceName, out exception));
+
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!isStarted)
+                    await Task.Delay(1000);
+                else
+                    break;
+            }
+            if (!isStarted)
+            {
+                _logger.Warning($"Не удалось запустить сервис '{MailServiceName}' за {trys} попытки." +
+                    $"{Environment.NewLine}{exception}");
+            }
+            else
+            {
+                _logger.WriteLine($"Сервис '{MailServiceName}' был успешно запущен");
+            }
+
+            _logger.WriteLine($"Сервис '{MailServiceName}' успешно установлен " +
                 $"и помещён в автоматический запуск в системе");
             _logger.WriteLine($"");
         }
@@ -179,7 +222,7 @@ namespace MailCollector.Setup
                         IsWorking = null,
                     };
                     sqlShell.Insert(server, ImapServer.TableName);
-                    sqlShell.Insert(client, ImapServer.TableName);
+                    sqlShell.Insert(client, ImapClient.TableName);
                 }
                 _logger.WriteLine($"Указанные IMAP-клиенты успешно добавлены в БД");
             }

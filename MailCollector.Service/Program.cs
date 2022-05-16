@@ -12,7 +12,7 @@ namespace MailCollector.Service
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
-                new Service1()
+                new MailCollectorService()
             };
             ServiceBase.Run(ServicesToRun);
         }

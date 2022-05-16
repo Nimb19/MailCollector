@@ -10,7 +10,7 @@ ALTER DATABASE [MailCollectorStorage] SET COMPATIBILITY_LEVEL = 150
 IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
 begin
 EXEC [MailCollectorStorage].[dbo].[sp_fulltext_database] @action = 'enable'
-end
+end 
 
 ALTER DATABASE [MailCollectorStorage] SET ANSI_NULL_DEFAULT OFF 
 
@@ -84,7 +84,7 @@ ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT SERVICE\SQLSERVERAGENT]
 
 ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT Service\MSSQLSERVER]
 
-ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT AUTHORITY\—»—“≈Ã¿]
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [NT AUTHORITY\–°–ò–°–¢–ï–ú–ê]
 
 GO
 USE [MailCollectorStorage]

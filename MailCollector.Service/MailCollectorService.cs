@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace MailCollector.Service
 {
-    public partial class Service1 : ServiceBase
+    public partial class MailCollectorService : ServiceBase
     {
         private ServiceWorker _serviceWorker;
 
         private readonly ILogger _logger = new MultiLogger(new FileLogger(Constants.ModuleName));
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
-        public Service1()
+        public MailCollectorService()
         {
             InitializeComponent();
         }

@@ -136,12 +136,15 @@ namespace MailCollector.Client
                 foreach (var prop in properties)
                 {
                     var val = prop.GetValue(mail);
+                    var isContains = false;
                     if ((val is string valS && valS.ToLower().Contains(keyWord)))
-                    {
-                        mailsFilteredControls.Add(mail);
-                        break;
-                    }
+                        isContains = true;
+                    else if (val is DateTimeOffset valD && valD.ToString("f").ToLower().Contains(keyWord))
+                        isContains = true;
                     else if (val.ToString().ToLower().Contains(keyWord))
+                        isContains = true;
+
+                    if (isContains)
                     {
                         mailsFilteredControls.Add(mail);
                         break;

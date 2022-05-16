@@ -99,16 +99,29 @@ namespace MailCollector.Setup
             if (clientParams == null)
                 return;
 
-            try
+            var trys = 4;
+            var isConnected = false;
+            Exception exception = null;
+            for (int i = 0; i < trys; i++)
             {
-                var imapClient = await clientParams.ConnectAsync(default, Constants.ImapConnectTimeout);
-                await imapClient.DisconnectAsync(true);
-                imapClient.Dispose();
+                try
+                {
+                    var imapClient = await clientParams.ConnectAsync(default, Constants.ImapConnectTimeout);
+                    await imapClient.DisconnectAsync(true);
+                    imapClient.Dispose();
 
-                ShowSuccessBox("Клиент успешно прошёл аутентификацию!");
-            } catch (Exception ex)
+                    ShowSuccessBox("Клиент успешно прошёл аутентификацию!");
+                    isConnected = true;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+            }
+            if (!isConnected)
             {
-                ShowWarningBox($"Текст ошибки: {ex}", "Аутентификация прошла с ошибкой");
+                ShowWarningBox(exception.ToString(), $"Аутентификация прошла с ошибкой. Попыток подключения: {trys}");
             }
 
             if (buttonNextActive)

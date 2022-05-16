@@ -31,6 +31,7 @@ namespace MailCollector.Setup
             buttonSkip.Click += ButtonSkip_Click;
             buttonSkip.Text = "Остановить";
             buttonSkip.Visible = true;
+            buttonSkip.Enabled = false;
         }
 
         private void ButtonSkip_Click(object sender, EventArgs e)
@@ -57,11 +58,13 @@ namespace MailCollector.Setup
                 buttonNext.Click -= ButtonStart_Click;
                 buttonNext.Click += ButtonFinish_Click;
                 buttonSkip.Enabled = false;
+
+                ShowSuccessBox("Установка завершена!");
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                ShowWarningBox(ex.ToString(), "Ошибка во время установки", true);
+                ShowWarningBox(ex.ToString(), "Ошибка во время установки. Установка прервана.", true);
                 buttonSkip.Enabled = false;
             }
         }

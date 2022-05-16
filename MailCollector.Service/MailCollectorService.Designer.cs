@@ -1,6 +1,6 @@
 ﻿namespace MailCollector.Service
 {
-    partial class Service1
+    partial class MailCollectorService
     {
         /// <summary> 
         /// Обязательная переменная конструктора.
@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            // 
+            // MailCollectorService
+            // 
+            this.ServiceName = "MailCollector.Service";
+
         }
 
         #endregion

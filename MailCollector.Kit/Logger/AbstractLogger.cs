@@ -14,7 +14,17 @@ namespace MailCollector.Kit.Logger
         {
             if (LogLevel >= logLevel)
             {
-                var fullMasg = $"{DateTime.Now} [{logLevel.ToString().ToUpper()}] {msg}";
+                var logLevelToString = string.Empty;
+                switch (logLevel)
+                {
+                    case LogLevel.Trace: logLevelToString = "TRC"; break;
+                    case LogLevel.Info: logLevelToString = "INF"; break;
+                    case LogLevel.Error: logLevelToString = "ERR"; break;
+                    case LogLevel.Warning: logLevelToString = "WRN"; break;
+                    case LogLevel.Debug: logLevelToString = "DBG"; break;
+                }
+
+                var fullMasg = $"{DateTime.Now} [{logLevelToString}] {msg}";
                 PrivateWrite(fullMasg);
             }
         }

@@ -41,8 +41,8 @@
             // 
             this.serviceInstaller1.DelayedAutoStart = true;
             this.serviceInstaller1.Description = "Собирает письма с указанных аккаунтов, для их удалённого просмотра";
-            this.serviceInstaller1.DisplayName = "Mail collector";
-            this.serviceInstaller1.ServiceName = "Service1";
+            this.serviceInstaller1.DisplayName = "MailCollector.Service";
+            this.serviceInstaller1.ServiceName = "MailCollector.Service";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.ServiceProcess;
 using System.Text;
 
 namespace MailCollector.Kit
@@ -11,12 +12,13 @@ namespace MailCollector.Kit
     {
         public static readonly Encoding Encoding = Encoding.UTF8;
 
-        public static void TryDispose<T>(this T obj, ILogger logger) where T: IDisposable
+        public static void TryDispose<T>(this T obj, ILogger logger) where T : IDisposable
         {
             try
             {
                 obj?.Dispose();
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 logger.Error($"Ошибка во время освобождения объекта класса '{obj.GetType().FullName}': {ex}");
             }
@@ -86,7 +88,7 @@ namespace MailCollector.Kit
         /// </summary>
         /// <returns> ExitCode </returns>
         public static int StartProcess(ILogger logger, string args, string workingDirectory
-            , string fileName = "cmd.exe", bool logOnlyErrors = false, Encoding encoding = null)
+            , string fileName = "cmd.exe ", bool logOnlyErrors = false, Encoding encoding = null, bool useAdminRights = false)
         {
             logger = logger == null ? (ILogger)NullLogger.Instance : (ILogger)new PrefixLogger(logger, $"[ConsoleStarter] ");
 
@@ -104,6 +106,8 @@ namespace MailCollector.Kit
             };
             if (!string.IsNullOrWhiteSpace(workingDirectory))
                 processStartInfo.WorkingDirectory = workingDirectory;
+            if (useAdminRights)
+                processStartInfo.Verb = "runas";
 
             var process = new Process() { StartInfo = processStartInfo };
 
@@ -134,6 +138,38 @@ namespace MailCollector.Kit
                 logger.WriteLine($"Конец чтения консоли дочернего процесса. Код выхода: {exitCode}");
 
             return exitCode;
+        }
+
+        /// <summary>
+        ///     Запускает указанную службу
+        /// </summary>
+        /// <param name="serviceName"> Название службы </param>
+        /// <param name="exception"> Ошибка, если была </param>
+        /// <param name="waitStartTimeoutInSeconds"> Таймаут ожидания старта службы в секундах </param>
+        /// <returns> Была ли служба успешно запущена </returns>
+        public static bool StartService(string serviceName, out Exception exception, int waitStartTimeoutInSeconds = 4)
+        {
+            exception = null;
+            try
+            {
+                var service = new ServiceController(serviceName);
+                if (service.Status != ServiceControllerStatus.Running)
+                {
+
+                    service.Start();
+                    service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(waitStartTimeoutInSeconds));
+                    return true;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                exception = ex;
+                return false;
+            }
         }
     }
 }

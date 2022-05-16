@@ -29,20 +29,33 @@ namespace MailCollector.Setup
             if (imapServerParams == null)
                 return;
 
-            try
+            var trys = 4;
+            var isConnected = false;
+            Exception exception = null;
+            for (int i = 0; i < trys; i++)
             {
-                var client = new ImapClient();
-                client.Timeout = Constants.ImapConnectTimeout;
-                await client.ConnectAsync(imapServerParams.Uri, imapServerParams.Port
-                        , imapServerParams.UseSsl);
+                try
+                {
+                    var client = new ImapClient();
+                    client.Timeout = Constants.ImapConnectTimeout;
+                    await client.ConnectAsync(imapServerParams.Uri, imapServerParams.Port
+                            , imapServerParams.UseSsl);
 
-                await client.DisconnectAsync(true);
-                client.Dispose();
+                    await client.DisconnectAsync(true);
+                    client.Dispose();
 
-                ShowSuccessBox("Подключение успешно установлено!");
-            } catch (Exception ex)
+                    ShowSuccessBox("Подключение успешно установлено!");
+                    isConnected = true;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    exception = ex;
+                }
+            }
+            if (!isConnected)
             {
-                ShowWarningBox($"Текст ошибки: {ex}", "Не удалось подключиться под указанными данными");
+                ShowWarningBox(exception.ToString(), $"Не удалось подключиться под указанными данными. Попыток подключения: {trys}");
             }
 
             buttonAddImapServer.Enabled = true;
