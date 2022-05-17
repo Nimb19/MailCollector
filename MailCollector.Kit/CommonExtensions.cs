@@ -26,7 +26,7 @@ namespace MailCollector.Kit
 
         public static string FormatToDate(this DateTime dateTime)
         {
-            return dateTime.ToString("yyyy-MM-dd");
+            return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
         public static int ValidateInt(string text, string fieldName)

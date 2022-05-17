@@ -57,7 +57,9 @@ namespace MailCollector.Kit.SqlKit.Models
                 if (shortName)
                     return firstAcc.Split(EmailNamesSeparator.First()).Last();
                 else
-                    return firstAcc.Replace(EmailNamesSeparator, " ");
+                {
+                    return string.Join(" ", firstAcc.Split(EmailNamesSeparator.First()).Distinct());
+                }
             }
             else
             {
@@ -65,7 +67,8 @@ namespace MailCollector.Kit.SqlKit.Models
                     return string.Join("; ", str.Split(EmailsSeparator.First())
                         .Select(x => x.Split(EmailNamesSeparator.First()).Last()));
                 else
-                    return str.Replace(EmailNamesSeparator, " ").Replace(EmailsSeparator, $"{EmailsSeparator} ");
+                    return string.Join("; ", str.Split(EmailsSeparator.First())
+                        .Select(x => string.Join(" ", x.Split(EmailNamesSeparator.First()).Distinct())));
             }
         }
     }

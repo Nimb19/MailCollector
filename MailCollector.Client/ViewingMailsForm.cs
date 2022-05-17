@@ -66,6 +66,11 @@ namespace MailCollector.Client
                     _mailsControls.Insert(0, newMailControl);
                     panelMailsBox.Controls.Add(newMailControl);
                     newMailControl.ClickPanel.Click += NewMailControl_Click;
+                    foreach (var control in newMailControl.ClickPanel.Controls)
+                    {
+                        if (control is Label cL)
+                            cL.Click += NewMailControl_Click;
+                    }
                 }
 
                 labelMailsCount.Text = _mailsControls.Count.ToString();
@@ -76,6 +81,9 @@ namespace MailCollector.Client
         {
             TryCatch(() =>
             {
+                if (sender is Label label)
+                    sender = label.Parent;
+
                 if (sender is Panel panel)
                 {
                     var mailControl = (panel.Parent as MailControl) ?? throw new Exception();
@@ -91,12 +99,15 @@ namespace MailCollector.Client
         private void OpenMailInWebBrowser(Mail mail)
         {
             labelSubject.Text = mail.Subject;
-            labelFrom.Text = Mail.AccsToString(mail.MFrom, false, true);
-            labelTo.Text = Mail.AccsToString(mail.MTo, false, true);
-            labelCc.Text = Mail.AccsToString(mail.MCc, false, true);
+            labelFrom.Text = Mail.AccsToString(mail.MFrom, false, false);
+            labelTo.Text = Mail.AccsToString(mail.MTo, false, false);
+            labelCc.Text = Mail.AccsToString(mail.MCc, false, false);
             labelDate.Text = mail.Date.ToLocalTime().ToString("f");
 
-            webBrowser.DocumentText = mail.HtmlBody;
+            webBrowser.Navigate("about:blank");
+            webBrowser.Document.OpenNew(false);
+            webBrowser.Document.Write(mail.HtmlBody);
+            webBrowser.Refresh();
         }
 
         private void ButtonUpdateMails_Click(object sender, EventArgs e)
@@ -136,6 +147,8 @@ namespace MailCollector.Client
                 foreach (var prop in properties)
                 {
                     var val = prop.GetValue(mail);
+                    if (val == null)
+                        return;
                     var isContains = false;
                     if ((val is string valS && valS.ToLower().Contains(keyWord)))
                         isContains = true;

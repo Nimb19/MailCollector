@@ -69,6 +69,8 @@
             this.labelDate.Name = "labelDate";
             this.labelDate.Size = new System.Drawing.Size(0, 20);
             this.labelDate.TabIndex = 7;
+            this.labelDate.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.labelDate.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // labelSubject
             // 
@@ -77,6 +79,8 @@
             this.labelSubject.Name = "labelSubject";
             this.labelSubject.Size = new System.Drawing.Size(0, 20);
             this.labelSubject.TabIndex = 6;
+            this.labelSubject.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.labelSubject.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // labelTo
             // 
@@ -85,6 +89,8 @@
             this.labelTo.Name = "labelTo";
             this.labelTo.Size = new System.Drawing.Size(0, 20);
             this.labelTo.TabIndex = 5;
+            this.labelTo.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.labelTo.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // labelFrom
             // 
@@ -93,6 +99,8 @@
             this.labelFrom.Name = "labelFrom";
             this.labelFrom.Size = new System.Drawing.Size(0, 20);
             this.labelFrom.TabIndex = 4;
+            this.labelFrom.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.labelFrom.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // label4
             // 
@@ -102,6 +110,8 @@
             this.label4.Size = new System.Drawing.Size(54, 20);
             this.label4.TabIndex = 3;
             this.label4.Text = "Дата: ";
+            this.label4.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.label4.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // label3
             // 
@@ -111,6 +121,8 @@
             this.label3.Size = new System.Drawing.Size(55, 20);
             this.label3.TabIndex = 2;
             this.label3.Text = "Тема: ";
+            this.label3.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.label3.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // label2
             // 
@@ -120,6 +132,8 @@
             this.label2.Size = new System.Drawing.Size(57, 20);
             this.label2.TabIndex = 1;
             this.label2.Text = "Кому: ";
+            this.label2.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.label2.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // label1
             // 
@@ -129,6 +143,8 @@
             this.label1.Size = new System.Drawing.Size(36, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "От: ";
+            this.label1.MouseEnter += new System.EventHandler(this.Panel_MouseEnter);
+            this.label1.MouseLeave += new System.EventHandler(this.Panel_MouseLeave);
             // 
             // MailControl
             // 
