@@ -21,8 +21,13 @@ namespace MailCollector.Kit.ServiceKit
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var markedFolders = client.GetFolders(new FolderNamespace('0', ""), cancellationToken: cancellationToken)
-                            .Where(x => x.Attributes.HasFlag(FolderAttributes.Marked)).ToArray();
+            var markedFolders = client.GetFolders(new FolderNamespace(' ', ""), cancellationToken: cancellationToken)
+                            .Where(x => (x.Attributes.HasFlag(FolderAttributes.Marked)
+                            || x.Attributes == FolderAttributes.None
+                            || x.Attributes.HasFlag(FolderAttributes.Inbox)) 
+                           && !x.Attributes.HasFlag(FolderAttributes.Sent)).ToArray();
+            if (markedFolders.Length == 0)
+                throw new Exception($"С почты '{shell.SqlClient.Login}' не поступает ни одной папки");
 
             foreach (var folder in markedFolders)
             {

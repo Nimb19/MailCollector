@@ -191,9 +191,18 @@ namespace MailCollector.Kit.SqlKit
                 throw new Affected0RowsException();
         }
 
+        public void UpdateCell(string columnName, object cellValue, string where, string tableName)
+        {
+            var internalValue = ObjectToStringValue(cellValue);
+            var cmdTxt = $"UPDATE [{DbName}].dbo.{tableName} SET {columnName} = {internalValue} {where}";
+
+            if (ExecuteNonQuery(cmdTxt) == 0)
+                throw new Affected0RowsException();
+        }
+
         public void RemoveWhere<T>(string whereCondition, string tableName) where T : class, new()
         {
-            var cmdTxt = $"DELETE FROM [{DbName}].dbo.{tableName} WHERE {whereCondition}";
+            var cmdTxt = $"DELETE FROM [{DbName}].dbo.{tableName} {whereCondition}";
 
             if (ExecuteNonQuery(cmdTxt) == 0)
                 throw new Affected0RowsException();
@@ -215,6 +224,14 @@ namespace MailCollector.Kit.SqlKit
         {
             var cmdTxt = $"SELECT * FROM [{DbName}].[dbo].[{tableName}] WHERE Uid = {uid}";
             return ReadAs<T>(cmdTxt);
+        }
+
+        public bool IsObjectExist(string columnName, object value, string tableName)
+        {
+            var cmdTxt = $"SELECT TOP (1) 1 FROM [{DbName}].[dbo].[{tableName}] WHERE {columnName} = {ObjectToStringValue(value)}";
+
+            var result = ExecuteScalar(cmdTxt);
+            return result?.ToString() == "1";
         }
 
         public T[] GetArrayOf<T>(string tableName, string where = null, string orderBy = null) where T : class, new()
@@ -299,13 +316,13 @@ namespace MailCollector.Kit.SqlKit
             return ReadArrayOfStrings(cmdtxt);
         }
 
-        public string ObjectToStringValue(object obj)
+        public static string ObjectToStringValue(object obj)
         {
             var type = obj?.GetType();
             if (type == null)
                 return "NULL";
             else if (type.Name == nameof(String))
-                return $"N'{(string)obj}'";
+                return $"N'{((string)obj).Replace("'", "''")}'";
             else if (type.Name == nameof(Guid))
                 return $"N'{obj}'";
             else if (type.Name == nameof(Boolean))

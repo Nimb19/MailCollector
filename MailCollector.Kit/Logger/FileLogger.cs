@@ -9,8 +9,9 @@ namespace MailCollector.Kit.Logger
     public sealed class FileLogger : AbstractLogger
     {
         public static readonly FileLogger Instance = new FileLogger();
-
         public string ModuleName = null;
+
+        private readonly object _lock = new object();
 
         /// <summary> По умолчанию сбрасывает в папку с приложением. </summary>
         public string PathToLogs { get; private set; }
@@ -18,8 +19,11 @@ namespace MailCollector.Kit.Logger
 
         protected override void PrivateWrite(string fullMsg)
         {
-            using (var sw = new StreamWriter(PathToLogs, append: true, CommonExtensions.Encoding))
-                sw.WriteLine(fullMsg);
+            lock (_lock)
+            {
+                using (var sw = new StreamWriter(PathToLogs, append: true, CommonExtensions.Encoding))
+                    sw.WriteLine(fullMsg);
+            }
         }
 
         public FileLogger() 

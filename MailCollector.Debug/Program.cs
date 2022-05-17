@@ -1,5 +1,8 @@
 ﻿using MailCollector.Kit.ImapKit;
 using MailCollector.Kit.ImapKit.Models;
+using MailCollector.Kit.Logger;
+using MailCollector.Kit.ServiceKit;
+using MailCollector.Kit.SqlKit.Models;
 using MailKit;
 using System;
 using System.Linq;
@@ -20,9 +23,9 @@ namespace MailCollector.Debug
                 var pass = "ornqvoiqyinetlxw"; // "QRnVGrTqbxM0j9Q2WshN"
                 // 5398105719:AAGGG10I3-PWkeBf-6BK3TDGC9ghvqnZ44s
 
-                var imapClient = new ImapClientParams(login, pass, SupportedImapServers.YandexParams);
+                //var imapClient = new ImapClientParams(login, pass, SupportedImapServers.YandexParams);
 
-                var task = ReceiveMails(imapClient, cts.Token);
+                var task = ReceiveMails(cts.Token);
 
                 while (true)
                 {
@@ -53,18 +56,26 @@ namespace MailCollector.Debug
             Console.ReadLine();
         }
 
-        private static async Task ReceiveMails(ImapClientParams imapKitClient, CancellationToken cancellationToken)
+        private static async Task ReceiveMails(CancellationToken cancellationToken)
         {
             await Task.Run(() =>
             {
                 try
                 {
-                    using (var client = imapKitClient.Connect(cancellationToken))
-                    {
-                        
+                    ILogger logger = new MultiLogger(FileLogger.Instance, ConsoleLogger.Instance);
 
-                        client.Disconnect(true);
-                    }
+                    var config = new ServiceConfig()
+                    {
+                        SqlServerSettings = new SqlServerSettings()
+                        {
+                            ServerName = "localhost",
+                            IntegratedSecurity = true,
+                        },
+                        TelegramBotApiToken = "5398105719:AAGGG10I3-PWkeBf-6BK3TDGC9ghvqnZ44s",
+                    };
+                    var serviceWorker = new ServiceWorker(config.SqlServerSettings, config.TelegramBotApiToken
+                        , logger, "Debug", cancellationToken);
+                    serviceWorker.Start();
                 }
                 catch (Exception exc)
                 {

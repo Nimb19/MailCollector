@@ -59,11 +59,11 @@ namespace MailCollector.Kit.SqlKit
         public static void UpdateClientIsWorking(SqlServerShell shell, bool? isWorkingNow, ImapClient client)
         {
             var isClientWorking = shell.ExecuteScalar($"SELECT {nameof(ImapClient.IsWorking)}" +
-                $" FROM {shell.InitialCatalog}.dbo.{ImapClient.TableName} WHERE {nameof(ImapClient.Uid)} = '{client.Uid}'");
+                $" FROM {shell.DbName}.dbo.{ImapClient.TableName} WHERE {nameof(ImapClient.Uid)} = '{client.Uid}'");
 
             if (isWorkingNow?.ToString() != isClientWorking?.ToString())
             {
-                shell.UpdateCell(nameof(ImapClient.IsWorking), isWorkingNow?.ToString()
+                shell.UpdateCell(nameof(ImapClient.IsWorking), isWorkingNow
                     , $"WHERE {nameof(ImapClient.Uid)} = '{client.Uid}'", ImapClient.TableName);
                 client.IsWorking = isWorkingNow;
             }
@@ -77,7 +77,7 @@ namespace MailCollector.Kit.SqlKit
             _cancellationToken.ThrowIfCancellationRequested();
 
             var maxFolderIndex = SqlShell.ExecuteScalar($"SELECT MAX({nameof(Mail.IndexInFolder)}) " +
-                $"FROM {SqlShell.InitialCatalog}.dbo.{Mail.TableName} WHERE {nameof(Mail.FolderUid)} = '{folderUid}'");
+                $"FROM {SqlShell.DbName}.dbo.{Mail.TableName} WHERE {nameof(Mail.FolderUid)} = {SqlServerShell.ObjectToStringValue(folderUid)}");
 
             if (int.TryParse(maxFolderIndex?.ToString(), out var result))
             {
@@ -127,7 +127,8 @@ namespace MailCollector.Kit.SqlKit
         {
             _cancellationToken.ThrowIfCancellationRequested();
 
-            return SqlShell.GetArrayOf<Folder>(Folder.TableName, $"WHERE {nameof(Folder.ImapClientUid)} = {SqlClient.Uid}")
+            return SqlShell.GetArrayOf<Folder>(Folder.TableName, 
+                $"WHERE {nameof(Folder.ImapClientUid)} = {SqlServerShell.ObjectToStringValue(SqlClient.Uid)}")
                 .ToList();
         }
     }

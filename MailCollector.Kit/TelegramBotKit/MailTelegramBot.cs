@@ -45,7 +45,7 @@ namespace MailCollector.Kit.TelegramBotKit
         {
             cancelationToken.ThrowIfCancellationRequested();
 
-            if (!IsStarted)
+            if (IsStarted)
             {
                 _logger.Warning("Была попытка старта работы бота, когда он уже включён");
                 return;
@@ -90,6 +90,7 @@ namespace MailCollector.Kit.TelegramBotKit
                         await SendTextMessageAsync(botClient, message.Chat
                             , "Приветствую! Как только будут поступать новые письма, я сразу же Вам об этом сообщу.");
                     }
+                    else
                     {
                         await SendTextMessageAsync(botClient, message.Chat
                             , "Приветствую! К сожалению, я не смог подписать Вас на свою рассылку уведомлений.");
@@ -103,6 +104,7 @@ namespace MailCollector.Kit.TelegramBotKit
                         await SendTextMessageAsync(botClient, message.Chat
                             , "Вы был успешно отписаны из рассылки.");
                     }
+                    else
                     {
                         await SendTextMessageAsync(botClient, message.Chat
                             , "К сожалению, я не смог отписать Вас от своей рассылки уведомлений.");
@@ -117,6 +119,13 @@ namespace MailCollector.Kit.TelegramBotKit
         {
             try
             {
+                var isExist = _sqlServerShell.IsObjectExist(nameof(TelegramBotSubscriber.ChatId)
+                    , chat.Identifier, TelegramBotSubscriber.TableName);
+                if (!isExist)
+                {
+                    return true;
+                }
+
                 await Task.Run(() => _tgSqlAdapter.RemoveChatId(chat));
 
                 return true;
@@ -132,6 +141,13 @@ namespace MailCollector.Kit.TelegramBotKit
         {
             try
             {
+                var isExist = _sqlServerShell.IsObjectExist(nameof(TelegramBotSubscriber.ChatId)
+                    , chat.Identifier, TelegramBotSubscriber.TableName);
+                if (isExist)
+                {
+                    return true;
+                }
+
                 await Task.Run(() => _tgSqlAdapter.SaveChatId(chat));
 
                 return true;

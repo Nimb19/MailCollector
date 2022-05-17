@@ -31,7 +31,7 @@ namespace MailCollector.Kit.ServiceKit
         private static readonly TimeSpan _delayBeforeTryReconnectDisabledClients = TimeSpan.FromMinutes(10);
 
         /// <summary>
-        ///     Под каждого клиента создаётся свой отдельый бесконечный поток. 
+        ///     Под каждого клиента создаётся свой отдельный бесконечный поток. 
         ///     Такие рабочие потоки фиксируются в этот список.
         /// </summary>
         private readonly List<(Task Worker, CancellationTokenSource Cts, ImapClient Client)> _workingClients;
@@ -73,7 +73,7 @@ namespace MailCollector.Kit.ServiceKit
                     _mailTelegramBot.Start(_cancellationToken);
                 }catch (Exception ex)
                 {
-                    _logger.Error($"Ошибка при инициализации телеграм-бота: {ex}");
+                    _logger.Error($"Ошибка при инициализации Telegram-бота: {ex}");
                 }
             }
 
@@ -86,7 +86,10 @@ namespace MailCollector.Kit.ServiceKit
         public void Start()
         {
             if (IsStarted)
+            {
+                _logger.Warning("Была попытка старта работы сервиса, когда он уже включён");
                 return;
+            }
 
             _logger.WriteLine("Подана команда старта сервиса. Клиенты скоро будут запущены");
 
@@ -110,8 +113,9 @@ namespace MailCollector.Kit.ServiceKit
         /// </summary>
         private void CheckerWorker()
         {
-            var clientsWithServers = MailCollectorSqlAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
-            StartClientsWorkers(clientsWithServers);
+            var clientsForStartService = MailCollectorSqlAdapter.GetAllClientsWithServers(_sqlServerShell, _cancellationToken);
+            StartClientsWorkers(clientsForStartService);
+            WriteWorkingClients();
 
             var work = Task.Factory.StartNew(() =>
             {
@@ -120,7 +124,10 @@ namespace MailCollector.Kit.ServiceKit
                     CheckDisabledClientsAndUpdates();
                     TryReconnectDisabledClients();
 
-                    Task.Delay(_checkerUpdateDelay).Wait(_cancellationToken);
+                    try
+                    {
+                        Task.Delay(_checkerUpdateDelay).Wait(_cancellationToken);
+                    } catch (OperationCanceledException) { }
                 }
             }, TaskCreationOptions.LongRunning);
 
@@ -128,7 +135,11 @@ namespace MailCollector.Kit.ServiceKit
             {
                 while (!_cancellationToken.IsCancellationRequested || !IsStarted)
                 {
-                    Task.Delay(_checkIfCancelationRequestedDelay).Wait();
+                    try
+                    {
+                        Task.Delay(_checkIfCancelationRequestedDelay).Wait(_cancellationToken);
+                    }
+                    catch (OperationCanceledException) { }
                 }
             }, TaskCreationOptions.LongRunning).Wait();
 
@@ -142,10 +153,15 @@ namespace MailCollector.Kit.ServiceKit
         {
             if (DateTime.Now - _lastReconnectTry > _delayBeforeTryReconnectDisabledClients)
             {
-                lock (_disabledClients)
+                WriteWorkingClients(true);
+
+                lock (_disabledClientsListLock)
                 {
+                    if (_disabledClients.Count == 0)
+                        return;
+
                     _logger.WriteLine($"Выполняется попытка перезагрузки" +
-                        $" отключённх клиентов: {string.Join(";", _disabledClients)}" +
+                        $" отключённых клиентов: {string.Join(";", _disabledClients.Select(x => x.Client))}" +
                         $"{Environment.NewLine}Каждая попытка проходит" +
                         $" один раз в {_delayBeforeTryReconnectDisabledClients.TotalMinutes} минут");
                     StartClientsWorkers(_disabledClients);
@@ -153,26 +169,41 @@ namespace MailCollector.Kit.ServiceKit
             }
         }
 
+        private void WriteWorkingClients(bool regular = false)
+        {
+            lock (_workingClientsListLock)
+            {
+                _logger.WriteLine($"В работе: {string.Join(";", _workingClients.Select(x => x.Client))}" +
+                    $"{(regular ? $" (регулярная информация раз в {_delayBeforeTryReconnectDisabledClients.TotalMinutes} минут)" : string.Empty)}.");
+            }
+        }
+
         /// <summary>
-        ///     Отмена всех клиенстких потоков.
+        ///     Отмена всех клиентских потоков.
         /// </summary>
         private void CancelAllClientsTasks()
         {
-            lock (_workingClients)
+            List<(Task Worker, CancellationTokenSource Cts, ImapClient Client)> workingCopy = default;
+            lock (_workingClientsListLock)
             {
-                CancelSelectedClientsTask(_workingClients, "Поступила команда отмены работы сервиса");
+                workingCopy = _workingClients.ToList();
             }
+            CancelSelectedClientsTask(workingCopy, "Поступила команда отмены работы сервиса");
             IsAllTasksCompleted = true;
         }
 
         /// <summary>
-        ///     Отмена указанных клиенстких потоков.
+        ///     Отмена указанных клиентских потоков.
         /// </summary>
         private void CancelSelectedClientsTask(
             List<(Task Worker, CancellationTokenSource Cts, ImapClient Client)> workingClientsForCancel
             , string argument)
         {
-            _logger.WriteLine($"Поступила команда отмены и удаления потоков клиентов: {string.Join(";", workingClientsForCancel)}" +
+            if (workingClientsForCancel.Count == 0)
+                return;
+
+            _logger.WriteLine($"Поступила команда отмены и удаления рабочих потоков клиентов: " +
+                $"{string.Join(";", workingClientsForCancel.Select(x => x.Client))}" +
                 $"{Environment.NewLine}Причина: {argument}");
 
             foreach (var clientWorker in workingClientsForCancel)
@@ -182,15 +213,16 @@ namespace MailCollector.Kit.ServiceKit
 
             workingClientsForCancel.ForEach(x =>
             {
-                var waitSecondsForDispose = TimeSpan.FromSeconds(1);
-                if (!x.Worker.Wait(waitSecondsForDispose))
+                var waitSecondsForDispose = TimeSpan.FromSeconds(2);
+                if (!x.Worker.IsCompleted && !x.Worker.Wait(waitSecondsForDispose))
                 {
                     _logger.Warning($"Поток с клиентом {x.Client} слишком долго отменяется" +
-                        $", поэтому сервис не будет ждать его завершения. Количество секунд ожидания было: {waitSecondsForDispose.TotalSeconds}");
+                        $", поэтому сервис не будет ждать его завершения." +
+                        $" Количество секунд ожидания было: {waitSecondsForDispose.TotalSeconds}");
                 }
             });
 
-            _logger.WriteLine("Клиенсткие потоки успешно отменены");
+            _logger.WriteLine("Клиентские потоки успешно отменены");
             IsAllTasksCompleted = true;
         }
 
@@ -209,6 +241,24 @@ namespace MailCollector.Kit.ServiceKit
             foreach (var clientWithServer in clientsWithServers)
             {
                 var cts = new CancellationTokenSource();
+
+                var enter = Monitor.TryEnter(_disabledClientsListLock);
+                try
+                {
+                    var firstDisClient = _disabledClients
+                        .FirstOrDefault(x => x.Client.Uid == clientWithServer.Client.Uid);
+                    if (firstDisClient != default)
+                    {
+                        _disabledClients.Remove(firstDisClient);
+                    }
+                }
+                finally
+                {
+                    if (enter)
+                        Monitor.Exit(_disabledClientsListLock);
+                }
+
+
                 var clientWorkerTask = Task.Factory.StartNew((a) => ClientWorker(clientWithServer)
                     , TaskContinuationOptions.LongRunning, cts.Token);
 
@@ -248,16 +298,15 @@ namespace MailCollector.Kit.ServiceKit
                 }
 
                 clientsForStart = UpdateClientsInfo();
-                
-            }
 
-            if (clientsForStart.Count != 0)
-                StartClientsWorkers(clientsForStart);
+                if (clientsForStart.Count != 0)
+                    StartClientsWorkers(clientsForStart);
+            }
 
             return;
 
             /// <summary>
-            ///    Обновление списков клентов. 
+            ///    Обновление списков клиентов. 
             ///    Если появились новые, то запускает их. 
             ///    Если каких то клиентов больше нет, то убивает их потоки и убирает из списков. 
             ///    
@@ -290,7 +339,7 @@ namespace MailCollector.Kit.ServiceKit
                         if (foundedClient.Client != null)
                         {
                             // Если параметры для авторизации клиента были изменены
-                            if (!foundedClient.Client.Equals(maybeNewClient))
+                            if (!foundedClient.Client.Equals(maybeNewClient.Client))
                             {
                                 const string removeArgumentToLog = "параметры клиента были изменены." +
                                     " Скоро запуститься поток этого клиента с новыми параметрами";
@@ -349,7 +398,7 @@ namespace MailCollector.Kit.ServiceKit
             catch (Exception ex)
             {
                 _logger.Error($"Во время обновления поля {nameof(ImapClient.IsWorking)}" +
-                    $", для клента {client} на значение {isWorkingNow?.ToString() ?? "NULL"}, была выброшена ошибка: {ex}");
+                    $", для клиента {client} на значение {isWorkingNow?.ToString() ?? "NULL"}, была выброшена ошибка: {ex}");
             }
         }
 
@@ -384,9 +433,9 @@ namespace MailCollector.Kit.ServiceKit
                     _cancellationToken.ThrowIfCancellationRequested();
                 }
             }
-            catch (TaskCanceledException cex)
+            catch (OperationCanceledException cex)
             {
-                _logger.WriteLine($"Поток для клиента {clientWithServer.Client} был отменён и удалён. Message: '{cex.Message}'");
+                _logger.Debug($"Поток для клиента {clientWithServer.Client} был отменён и удалён. Message: '{cex.Message}'");
                 lock (_workingClientsListLock)
                 {
                     var iAm = _workingClients.FirstOrDefault(x => x.Client.Uid == clientWithServer.Client.Uid);
