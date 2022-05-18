@@ -42,5 +42,10 @@ namespace MailCollector.Client
                 return false;
             }
         }
+
+        protected bool StringEquals(string left, string right)
+        {
+            return string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

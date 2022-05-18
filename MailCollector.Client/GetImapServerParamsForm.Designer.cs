@@ -1,4 +1,4 @@
-﻿namespace MailCollector.Setup
+﻿namespace MailCollector.Client
 {
     partial class GetImapServerParamsForm
     {
@@ -149,7 +149,6 @@
             this.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.Name = "GetImapServerParamsForm";
             this.Text = "Добавление почтового сервера";
-            this.Controls.SetChildIndex(this.panel1, 0);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPort)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

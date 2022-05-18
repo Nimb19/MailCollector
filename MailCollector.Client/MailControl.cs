@@ -7,6 +7,10 @@ namespace MailCollector.Client
 {
     public partial class MailControl : UserControl
     {
+        public static readonly Color DefaultColor = SystemColors.InactiveBorder;
+        public static readonly Color MouseEnterColor = Color.White; 
+        public static readonly Color ActiveColor = Color.Linen; 
+
         public Mail Mail { get; }
         public bool Activated { get; private set; }
 
@@ -24,14 +28,26 @@ namespace MailCollector.Client
         public void OnPanelActivated()
         {
             Activated = true;
-            ClickPanel.BackColor = Color.Linen;
+            ClickPanel.BackColor = ActiveColor;
+            RefreshLabels();
             ClickPanel.BorderStyle = BorderStyle.None;
+        }
+
+        private void RefreshLabels()
+        {
+            foreach (var control in ClickPanel.Controls)
+            {
+                if (control is Label cL)
+                    cL.Refresh();
+            }
         }
 
         public void OnPanelDeactivated()
         {
             Activated = false;
-            ClickPanel.BackColor = SystemColors.InactiveBorder;
+
+            ClickPanel.BackColor = DefaultColor;
+            RefreshLabels();
             ClickPanel.BorderStyle = BorderStyle.FixedSingle;
         }
 
@@ -46,13 +62,19 @@ namespace MailCollector.Client
         private void Panel_MouseLeave(object sender, EventArgs e)
         {
             if (!Activated)
-                ClickPanel.BackColor = SystemColors.InactiveBorder;
+            {
+                ClickPanel.BackColor = DefaultColor;
+                RefreshLabels();
+            }
         }
 
         private void Panel_MouseEnter(object sender, EventArgs e)
         {
             if (!Activated)
-                ClickPanel.BackColor = Color.White;
+            {
+                ClickPanel.BackColor = MouseEnterColor;
+                RefreshLabels();
+            }
         }
     }
 }

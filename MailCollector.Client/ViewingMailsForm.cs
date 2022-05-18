@@ -87,6 +87,9 @@ namespace MailCollector.Client
                 if (sender is Panel panel)
                 {
                     var mailControl = (panel.Parent as MailControl) ?? throw new Exception();
+                    if (mailControl.Activated)
+                        return;
+
                     _activeMailControl?.OnPanelDeactivated();
                     mailControl.OnPanelActivated();
                     _activeMailControl = mailControl;
@@ -106,7 +109,7 @@ namespace MailCollector.Client
 
             webBrowser.Navigate("about:blank");
             webBrowser.Document.OpenNew(false);
-            webBrowser.Document.Write(mail.HtmlBody);
+            webBrowser.Document.Write(mail.HtmlBody ?? string.Empty);
             webBrowser.Refresh();
         }
 
@@ -148,11 +151,16 @@ namespace MailCollector.Client
                 {
                     var val = prop.GetValue(mail);
                     if (val == null)
-                        return;
+                        continue;
+                    else if (val is Guid)
+                        continue;
                     var isContains = false;
-                    if ((val is string valS && valS.ToLower().Contains(keyWord)))
+                    
+                    if((val is string valS && valS.ToLower().Contains(keyWord)))
                         isContains = true;
                     else if (val is DateTimeOffset valD && valD.ToString("f").ToLower().Contains(keyWord))
+                        isContains = true;
+                    else if (val is DateTime valDt && valDt.ToString("f").ToLower().Contains(keyWord))
                         isContains = true;
                     else if (val.ToString().ToLower().Contains(keyWord))
                         isContains = true;
@@ -166,6 +174,23 @@ namespace MailCollector.Client
             }
 
             AddNewMails(mailsFilteredControls.OrderByDescending(x => x.Date).ToArray());
+        }
+
+        private void ЗакрытьПрограммуToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _sqlServerShell.TryDispose(Logger);
+            Environment.Exit(0);
+        }
+
+        private void ДобавитьКлиентовToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var getImapClientsForm = new GetImapClientsForm(_sqlServerShell);
+            getImapClientsForm.ShowDialog();
+        }
+
+        private void ОбновитьПисьмаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ButtonUpdateMails_Click(sender, e);
         }
     }
 }

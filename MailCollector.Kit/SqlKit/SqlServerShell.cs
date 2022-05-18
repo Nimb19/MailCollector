@@ -28,6 +28,8 @@ namespace MailCollector.Kit.SqlKit
         public readonly string InitialCatalog = "master";
         public readonly SqlServerSettings SqlServerSettings;
 
+        public const string DateFormat = "yyyy-MM-dd HH:mm:ss";
+
         private DbmsType DbType { get; set; } = DbmsType.Mssql; // Пока не придираемся к типу, потом доделаю
         public SqlConnection SqlCon { get; private set; }
         
@@ -330,7 +332,9 @@ namespace MailCollector.Kit.SqlKit
             else if (type.IsEnum)
                 return Convert.ToString((int)obj);
             else if (DateTime.TryParse(obj.ToString(), out var dt))
-                return $"'{dt.FormatToDate()}'";
+                return $"'{dt.ToUniversalTime().ToString(DateFormat)}'";
+            else if (DateTimeOffset.TryParse(obj.ToString(), out var dto))
+                return $"'{dto.ToString(DateFormat)}'";
             else
                 return obj.ToString();
         }

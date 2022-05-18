@@ -85,7 +85,7 @@ namespace MailCollector.Kit.SqlKit
             }
             else
             {
-                return 0;
+                return -1; // Прошлых писем не было
             }
         }
 
