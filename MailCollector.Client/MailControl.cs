@@ -56,7 +56,7 @@ namespace MailCollector.Client
             labelFrom.Text = Mail.AccsToString(Mail.MFrom);
             labelTo.Text = Mail.AccsToString(Mail.MTo);
             labelSubject.Text = Mail.Subject;
-            labelDate.Text = Mail.Date.Date.ToLocalTime().ToString("f");
+            labelDate.Text = Mail.Date.ToLocalTime().ToString("f");
         }
 
         private void Panel_MouseLeave(object sender, EventArgs e)

@@ -38,7 +38,15 @@ namespace MailCollector.Kit.Logger
         private void SetPathToLogs()
         {
             var fileName =  $"{ModuleName ?? "AppLog"}_{DateTime.Now.ToString("dd.MM.yyyy")}.log";
-            PathToLogs = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName, fileName);
+            var location = Assembly.GetEntryAssembly()?.Location;
+            if (location != null) {
+                var pathToLogs = new FileInfo(location)?.DirectoryName;
+                PathToLogs = Path.Combine(pathToLogs, fileName);
+            }
+            else
+            {
+                PathToLogs = fileName;
+            }
         }
     }
 }
