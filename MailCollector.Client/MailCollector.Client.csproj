@@ -34,7 +34,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'SetupBuild|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\MailCollector.Setup\bin\SetupBuild\Sources\Client\</OutputPath>
+    <OutputPath>..\MailCollector.Setup\bin\MailCollector.Setup\Sources\Client\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,6 +44,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>MailCollectorIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
@@ -145,6 +148,7 @@
     <EmbeddedResource Include="ViewingMailsForm.resx">
       <DependentUpon>ViewingMailsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
     <None Include="FilesToCopyInBuild\Config.Example.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
