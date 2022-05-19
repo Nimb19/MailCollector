@@ -25,7 +25,8 @@ namespace MailCollector.Kit.ServiceKit
                             .Where(x => (x.Attributes.HasFlag(FolderAttributes.Marked)
                             || x.Attributes == FolderAttributes.None
                             || x.Attributes.HasFlag(FolderAttributes.Inbox)) 
-                           && !x.Attributes.HasFlag(FolderAttributes.Sent)).ToArray();
+                           && !x.Attributes.HasFlag(FolderAttributes.Sent) 
+                           && !x.Attributes.HasFlag(FolderAttributes.Drafts)).ToArray();
             if (markedFolders.Length == 0)
                 throw new Exception($"С почты '{shell.SqlClient.Login}' не поступает ни одной папки");
 

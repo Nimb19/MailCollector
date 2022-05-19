@@ -64,8 +64,8 @@ namespace MailCollector.Kit.TelegramBotKit
 
         private async Task UpdateHadler(ITelegramBotClient botClient, Update update, CancellationToken cancelationToken)
         {
-            const LogLevel logLevelToSaveUpdateInfo = LogLevel.Debug; //TODO: После отладки убери на Trace
-            if (_logger.LogLevel == logLevelToSaveUpdateInfo)
+            const LogLevel logLevelToSaveUpdateInfo = LogLevel.Trace;
+            if (_logger.LogLevel >= logLevelToSaveUpdateInfo)
             {
                 var serUpdate = JsonConvert.SerializeObject(update, Formatting.Indented);
                 _logger.Write(logLevelToSaveUpdateInfo, $"New update: {serUpdate}"); 
@@ -102,7 +102,7 @@ namespace MailCollector.Kit.TelegramBotKit
                     if (await TryRemoveChatId(message.Chat))
                     {
                         await SendTextMessageAsync(botClient, message.Chat
-                            , "Вы был успешно отписаны из рассылки.");
+                            , "Вы успешно отписаны от рассылки.");
                     }
                     else
                     {
@@ -180,7 +180,7 @@ namespace MailCollector.Kit.TelegramBotKit
             {
                 var newTabLine = $"{Environment.NewLine}\t";
                 var mails = string.Join($";{newTabLine}"
-                    , imapMails.Select(x => $"От '{x.From}', тема: '{x.Subject}', дата: {x.Date}"));
+                    , imapMails.Select(x => $"От '{x.From}', тема: '{x.Subject}', дата: {x.Date.ToString("f")}"));
                 tgMessage = $"На почту '{imapClient.Login}' в папку '{imapMails.First().Folder.Name}' " +
                     $"были присланы следующие письма (порядок сохранён): {newTabLine}{mails}";
             }
