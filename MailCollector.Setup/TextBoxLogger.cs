@@ -17,6 +17,7 @@ namespace MailCollector.Setup
         {
             TextBox.Text +=  fullMsg + Environment.NewLine;
             TextBox.SelectionStart = TextBox.Text.Length;
+            TextBox.ScrollToCaret();
         }
     }
 }

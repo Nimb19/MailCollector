@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace MailCollector.Kit.SqlKit
 {
@@ -18,9 +19,9 @@ namespace MailCollector.Kit.SqlKit
     {
         private readonly ILogger _logger;
         private readonly string _moduleInfo = "SqlServerShell";
-        
+
         private object _lock = new object();
-        
+
         public const int ConnectionTimeoutInSeconds = 3;
 
         public string DbName { get; set; }
@@ -32,14 +33,14 @@ namespace MailCollector.Kit.SqlKit
 
         private DbmsType DbType { get; set; } = DbmsType.Mssql; // Пока не придираемся к типу, потом доделаю
         public SqlConnection SqlCon { get; private set; }
-        
+
         public SqlServerShell(SqlServerSettings sqlServerSettings, ILogger logger
             , string moduleInfo, string dbName)
         {
             _logger = logger;
             DbName = string.IsNullOrWhiteSpace(dbName) ? null : dbName.Trim();
             SqlServerSettings = sqlServerSettings;
-            
+
             if (!string.IsNullOrWhiteSpace(moduleInfo))
                 _moduleInfo = moduleInfo;
 
@@ -342,12 +343,15 @@ namespace MailCollector.Kit.SqlKit
         public T[] ReadArrayOf<T>(string getCmd) where T : class, new()
         {
             var list = new List<T>();
-            using (var reader = ExecuteReader(getCmd))
+            lock (_lock)
             {
-                while (reader.Read())
+                using (var reader = ExecuteReader(getCmd))
                 {
-                    var typeimplementation = ConvertRowToType<T>(reader);
-                    list.Add(typeimplementation);
+                    while (reader.Read())
+                    {
+                        var typeimplementation = ConvertRowToType<T>(reader);
+                        list.Add(typeimplementation);
+                    }
                 }
             }
             return list.ToArray();
@@ -382,12 +386,15 @@ namespace MailCollector.Kit.SqlKit
         public string[] ReadArrayOfStrings(string cmdText)
         {
             var list = new List<string>();
-            using (var reader = ExecuteReader(cmdText))
+            lock (_lock)
             {
-                while (reader.Read())
+                using (var reader = ExecuteReader(cmdText))
                 {
-                    var value = reader.GetString(0);
-                    list.Add(value);
+                    while (reader.Read())
+                    {
+                        var value = reader.GetString(0);
+                        list.Add(value);
+                    }
                 }
             }
             return list.ToArray();
@@ -720,12 +727,15 @@ namespace MailCollector.Kit.SqlKit
         private List<string> GetList(string script)
         {
             var list = new List<string>();
-            using (var reader = ExecuteReader(script))
+            lock (_lock)
             {
-                while (reader.Read())
+                using (var reader = ExecuteReader(script))
                 {
-                    var user = reader.GetValue(0);
-                    list.Add(Convert.ToString(user));
+                    while (reader.Read())
+                    {
+                        var user = reader.GetValue(0);
+                        list.Add(Convert.ToString(user));
+                    }
                 }
             }
             return list;
@@ -734,12 +744,15 @@ namespace MailCollector.Kit.SqlKit
         private List<T> GetList<T>(string script)
         {
             var list = new List<T>();
-            using (var reader = ExecuteReader(script))
+            lock (_lock)
             {
-                while (reader.Read())
+                using (var reader = ExecuteReader(script))
                 {
-                    var user = reader.GetValue(0);
-                    list.Add((T)user);
+                    while (reader.Read())
+                    {
+                        var user = reader.GetValue(0);
+                        list.Add((T)user);
+                    }
                 }
             }
             return list;
@@ -752,9 +765,16 @@ namespace MailCollector.Kit.SqlKit
         public SqlCommand CreateCommand(string command, CommandType commandType = CommandType.Text)
         {
             SqlCommand cmd;
-            lock (_lock)
+
+            var isEnter = Monitor.TryEnter(_lock);
+            try
             {
                 cmd = SqlCon.CreateCommand();
+            }
+            finally
+            {
+                if (isEnter)
+                    Monitor.Exit(_lock);
             }
 
             cmd.CommandTimeout = CommandTimeoutInSeconds;
@@ -768,9 +788,15 @@ namespace MailCollector.Kit.SqlKit
         {
             using (var cmd = CreateCommand(command, commandType))
             {
-                lock (_lock)
+                var isEnter = Monitor.TryEnter(_lock);
+                try
                 {
                     return cmd.ExecuteReader();
+                }
+                finally
+                {
+                    if (isEnter)
+                        Monitor.Exit(_lock);
                 }
             }
         }

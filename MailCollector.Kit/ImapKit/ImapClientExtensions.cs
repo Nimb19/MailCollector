@@ -2,6 +2,7 @@
 using MailKit;
 using MailKit.Net.Imap;
 using MimeKit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -37,7 +38,7 @@ namespace MailCollector.Kit.ImapKit
             return client;
         }
 
-        public static ImapClient Connect(SqlKit.Models.ImapClient imapClient, SqlKit.Models.ImapServer imapServer,
+        public static ImapClient Connect(this SqlKit.Models.ImapClient imapClient, SqlKit.Models.ImapServer imapServer,
             CancellationToken cancellationToken = default, int timeout = 8000)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -48,6 +49,32 @@ namespace MailCollector.Kit.ImapKit
             cancellationToken.ThrowIfCancellationRequested();
             client.Authenticate(imapClient.Login, imapClient.Password, cancellationToken);
             return client;
+        }
+
+        public static bool TryConnect(this SqlKit.Models.ImapClient clientParams, SqlKit.Models.ImapServer serverParams
+            , CancellationToken cancellationToken, int connTimeoutInMs
+            , out ImapClient imapClient, out Exception lastException)
+        {
+            var trys = 4;
+            var isConnected = false;
+            lastException = null;
+            imapClient = null;
+            for (int i = 0; i < trys; i++)
+            {
+                try
+                {
+                    imapClient = clientParams.Connect(serverParams, cancellationToken, connTimeoutInMs);
+
+                    isConnected = true;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    lastException = ex;
+                }
+            }
+
+            return isConnected;
         }
 
         public static ImapMailParams[] FetchLastMails(this IMailFolder mailFolder, int startIndex, CancellationToken cancellationToken)

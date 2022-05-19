@@ -4,6 +4,7 @@ using MailCollector.Kit.ServiceKit;
 using MailCollector.Kit.SqlKit;
 using MailCollector.Kit.SqlKit.Models;
 using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace MailCollector.Setup
     public class MailCollectorInstaller
     {
         private const string InstallUtilPath = @"C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe";
-        private const string MailServiceName = "MailCollector.Service";
+        private const string MailServiceName = ServiceInfo.ServiceName;
         private const string MailClientName = "MailCollector.Client";
 
         private readonly ILogger _logger;
@@ -81,7 +82,7 @@ namespace MailCollector.Setup
             cancellationToken.ThrowIfCancellationRequested();
 
             // По пути сервиса находится конфиг, он десериализуется и добавляется токен тг-бота.
-            var configPath = _installerSettings.InstallServicePath + "\\Config.json";
+            var configPath = Path.Combine(_installerSettings.InstallServicePath, "Config.json");
             var config = CommonExtensions.DeserializeFile<ServiceConfig>(configPath);
             config.TelegramBotApiToken = _installerSettings.TelegramBotToken;
 
@@ -106,7 +107,7 @@ namespace MailCollector.Setup
             {
                 SqlServerSettings = _installerSettings.SqlServerSettings,
             };
-            var configPath = _installerSettings.InstallClientPath + "\\Config.json";
+            var configPath = Path.Combine(_installerSettings.InstallClientPath, "Config.json");
             CommonExtensions.SerializeToFile(serviceConfig, configPath);
             _logger.WriteLine($"Клиент успешно скопирован, конфиг к нему успешно сгенерирован и выложен");
 
@@ -130,23 +131,19 @@ namespace MailCollector.Setup
             };
             if (_isAddTgBot)
                 serviceConfig.TelegramBotApiToken = _installerSettings.TelegramBotToken;
-            var configPath = _installerSettings.InstallServicePath + "\\Config.json";
+            var configPath = Path.Combine(_installerSettings.InstallServicePath, "Config.json");
             CommonExtensions.SerializeToFile(serviceConfig, configPath);
             _logger.WriteLine($"Сервис успешно скопирован, конфиг к нему успешно сгенерирован и выложен");
 
             // Регистрация службы
             cancellationToken.ThrowIfCancellationRequested();
-            var args = $"\"{_installerSettings.InstallServicePath}\\{MailServiceName}.exe\"";
-            var exitCode = await Task.Run(() => CommonExtensions.StartProcess(null, $" {args}", null
-                , fileName: $"\"{InstallUtilPath}\" ", encoding: CommonExtensions.Encoding, useAdminRights: true));
-            if (exitCode != 0)
+            var isInstalled = ServiceInstaller.ServiceIsInstalled(MailServiceName);
+            if (!isInstalled)
             {
-                _logger.Warning($"Процесс регистрации службы вернул не нулевой код: {exitCode}");
+                var servicePath = Path.Combine(_installerSettings.InstallServicePath, $"{MailServiceName}.exe");
+                ServiceInstaller.Install(ServiceInfo.ServiceName, ServiceInfo.ServiceDisplayName, servicePath);
             }
-            else
-            {
-                _logger.WriteLine($"Сервис успешно зарегистрирован");
-            }
+            _logger.WriteLine($"Сервис успешно зарегистрирован");
 
             // Пробуем запустить службу
             // (3 попытки, у каждой по 4 секунды ожидания статуса Running у сервиса, после запуска + интервал секунда между попытками)

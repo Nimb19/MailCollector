@@ -27,7 +27,7 @@ namespace MailCollector.Kit.SqlKit
 
             if (chat.Identifier == null && string.IsNullOrWhiteSpace(chat.Username))
             {
-                throw new ArgumentNullException("У чата оба свойства Username и Identifier были null");
+                throw new ArgumentNullException("У чата оба свойства UserName и Identifier были null");
             }
 
             var tgSub = new TelegramBotSubscriber(chat);
@@ -40,7 +40,7 @@ namespace MailCollector.Kit.SqlKit
 
             if (chat.Identifier == null && string.IsNullOrWhiteSpace(chat.Username))
             {
-                throw new ArgumentNullException("У чата оба свойства Username и Identifier были null");
+                throw new ArgumentNullException("У чата оба свойства UserName и Identifier были null");
             }
 
             var tgSub = new TelegramBotSubscriber(chat);

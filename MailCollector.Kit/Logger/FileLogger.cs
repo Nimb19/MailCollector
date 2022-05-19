@@ -1,8 +1,6 @@
-﻿using MailCollector.Kit;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Text;
+using System.Reflection;
 
 namespace MailCollector.Kit.Logger
 {
@@ -39,7 +37,8 @@ namespace MailCollector.Kit.Logger
 
         private void SetPathToLogs()
         {
-            PathToLogs = $"{ModuleName ?? "AppLog"}_{DateTime.Now.ToString("dd.MM.yyyy")}.log";
+            var fileName =  $"{ModuleName ?? "AppLog"}_{DateTime.Now.ToString("dd.MM.yyyy")}.log";
+            PathToLogs = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName, fileName);
         }
     }
 }

@@ -153,6 +153,7 @@ namespace MailCollector.Kit.ServiceKit
         {
             if (DateTime.Now - _lastReconnectTry > _delayBeforeTryReconnectDisabledClients)
             {
+                _lastReconnectTry = DateTime.Now;
                 WriteWorkingClients(true);
 
                 lock (_disabledClientsListLock)
@@ -407,8 +408,13 @@ namespace MailCollector.Kit.ServiceKit
             MailKit.Net.Imap.ImapClient imapClient = null;
             try
             {
-                imapClient = ImapClientExtensions.Connect(clientWithServer.Client
-                    , clientWithServer.Server, _cancellationToken);
+                const int connectTimeout = 7000;
+
+                var isConnected = clientWithServer.Client.TryConnect(clientWithServer.Server
+                    , _cancellationToken, connectTimeout, out imapClient, out var lastException);
+                if (!isConnected)
+                    throw lastException;
+
                 TryUpdateClientIsWorking(clientWithServer.Client, true);
 
                 var clientSqlShell = new MailCollectorSqlAdapter(_sqlServerShell

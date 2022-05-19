@@ -149,6 +149,7 @@ namespace MailCollector.Kit.TelegramBotKit
                 }
 
                 await Task.Run(() => _tgSqlAdapter.SaveChatId(chat));
+                _logger.WriteLine($"Был успешно добавлен Telegram-клиент: Id={chat.Identifier}; UserName={chat.Username}");
 
                 return true;
             }

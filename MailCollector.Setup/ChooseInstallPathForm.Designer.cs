@@ -95,7 +95,7 @@
             this.textBoxServicePath.Name = "textBoxServicePath";
             this.textBoxServicePath.Size = new System.Drawing.Size(427, 28);
             this.textBoxServicePath.TabIndex = 20;
-            this.textBoxServicePath.Text = "C:\\Program Files\\MailCollector\\Service";
+            this.textBoxServicePath.Text = "C:\\ProgramData\\MailCollector\\Service";
             // 
             // label1
             // 
@@ -138,7 +138,7 @@
             this.textBoxClientPath.Name = "textBoxClientPath";
             this.textBoxClientPath.Size = new System.Drawing.Size(427, 28);
             this.textBoxClientPath.TabIndex = 20;
-            this.textBoxClientPath.Text = "C:\\Program Files\\MailCollector\\Client";
+            this.textBoxClientPath.Text = "C:\\ProgramData\\MailCollector\\Client";
             // 
             // label2
             // 

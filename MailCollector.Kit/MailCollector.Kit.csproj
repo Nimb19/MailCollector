@@ -103,6 +103,9 @@
     <Compile Include="Logger\PrefixLogger.cs" />
     <Compile Include="ServiceKit\ClientConfig.cs" />
     <Compile Include="ServiceKit\ServiceConfig.cs" />
+    <Compile Include="ServiceKit\ServiceInfo.cs" />
+    <Compile Include="ServiceKit\ServiceInstaller.cs" />
+    <Compile Include="ServiceKit\ServiceLauncher.cs" />
     <Compile Include="ServiceKit\ServiceWorker.cs" />
     <Compile Include="ServiceKit\ServiceWorkerExtensions.cs" />
     <Compile Include="SqlKit\Models\Affected0RowsException.cs" />

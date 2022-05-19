@@ -149,7 +149,8 @@ namespace MailCollector.Setup
         {
             var folderDesc = "сервиса";
             var installFodler = FolderOpenDialog(folderDesc);
-            textBoxServicePath.Text = installFodler;
+            if (!string.IsNullOrWhiteSpace(installFodler))
+                textBoxServicePath.Text = installFodler;
         }
 
         private void ButtonSelectClientPath_Click(object sender, EventArgs e)

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Service", "MailCollector.Service\MailCollector.Service.csproj", "{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Debug", "MailCollector.Debug\MailCollector.Debug.csproj", "{1B8DC8B1-4C2A-4137-AF0B-06E717FC53DB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Kit", "MailCollector.Kit\MailCollector.Kit.csproj", "{5C9BE119-7AD2-4FE9-B92A-65C816749D92}"
@@ -13,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Setup", "Mail
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Client", "MailCollector.Client\MailCollector.Client.csproj", "{EC319055-85FA-439B-B6F6-4D7044576ED8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailCollector.Service", "MailCollector.Service\MailCollector.Service.csproj", "{8E54373D-4FF1-4949-B667-914379A3818D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,12 +20,6 @@ Global
 		SetupBuild|Any CPU = SetupBuild|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}.SetupBuild|Any CPU.ActiveCfg = SetupBuild|Any CPU
-		{5B0F38A8-24F1-4D4A-BF1A-9253B3FF45A2}.SetupBuild|Any CPU.Build.0 = SetupBuild|Any CPU
 		{1B8DC8B1-4C2A-4137-AF0B-06E717FC53DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B8DC8B1-4C2A-4137-AF0B-06E717FC53DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B8DC8B1-4C2A-4137-AF0B-06E717FC53DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,6 +44,12 @@ Global
 		{EC319055-85FA-439B-B6F6-4D7044576ED8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC319055-85FA-439B-B6F6-4D7044576ED8}.SetupBuild|Any CPU.ActiveCfg = SetupBuild|Any CPU
 		{EC319055-85FA-439B-B6F6-4D7044576ED8}.SetupBuild|Any CPU.Build.0 = SetupBuild|Any CPU
+		{8E54373D-4FF1-4949-B667-914379A3818D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E54373D-4FF1-4949-B667-914379A3818D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E54373D-4FF1-4949-B667-914379A3818D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E54373D-4FF1-4949-B667-914379A3818D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E54373D-4FF1-4949-B667-914379A3818D}.SetupBuild|Any CPU.ActiveCfg = SetupBuild|Any CPU
+		{8E54373D-4FF1-4949-B667-914379A3818D}.SetupBuild|Any CPU.Build.0 = SetupBuild|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
