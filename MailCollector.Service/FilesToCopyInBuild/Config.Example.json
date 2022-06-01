@@ -5,5 +5,11 @@
     "Login": null,
     "Password": null
   },
-  "TelegramBotApiToken":  ""
+  "TelegramBotApiToken": "",
+
+  "WhetherEnableMailFilter": true,
+  "MailsFilterStrings": [
+    "заявк",
+    "купк"
+  ]
 }
