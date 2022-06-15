@@ -69,7 +69,8 @@ namespace MailCollector.Kit.ServiceKit
             {
                 try
                 {
-                    _mailTelegramBot = new MailTelegramBot(serviceConfig.TelegramBotApiToken, _sqlServerShell, logger);
+                    _mailTelegramBot = new MailTelegramBot(serviceConfig.TelegramBotApiToken
+                        , _sqlServerShell, serviceConfig, logger);
                     _mailTelegramBot.Start(_cancellationToken);
                 }catch (Exception ex)
                 {

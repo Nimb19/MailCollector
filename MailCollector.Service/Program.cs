@@ -71,8 +71,7 @@ namespace MailCollector.Service
                 var configPath = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName, Constants.ConfigFileName);
                 var config = CommonExtensions.DeserializeFile<ServiceConfig>(configPath);
 
-                _serviceWorker = new ServiceWorker(config.SqlServerSettings, config.TelegramBotApiToken
-                    , _logger, Constants.ModuleName, _cts.Token);
+                _serviceWorker = new ServiceWorker(config, _logger, Constants.ModuleName, _cts.Token);
 
                 _serviceWorker.Start();
                 return true;

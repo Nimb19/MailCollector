@@ -73,7 +73,7 @@ namespace MailCollector.Debug
                         },
                         TelegramBotApiToken = "5398105719:AAGGG10I3-PWkeBf-6BK3TDGC9ghvqnZ44s",
                     };
-                    var serviceWorker = new ServiceWorker(config.SqlServerSettings, config.TelegramBotApiToken
+                    var serviceWorker = new ServiceWorker(config
                         , logger, "Debug", cancellationToken);
                     serviceWorker.Start();
                 }
