@@ -110,7 +110,7 @@ namespace MailCollector.Setup
                     await imapClient.DisconnectAsync(true);
                     imapClient.Dispose();
 
-                    ShowSuccessBox("Клиент успешно прошёл аутентификацию!");
+                    ShowSuccessBox("Почта успешно прошла аутентификацию!");
                     isConnected = true;
                     break;
                 }
@@ -121,7 +121,8 @@ namespace MailCollector.Setup
             }
             if (!isConnected)
             {
-                ShowWarningBox(exception.ToString(), $"Аутентификация прошла с ошибкой. Попыток подключения: {trys}");
+                ShowWarningBox(exception.ToString(), $"Ошибка аутентификации. Попыток подключения: {trys}");
+                //ShowWarningBox(exception.ToString(), $"Аутентификация почты прошла с ошибкой. Попыток подключения: {trys}");
             }
 
             if (buttonNextActive)
@@ -153,7 +154,7 @@ namespace MailCollector.Setup
             }
             else
             {
-                ShowWarningBox($"Клиент {clientName} уже добавлен в список.");
+                ShowWarningBox($"Почта {clientName} уже добавлена в список.");
             }
         }
 

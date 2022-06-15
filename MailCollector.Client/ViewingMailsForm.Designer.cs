@@ -350,7 +350,6 @@
         internal System.Windows.Forms.Button buttonUpdateMails;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.WebBrowser webBrowser;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelMailsCount;
         private System.Windows.Forms.Label label2;
@@ -368,5 +367,6 @@
         private System.Windows.Forms.ToolStripMenuItem добавитьКлиентовToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem обновитьПисьмаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem закрытьПрограммуToolStripMenuItem;
+        private System.Windows.Forms.WebBrowser webBrowser;
     }
 }

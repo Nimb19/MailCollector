@@ -47,8 +47,8 @@
             this.labelInfo.Name = "labelInfo";
             this.labelInfo.Size = new System.Drawing.Size(412, 69);
             this.labelInfo.TabIndex = 19;
-            this.labelInfo.Text = "Выберите папку установки (надписи меняются в зависимости от опций в конструкторе)" +
-    "";
+            this.labelInfo.Text = "Для подключения телеграм-бота необходимо скопировать его токен в настройках бота " +
+    "в приложении \'Телеграм\' и вставить в поле ниже.";
             // 
             // pictureBox1
             // 
@@ -108,7 +108,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(344, 28);
             this.label1.TabIndex = 19;
-            this.label1.Text = "Скопируйте токен в это поле:";
+            this.label1.Text = "Впишите токен в это поле:";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // GetTelegramBotTokenForm
@@ -120,7 +120,7 @@
             this.Controls.Add(this.labelInfo);
             this.Controls.Add(this.pictureBox1);
             this.Name = "GetTelegramBotTokenForm";
-            this.Text = "Впишите токен к Telegram-боту";
+            this.Text = "Подключение к телеграм-боту";
             this.Controls.SetChildIndex(this.pictureBox1, 0);
             this.Controls.SetChildIndex(this.labelInfo, 0);
             this.Controls.SetChildIndex(this.panelSelectServicePath, 0);

@@ -51,7 +51,7 @@
             this.labelInfo.Size = new System.Drawing.Size(416, 69);
             this.labelInfo.TabIndex = 3;
             this.labelInfo.Text = "Впишите данные для подключения к СУБД. \r\nВ ней будет размещена БД \'MailCollectorS" +
-    "torage\', она будет нужна для работы сервиса.";
+    "torage\', необходимая для работы сервиса.";
             // 
             // textBoxSqlServerConnStr
             // 
@@ -69,7 +69,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(518, 27);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Строка подключения к СУБД:";
+            this.label2.Text = "Строка подключения к СУБД (имя сервера):";
             // 
             // label3
             // 
@@ -169,7 +169,7 @@
             this.Controls.Add(this.textBoxSqlServerConnStr);
             this.Controls.Add(this.labelInfo);
             this.Name = "GetSqlInfoForm";
-            this.Text = "Впишите данные для подключения к СУБД";
+            this.Text = "Подключение к СУБД";
             this.Controls.SetChildIndex(this.labelInfo, 0);
             this.Controls.SetChildIndex(this.textBoxSqlServerConnStr, 0);
             this.Controls.SetChildIndex(this.label2, 0);

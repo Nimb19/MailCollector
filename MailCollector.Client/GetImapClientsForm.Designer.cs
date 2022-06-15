@@ -50,10 +50,10 @@
             this.label1.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(497, 58);
+            this.label1.Size = new System.Drawing.Size(497, 69);
             this.label1.TabIndex = 17;
-            this.label1.Text = "Добавьте клиентов, вписав параметры для подключения к почтовым ящикам с которых В" +
-    "ы хотите собирать письма.";
+            this.label1.Text = "Добавьте почтовые ящики с которых требуется собирать письма, указав параметры для" +
+    " подключения и проверьте корректность введённых данных.";
             // 
             // textBoxLogin
             // 
@@ -104,7 +104,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(254, 21);
             this.label6.TabIndex = 26;
-            this.label6.Text = "Почтовый сервер (Imap):";
+            this.label6.Text = "Почтовый сервер (IMAP):";
             // 
             // buttonCheckImapConn
             // 
@@ -153,7 +153,7 @@
             this.panel1.Controls.Add(this.textBoxPassword);
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.textBoxLogin);
-            this.panel1.Location = new System.Drawing.Point(16, 102);
+            this.panel1.Location = new System.Drawing.Point(16, 119);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(280, 304);
             this.panel1.TabIndex = 18;
@@ -162,7 +162,7 @@
             // 
             this.listBoxImapClients.FormattingEnabled = true;
             this.listBoxImapClients.ItemHeight = 20;
-            this.listBoxImapClients.Location = new System.Drawing.Point(318, 102);
+            this.listBoxImapClients.Location = new System.Drawing.Point(318, 119);
             this.listBoxImapClients.Name = "listBoxImapClients";
             this.listBoxImapClients.Size = new System.Drawing.Size(191, 304);
             this.listBoxImapClients.TabIndex = 19;
@@ -170,7 +170,7 @@
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(12, 78);
+            this.label2.Location = new System.Drawing.Point(12, 95);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(284, 21);
             this.label2.TabIndex = 20;
@@ -179,24 +179,24 @@
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(314, 78);
+            this.label3.Location = new System.Drawing.Point(314, 95);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(195, 21);
             this.label3.TabIndex = 21;
-            this.label3.Text = "Лист клиентов";
+            this.label3.Text = "Список почт:";
             // 
             // GetImapClientsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(525, 419);
+            this.ClientSize = new System.Drawing.Size(525, 444);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.listBoxImapClients);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Name = "GetImapClientsForm";
-            this.Text = "Добавление клиентов для подключения к почте";
+            this.Text = "Добавление почтовых ящиков";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

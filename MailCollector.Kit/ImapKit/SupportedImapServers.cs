@@ -12,7 +12,7 @@ namespace MailCollector.Kit.ImapKit
             new ImapServerParams("imap.yandex.com", port: 0, useSsl: true);
         public static ImapServerParams YandexParams => _yandexParams;
 
-        // Не тестил, для количества
+        // Не тестировалось, для количества
         private static readonly ImapServerParams _gmailParams =
             new ImapServerParams("imap.gmail.com", port: 0, useSsl: true);
         public static ImapServerParams GmailParams => _gmailParams;

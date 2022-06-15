@@ -51,8 +51,7 @@
             this.labelInfo.Name = "labelInfo";
             this.labelInfo.Size = new System.Drawing.Size(412, 69);
             this.labelInfo.TabIndex = 17;
-            this.labelInfo.Text = "Выберите папку установки (надписи меняются в зависимости от опций в конструкторе)" +
-    "";
+            this.labelInfo.Text = "Выберите папку для установки сервиса. Нажмите кнопку \'Далее\' для продолжения.";
             // 
             // pictureBox1
             // 
@@ -160,7 +159,7 @@
             this.Controls.Add(this.labelInfo);
             this.Controls.Add(this.pictureBox1);
             this.Name = "ChooseInstallPathForm";
-            this.Text = "Выберите путь устаноки";
+            this.Text = "Выбор пути устаноки";
             this.Controls.SetChildIndex(this.pictureBox1, 0);
             this.Controls.SetChildIndex(this.labelInfo, 0);
             this.Controls.SetChildIndex(this.panelSelectServicePath, 0);

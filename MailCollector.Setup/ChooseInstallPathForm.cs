@@ -33,22 +33,22 @@ namespace MailCollector.Setup
             {
                 if (_hasFlagInstService == _hasFlagInstClient)
                 {
-                    Text = "Выберите путь установки сервиса и клиентской части";
-                    labelInfo.Text = "Выберите папку для установки сервиса и клиентской части:";
+                    Text = "Выбор пути установки сервиса и клиентской части";
+                    labelInfo.Text = "Выберите папку для установки сервиса и клиентской части. Нажмите 'Далее' для продолжения.";
                 }
                 else
                 {
                     if (_hasFlagInstService)
                     {
-                        Text = "Выберите путь установки сервиса";
-                        labelInfo.Text = "Выберите папку установки сервиса:";
+                        Text = "Выбор пути установки сервиса";
+                        labelInfo.Text = "Выберите папку установки сервиса. Нажмите 'Далее' для продолжения.";
 
                         panelSelectClientPath.Visible = false;
                     }
                     if (_hasFlagInstClient)
                     {
-                        Text = "Выберите путь установки клиентской части";
-                        labelInfo.Text = "Выберите папку установки клиентской части:";
+                        Text = "Выбор пути установки клиентской части";
+                        labelInfo.Text = "Выберите папку установки клиентской части. Нажмите 'Далее' для продолжения.";
 
                         panelSelectServicePath.Visible = false;
                         panelSelectClientPath.Location = FirstFileDialogLocation;
@@ -61,7 +61,7 @@ namespace MailCollector.Setup
                     || setupSettings.InstallSteps.HasFlag(SetupSteps.CreateDb);
                 if (_hasConfigureTgBotOrCreateDb)
                 {
-                    Text = "Выберите путь к установленному сервису";
+                    Text = "Выбор пути к установленному сервису";
                     labelInfo.Text = "Выберите папку, где был установлен сервис:";
 
                     panelSelectClientPath.Visible = false;
@@ -96,7 +96,7 @@ namespace MailCollector.Setup
                             dirInfo = new DirectoryInfo(servicePath);
                             if (!dirInfo.Exists)
                             {
-                                ShowWarningBox("Путь к папке сервиса указан не верно, папки не существует.");
+                                ShowWarningBox("Путь к папке сервиса указан неверно, папки не существует.");
                                 return;
                             }
                         }

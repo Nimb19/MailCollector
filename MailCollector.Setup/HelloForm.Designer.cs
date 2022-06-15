@@ -45,9 +45,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(379, 147);
             this.label1.TabIndex = 2;
-            this.label1.Text = "    Вас приветствует установщик сервиса MailCollector. \r\nСервис занимается сбором" +
-    ", сохранением и рассылкой писем из почтовых ящиков.\r\nОн подключается к указанным" +
-    " Вами серверам по IMAP протоколу.";
+            this.label1.Text = resources.GetString("label1.Text");
             // 
             // pictureBox1
             // 
@@ -66,7 +64,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(505, 27);
             this.label2.TabIndex = 4;
-            this.label2.Text = "          Так же, сервис поддерживает рассылку уведомлений";
+            this.label2.Text = "          Также сервис поддерживает рассылку уведомлений";
             // 
             // label3
             // 
@@ -75,8 +73,8 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(505, 88);
             this.label3.TabIndex = 5;
-            this.label3.Text = "          через телеграм-бота. Для того, что бы подключить телеграм бота необхдим" +
-    "о указать токен на одной из следующих страниц.";
+            this.label3.Text = "          через телеграм-бота. Для того чтобы подключить телеграм-бота, необходим" +
+    "о указать его токен на одной из следующих страниц.";
             // 
             // pictureBox2
             // 
@@ -99,7 +97,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Name = "HelloForm";
-            this.Text = "Установщик сервиса MailCollector";
+            this.Text = "Мастер установки сервиса MailCollector";
             this.Controls.SetChildIndex(this.label1, 0);
             this.Controls.SetChildIndex(this.pictureBox1, 0);
             this.Controls.SetChildIndex(this.label2, 0);

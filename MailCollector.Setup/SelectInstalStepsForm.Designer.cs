@@ -46,7 +46,7 @@
             this.checkBoxCreateDb.Name = "checkBoxCreateDb";
             this.checkBoxCreateDb.Size = new System.Drawing.Size(492, 67);
             this.checkBoxCreateDb.TabIndex = 2;
-            this.checkBoxCreateDb.Text = "Создание БД \'MailCollectorStorage\' (Обязтельно нужна, если не была установлена ра" +
+            this.checkBoxCreateDb.Text = "Создание БД \'MailCollectorStorage\' (обязтельно нужна, если не была установлена ра" +
     "нее)";
             this.checkBoxCreateDb.UseVisualStyleBackColor = true;
             // 
@@ -67,7 +67,8 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(412, 69);
             this.label1.TabIndex = 15;
-            this.label1.Text = "Вы можете вырать какие компоненты вы хотите установить:";
+            this.label1.Text = "Выберите компоненты программы, которые Вы хотите установить. Нажмите кнопку \'Дале" +
+    "е\' для продолжения.";
             // 
             // checkBoxInstallService
             // 
@@ -77,7 +78,7 @@
             this.checkBoxInstallService.Name = "checkBoxInstallService";
             this.checkBoxInstallService.Size = new System.Drawing.Size(492, 67);
             this.checkBoxInstallService.TabIndex = 16;
-            this.checkBoxInstallService.Text = "Основной сервис \'MailCollector.Service\' (Обязательно нужен, если не был установле" +
+            this.checkBoxInstallService.Text = "Основной сервис \'MailCollector.Service\' (обязательно нужен, если не был установле" +
     "н ранее)";
             this.checkBoxInstallService.UseVisualStyleBackColor = true;
             // 
@@ -89,7 +90,7 @@
             this.checkBoxConfigureTgBot.Name = "checkBoxConfigureTgBot";
             this.checkBoxConfigureTgBot.Size = new System.Drawing.Size(492, 67);
             this.checkBoxConfigureTgBot.TabIndex = 17;
-            this.checkBoxConfigureTgBot.Text = "Подключение Telegram-бота для оповещений";
+            this.checkBoxConfigureTgBot.Text = "Подключение телеграм-бота для оповещений";
             this.checkBoxConfigureTgBot.UseVisualStyleBackColor = true;
             // 
             // checkBoxInstallClient
@@ -116,7 +117,7 @@
             this.Controls.Add(this.checkBoxCreateDb);
             this.Margin = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.Name = "SelectInstalStepsForm";
-            this.Text = "Выберите компоненты для установки";
+            this.Text = "Выбор компонентов для установки";
             this.Controls.SetChildIndex(this.checkBoxCreateDb, 0);
             this.Controls.SetChildIndex(this.pictureBox1, 0);
             this.Controls.SetChildIndex(this.label1, 0);

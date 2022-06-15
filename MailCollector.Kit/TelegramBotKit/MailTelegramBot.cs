@@ -1,6 +1,5 @@
 ﻿using MailCollector.Kit.ImapKit.Models;
 using MailCollector.Kit.Logger;
-using MailCollector.Kit.ServiceKit;
 using MailCollector.Kit.SqlKit;
 using MailCollector.Kit.SqlKit.Models;
 using Newtonsoft.Json;
@@ -21,7 +20,6 @@ namespace MailCollector.Kit.TelegramBotKit
 
         private readonly string _token;
         private readonly ILogger _logger;
-        private readonly ServiceConfig _serviceConfig;
         private readonly SqlServerShell _sqlServerShell;
         private static readonly ReceiverOptions _receiverOptions = new ReceiverOptions
         {
@@ -36,12 +34,11 @@ namespace MailCollector.Kit.TelegramBotKit
         public Telegram.Bot.Types.User BotInfo { get; private set; }
         public bool IsStarted { get; private set; }
 
-        public MailTelegramBot(string token, SqlServerShell sqlServerShell, ServiceConfig serviceConfig, ILogger logger)
+        public MailTelegramBot(string token, SqlServerShell sqlServerShell, ILogger logger)
         {
             _logger = new PrefixLogger(logger, LogPrefix);
             _token = token;
             _sqlServerShell = sqlServerShell;
-            _serviceConfig = serviceConfig;
         }
 
         public void Start(CancellationToken cancelationToken)
@@ -62,7 +59,7 @@ namespace MailCollector.Kit.TelegramBotKit
             _bot.StartReceiving(UpdateHadler, HandleErrorAsync, _receiverOptions, cancelationToken);
 
             IsStarted = true;
-            _logger.WriteLine($"Телеграмм бот '{BotInfo.FirstName}' успешно запущен");
+            _logger.WriteLine($"Телеграм-бот '{BotInfo.FirstName}' успешно запущен");
         }
 
         private async Task UpdateHadler(ITelegramBotClient botClient, Update update, CancellationToken cancelationToken)
@@ -80,8 +77,8 @@ namespace MailCollector.Kit.TelegramBotKit
 
                 if (cancelationToken.IsCancellationRequested)
                 {
-                    _logger.WriteLine($"Поступила команда отмены работы Telegram бота '{BotInfo.FirstName}'");
-                    await SendTextMessageAsync(botClient, message.Chat, "Поступила команда отмены работы телеграмм бота. Прощайте :(");
+                    _logger.WriteLine($"Поступила команда отмены работы телеграм-бота '{BotInfo.FirstName}'");
+                    await SendTextMessageAsync(botClient, message.Chat, "Поступила команда отмены работы телеграм-бота. Прощайте :(");
                     IsStarted = false;
                     return;
                 }
@@ -152,7 +149,7 @@ namespace MailCollector.Kit.TelegramBotKit
                 }
 
                 await Task.Run(() => _tgSqlAdapter.SaveChatId(chat));
-                _logger.WriteLine($"Был успешно добавлен Telegram-клиент: Id={chat.Identifier}; UserName={chat.Username}");
+                _logger.WriteLine($"Был успешно добавлен телеграм-клиент: Id={chat.Identifier}; UserName={chat.Username}");
 
                 return true;
             }
@@ -169,17 +166,6 @@ namespace MailCollector.Kit.TelegramBotKit
             {
                 _logger.Warning("Для отправки сообщений подписчикам пришло 0 писем");
                 return;
-            }
-
-            if (_serviceConfig.WhetherEnableMailFilter)
-            {
-                if ((_serviceConfig.MailsFilterStrings?.Length ?? -1) > 1)
-                {
-                    imapMails = imapMails
-                        .Where(x => IsTextContainsAnyWordInArray(x.Subject, _serviceConfig.MailsFilterStrings) 
-                        || IsTextContainsAnyWordInArray(x.HtmlBody, _serviceConfig.MailsFilterStrings))
-                        .ToArray();
-                }
             }
 
             string tgMessage;
@@ -207,16 +193,6 @@ namespace MailCollector.Kit.TelegramBotKit
             SendMessageToAllSubs(tgMessage);
         }
 
-        private static bool IsTextContainsAnyWordInArray(string text, string[] mailsFilterStrings)
-        {
-            foreach (var filterSring in mailsFilterStrings)
-            {
-                if (text.IndexOf(filterSring, StringComparison.OrdinalIgnoreCase) >= 0)
-                    return true;
-            }
-            return false;
-        }
-
         public void SendMessageToAllSubsAboutInitComplete(ImapClient imapClient)
         {
             string tgMessage = $"Клиент {imapClient.Login} успешно инициализирован впервые." +
@@ -231,7 +207,7 @@ namespace MailCollector.Kit.TelegramBotKit
                 var subs = _tgSqlAdapter.GetAllSubscribers();
                 if (subs.Length == 0)
                 {
-                    _logger.Warning($"Сообщение от телеграмм бота не было отправлено" +
+                    _logger.Warning($"Сообщение от телеграм-бота не было отправлено" +
                         $", так как не было ни одного подписчика." +
                         $" Начало сообщения: {new string(tgMessage.Take(12).ToArray())}");
                     return;
@@ -239,7 +215,7 @@ namespace MailCollector.Kit.TelegramBotKit
                 foreach (var sub in subs)
                 {
                     if (sub == null || (sub.ChatId == null && sub.Username == null))
-                        continue; // Просто отказоустойчивость на всякий
+                        continue; // Отказоустойчивость
 
                     ChatId chatId = null;
 
@@ -250,11 +226,11 @@ namespace MailCollector.Kit.TelegramBotKit
 
                     SendTextMessageAsync(_bot, chatId, tgMessage).Wait();
                 }
-                _logger.WriteLine($"Сообщения подписчикам в Telegram о новых письмах успешно высланы");
+                _logger.WriteLine($"Сообщения подписчикам в телеграм о новых письмах успешно высланы");
             }
             catch (Exception ex)
             {
-                _logger.Error($"Не удалось разослать подписчикам о новых письмах: {ex}");
+                _logger.Error($"Не удалось разослать уведомления подписчикам о новых письмах: {ex}");
             }
         }
 

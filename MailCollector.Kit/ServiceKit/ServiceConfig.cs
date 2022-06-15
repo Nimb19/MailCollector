@@ -6,7 +6,5 @@ namespace MailCollector.Kit.ServiceKit
     {
         public SqlServerSettings SqlServerSettings { get; set; }
         public string TelegramBotApiToken { get; set; }
-        public bool WhetherEnableMailFilter { get; set; }
-        public string[] MailsFilterStrings { get; set; }
     }
 }
