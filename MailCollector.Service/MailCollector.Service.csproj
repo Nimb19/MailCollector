@@ -86,4 +86,9 @@
     </ItemGroup>
     <Copy SourceFiles="@(DataFiles)" DestinationFolder="$(OutDir)\" />
   </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties filestocopyinbuild_4config_1example_1json__JsonSchema="https://appsemble.app/api.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

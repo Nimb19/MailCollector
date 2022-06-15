@@ -43,7 +43,7 @@ namespace MailCollector.Kit.ServiceKit
                     sqlFolder = shell.CreateFolder(folder);
                 }
                 var lastIndex = shell.GetLastMailIndexFromFolder(sqlFolder.Uid);
-                var mails = folder.FetchLastMails(lastIndex + 1, cancellationToken);
+                var mails = folder.FetchLastMails(lastIndex + 1, cancellationToken, logger);
                 if (mails.Length == 0)
                     continue;
 

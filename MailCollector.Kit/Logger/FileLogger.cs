@@ -9,15 +9,14 @@ namespace MailCollector.Kit.Logger
         public static readonly FileLogger Instance = new FileLogger();
         public string ModuleName = null;
 
-        private readonly object _lock = new object();
+        private readonly object _fileLock = new object();
 
-        /// <summary> По умолчанию сбрасывает в папку с приложением. </summary>
+        /// <summary> По умолчанию сбрасывает в папку с приложением </summary>
         public string PathToLogs { get; private set; }
-        public override LogLevel LogLevel { get; set; } = LogLevel.Debug;
 
         protected override void PrivateWrite(string fullMsg)
         {
-            lock (_lock)
+            lock (_fileLock)
             {
                 using (var sw = new StreamWriter(PathToLogs, append: true, CommonExtensions.Encoding))
                     sw.WriteLine(fullMsg);
@@ -26,12 +25,18 @@ namespace MailCollector.Kit.Logger
 
         public FileLogger() 
         {
-            SetPathToLogs();
+            Constructor();
         }
 
         public FileLogger(string moduleName)
         {
             ModuleName = string.IsNullOrWhiteSpace(moduleName) ? null : moduleName.Trim();
+            Constructor();
+        }
+
+        private void Constructor()
+        {
+            NeedWriteFullDate = false;
             SetPathToLogs();
         }
 

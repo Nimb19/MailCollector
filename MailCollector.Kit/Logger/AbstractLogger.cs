@@ -1,20 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MailCollector.Kit.Logger
 {
     public abstract class AbstractLogger : ILogger
     {
-        public virtual LogLevel LogLevel { get; set; } = LogLevel.Trace;
+        public bool NeedWriteFullDate { get; set; } = true;
+        public virtual LogLevel LogLevel { get; set; } = LogLevel.Info;
 
         protected abstract void PrivateWrite(string fullMsg);
 
         public virtual void Write(LogLevel logLevel, string msg)
         {
+            if (logLevel == LogLevel.None)
+            {
+                logLevel = LogLevel.Info;
+            }
+
             if (LogLevel >= logLevel)
             {
-                var logLevelToString = string.Empty;
+                string logLevelToString = null;
                 switch (logLevel)
                 {
                     case LogLevel.Trace: logLevelToString = "TRC"; break;
@@ -22,9 +26,13 @@ namespace MailCollector.Kit.Logger
                     case LogLevel.Error: logLevelToString = "ERR"; break;
                     case LogLevel.Warning: logLevelToString = "WRN"; break;
                     case LogLevel.Debug: logLevelToString = "DBG"; break;
+                    default: logLevelToString = "default"; break;
                 }
 
-                var fullMasg = $"{DateTime.Now} [{logLevelToString}] {msg}";
+                var datetimestr = NeedWriteFullDate 
+                    ? DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") 
+                    : DateTime.Now.ToString("HH:mm:ss:fff");
+                var fullMasg = $"{datetimestr} [{logLevelToString}] {msg}";
                 PrivateWrite(fullMasg);
             }
         }

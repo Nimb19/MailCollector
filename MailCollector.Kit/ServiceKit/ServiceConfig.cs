@@ -1,4 +1,5 @@
-﻿using MailCollector.Kit.SqlKit.Models;
+﻿using MailCollector.Kit.Logger;
+using MailCollector.Kit.SqlKit.Models;
 
 namespace MailCollector.Kit.ServiceKit
 {
@@ -8,5 +9,6 @@ namespace MailCollector.Kit.ServiceKit
         public string TelegramBotApiToken { get; set; }
         public bool WhetherEnableMailFilter { get; set; }
         public string[] MailsFilterStrings { get; set; }
+        public LogLevel LogLevel { get; set; } = LogLevel.Info;
     }
 }

@@ -70,6 +70,7 @@ namespace MailCollector.Service
             {
                 var configPath = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName, Constants.ConfigFileName);
                 var config = CommonExtensions.DeserializeFile<ServiceConfig>(configPath);
+                _logger.LogLevel = config.LogLevel == LogLevel.None ? LogLevel.Info : config.LogLevel;
 
                 _serviceWorker = new ServiceWorker(config, _logger, Constants.ModuleName, _cts.Token);
 

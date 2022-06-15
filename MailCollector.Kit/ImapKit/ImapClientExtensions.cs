@@ -1,4 +1,5 @@
 ﻿using MailCollector.Kit.ImapKit.Models;
+using MailCollector.Kit.Logger;
 using MailKit;
 using MailKit.Net.Imap;
 using MimeKit;
@@ -77,7 +78,8 @@ namespace MailCollector.Kit.ImapKit
             return isConnected;
         }
 
-        public static ImapMailParams[] FetchLastMails(this IMailFolder mailFolder, int startIndex, CancellationToken cancellationToken)
+        public static ImapMailParams[] FetchLastMails(this IMailFolder mailFolder
+            , int startIndex, CancellationToken cancellationToken, ILogger logger)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var mails = new List<ImapMailParams>();
@@ -85,11 +87,13 @@ namespace MailCollector.Kit.ImapKit
             var j = 0;
             var messageSummary = mailFolder.Fetch(startIndex, -1, MessageSummaryItems.InternalDate, cancellationToken).ToArray();
 
+            var isTrace = logger != null && logger.LogLevel == LogLevel.Trace;
             for (int i = startIndex; i < mailFolder.Count; i++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var message = mailFolder.GetMessage(i, cancellationToken); 
+                var message = mailFolder.GetMessage(i, cancellationToken);
+                var to = message.To.MailAddressToString();
                 var mail = new ImapMailParams() 
                 {
                     Index = messageSummary[j].Index,
@@ -98,12 +102,14 @@ namespace MailCollector.Kit.ImapKit
                     Folder = mailFolder,
                     HtmlBody = message.HtmlBody?.ToString(),
                     From = message.From.MailAddressToString(),
-                    To = message.To.MailAddressToString(),
+                    To = to,
                     Cc = message.Cc.MailAddressToString(),
                 };
                 mails.Add(mail);
-
                 j++;
+
+                if (isTrace)
+                    logger.Trace($"Сохранено в временный лист письмо с индексом {i} на почту(ы): '{to}'. Его тема: '{mail.Subject}'");
             }
 
             return mails.ToArray();

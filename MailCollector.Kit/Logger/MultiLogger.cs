@@ -1,13 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace MailCollector.Kit.Logger
 {
     public sealed class MultiLogger : ILogger
     {
         public List<ILogger> Loggers { get; set; }
-        public LogLevel LogLevel { get; set; } = LogLevel.Debug;
+        public LogLevel LogLevel 
+        {
+            get
+            {
+                var fl = Loggers.FirstOrDefault();
+                if (fl == null)
+                    return LogLevel.Info;
+
+                return fl.LogLevel;
+            }
+            set
+            {
+                foreach (var logger in Loggers)
+                {
+                    if (logger.LogLevel != value)
+                        logger.LogLevel = value;
+                }
+            } 
+        }
 
         public MultiLogger(params ILogger[] loggers)
         {
