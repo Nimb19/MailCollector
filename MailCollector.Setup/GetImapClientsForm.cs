@@ -84,6 +84,10 @@ namespace MailCollector.Setup
 
         private async void ButtonCheckImapConn_Click(object sender, EventArgs e)
         {
+            var clientParams = GetImapClientParam();
+            if (clientParams == null)
+                return;
+
             var buttonNextActive = buttonNext.Enabled;
             if (buttonNextActive)
                 buttonNext.Enabled = false;
@@ -94,10 +98,6 @@ namespace MailCollector.Setup
             textBoxLogin.Enabled = false;
             textBoxPassword.Enabled = false;
             comboBoImapServersNames.Enabled = false;
-
-            var clientParams = GetImapClientParam();
-            if (clientParams == null)
-                return;
 
             var trys = 4;
             var isConnected = false;

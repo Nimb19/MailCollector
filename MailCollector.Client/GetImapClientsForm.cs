@@ -57,15 +57,15 @@ namespace MailCollector.Client
 
         private async void ButtonCheckImapConn_Click(object sender, EventArgs e)
         {
+            var clientParams = GetImapClientParam();
+            if (clientParams == null)
+                return;
+
             buttonCheckImapConn.Enabled = false;
             buttonAddClient.Enabled = false;
             textBoxLogin.Enabled = false;
             textBoxPassword.Enabled = false;
             comboBoImapServersNames.Enabled = false;
-
-            var clientParams = GetImapClientParam();
-            if (clientParams == null)
-                return;
 
             var trys = 4;
             var isConnected = false;
@@ -112,9 +112,6 @@ namespace MailCollector.Client
 
             if (!isExist)
             {
-                listBoxImapClients.Items.Add(clientName);
-                _resultImapClientParams.Add(clientParams);
-
                 var clients = _sqlServerShell.GetArrayOf<ImapClient>(ImapClient.TableName);
                 var servers = _sqlServerShell.GetArrayOf<ImapServer>(ImapServer.TableName);
                 (ImapClient Client, ImapServer Server)[] clientWithServer = 
@@ -143,6 +140,9 @@ namespace MailCollector.Client
                     };
                     _sqlServerShell.Insert(server, ImapServer.TableName);
                     _sqlServerShell.Insert(client, ImapClient.TableName);
+
+                    listBoxImapClients.Items.Add(clientName);
+                    _resultImapClientParams.Add(clientParams);
                 }
                 else
                 {

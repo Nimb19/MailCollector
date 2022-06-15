@@ -20,7 +20,7 @@ namespace MailCollector.Kit.SqlKit
         private readonly ILogger _logger;
         private readonly string _moduleInfo = "SqlServerShell";
 
-        private object _lock = new object();
+        private object _executeLock = new object();
 
         public const int ConnectionTimeoutInSeconds = 3;
 
@@ -343,7 +343,7 @@ namespace MailCollector.Kit.SqlKit
         public T[] ReadArrayOf<T>(string getCmd) where T : class, new()
         {
             var list = new List<T>();
-            lock (_lock)
+            lock (_executeLock)
             {
                 using (var reader = ExecuteReader(getCmd))
                 {
@@ -386,7 +386,7 @@ namespace MailCollector.Kit.SqlKit
         public string[] ReadArrayOfStrings(string cmdText)
         {
             var list = new List<string>();
-            lock (_lock)
+            lock (_executeLock)
             {
                 using (var reader = ExecuteReader(cmdText))
                 {
@@ -727,7 +727,7 @@ namespace MailCollector.Kit.SqlKit
         private List<string> GetList(string script)
         {
             var list = new List<string>();
-            lock (_lock)
+            lock (_executeLock)
             {
                 using (var reader = ExecuteReader(script))
                 {
@@ -744,7 +744,7 @@ namespace MailCollector.Kit.SqlKit
         private List<T> GetList<T>(string script)
         {
             var list = new List<T>();
-            lock (_lock)
+            lock (_executeLock)
             {
                 using (var reader = ExecuteReader(script))
                 {
@@ -766,7 +766,7 @@ namespace MailCollector.Kit.SqlKit
         {
             SqlCommand cmd;
 
-            var isEnter = Monitor.TryEnter(_lock);
+            var isEnter = Monitor.TryEnter(_executeLock);
             try
             {
                 cmd = SqlCon.CreateCommand();
@@ -774,7 +774,7 @@ namespace MailCollector.Kit.SqlKit
             finally
             {
                 if (isEnter)
-                    Monitor.Exit(_lock);
+                    Monitor.Exit(_executeLock);
             }
 
             cmd.CommandTimeout = CommandTimeoutInSeconds;
@@ -788,7 +788,7 @@ namespace MailCollector.Kit.SqlKit
         {
             using (var cmd = CreateCommand(command, commandType))
             {
-                var isEnter = Monitor.TryEnter(_lock);
+                var isEnter = Monitor.TryEnter(_executeLock);
                 try
                 {
                     return cmd.ExecuteReader();
@@ -796,7 +796,7 @@ namespace MailCollector.Kit.SqlKit
                 finally
                 {
                     if (isEnter)
-                        Monitor.Exit(_lock);
+                        Monitor.Exit(_executeLock);
                 }
             }
         }
@@ -805,9 +805,15 @@ namespace MailCollector.Kit.SqlKit
         {
             using (var cmd = CreateCommand(command, commandType))
             {
-                lock (_lock)
+                var isEnter = Monitor.TryEnter(_executeLock);
+                try
                 {
                     return cmd.ExecuteScalar();
+                }
+                finally
+                {
+                    if (isEnter)
+                        Monitor.Exit(_executeLock);
                 }
             }
         }
@@ -816,9 +822,15 @@ namespace MailCollector.Kit.SqlKit
         {
             using (var cmd = CreateCommand(command, commandType))
             {
-                lock (_lock)
+                var isEnter = Monitor.TryEnter(_executeLock);
+                try
                 {
                     return cmd.ExecuteNonQuery();
+                }
+                finally
+                {
+                    if (isEnter)
+                        Monitor.Exit(_executeLock);
                 }
             }
         }
