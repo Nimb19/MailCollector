@@ -1,5 +1,6 @@
 ﻿using MailCollector.Kit.ImapKit.Models;
 using MailCollector.Kit.Logger;
+using MailCollector.Kit.ServiceKit;
 using MailCollector.Kit.SqlKit;
 using MailCollector.Kit.SqlKit.Models;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace MailCollector.Kit.TelegramBotKit
 
         private readonly string _token;
         private readonly ILogger _logger;
+        private readonly ServiceConfig _serviceConfig;
         private readonly SqlServerShell _sqlServerShell;
         private static readonly ReceiverOptions _receiverOptions = new ReceiverOptions
         {
@@ -34,11 +36,12 @@ namespace MailCollector.Kit.TelegramBotKit
         public Telegram.Bot.Types.User BotInfo { get; private set; }
         public bool IsStarted { get; private set; }
 
-        public MailTelegramBot(string token, SqlServerShell sqlServerShell, ILogger logger)
+        public MailTelegramBot(string token, SqlServerShell sqlServerShell, ServiceConfig serviceConfig, ILogger logger)
         {
             _logger = new PrefixLogger(logger, LogPrefix);
             _token = token;
             _sqlServerShell = sqlServerShell;
+            _serviceConfig = serviceConfig;
         }
 
         public void Start(CancellationToken cancelationToken)
@@ -168,6 +171,17 @@ namespace MailCollector.Kit.TelegramBotKit
                 return;
             }
 
+            if (_serviceConfig.WhetherEnableMailFilter)
+            {
+                if ((_serviceConfig.MailsFilterStrings?.Length ?? -1) > 1)
+                {
+                    imapMails = imapMails
+                        .Where(x => IsTextContainsAnyWordInArray(x.Subject, _serviceConfig.MailsFilterStrings)
+                        || IsTextContainsAnyWordInArray(x.HtmlBody, _serviceConfig.MailsFilterStrings))
+                        .ToArray();
+                }
+            }
+
             string tgMessage;
             var mailFormat = "От '{0}', тема: '{1}', дата: {2}";
             if (imapMails.Length == 1)
@@ -191,6 +205,16 @@ namespace MailCollector.Kit.TelegramBotKit
             }
 
             SendMessageToAllSubs(tgMessage);
+        }
+
+        private static bool IsTextContainsAnyWordInArray(string text, string[] mailsFilterStrings)
+        {
+            foreach (var filterSring in mailsFilterStrings)
+            {
+                if (text.IndexOf(filterSring, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+            return false;
         }
 
         public void SendMessageToAllSubsAboutInitComplete(ImapClient imapClient)

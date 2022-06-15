@@ -17,7 +17,8 @@ namespace MailCollector.Kit.ServiceKit
         ///     Подгрузить для каждой папки только их новые письма, если они были.
         /// </summary>
         public static void FetchAndSaveLastMailsFromAllFolders(this ImapClient client
-            , MailCollectorSqlAdapter shell, MailTelegramBot tgBot, ILogger logger, CancellationToken cancellationToken, bool isInited = true)
+            , MailCollectorSqlAdapter shell, MailTelegramBot tgBot, ILogger logger
+            , CancellationToken cancellationToken, bool isInited = true)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
