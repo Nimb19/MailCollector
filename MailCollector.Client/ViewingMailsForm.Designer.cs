@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonNextPage = new System.Windows.Forms.Button();
+            this.buttonBackPage = new System.Windows.Forms.Button();
+            this.labelPageNumber = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.labelMailsCount = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonUpdateMails = new System.Windows.Forms.Button();
@@ -64,6 +68,10 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.buttonNextPage);
+            this.panel1.Controls.Add(this.buttonBackPage);
+            this.panel1.Controls.Add(this.labelPageNumber);
+            this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.labelMailsCount);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.buttonUpdateMails);
@@ -72,14 +80,54 @@
             this.panel1.Controls.Add(this.panelMailsBox);
             this.panel1.Location = new System.Drawing.Point(12, 37);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(426, 753);
+            this.panel1.Size = new System.Drawing.Size(449, 863);
             this.panel1.TabIndex = 0;
+            // 
+            // buttonNextPage
+            // 
+            this.buttonNextPage.Location = new System.Drawing.Point(242, 140);
+            this.buttonNextPage.Name = "buttonNextPage";
+            this.buttonNextPage.Size = new System.Drawing.Size(200, 32);
+            this.buttonNextPage.TabIndex = 18;
+            this.buttonNextPage.Text = "Следующая";
+            this.buttonNextPage.UseVisualStyleBackColor = true;
+            this.buttonNextPage.Click += new System.EventHandler(this.ButtonNextPage_Click);
+            // 
+            // buttonBackPage
+            // 
+            this.buttonBackPage.Location = new System.Drawing.Point(7, 140);
+            this.buttonBackPage.Name = "buttonBackPage";
+            this.buttonBackPage.Size = new System.Drawing.Size(200, 32);
+            this.buttonBackPage.TabIndex = 17;
+            this.buttonBackPage.Text = "Предыдующая";
+            this.buttonBackPage.UseVisualStyleBackColor = true;
+            this.buttonBackPage.Click += new System.EventHandler(this.ButtonBackPage_Click);
+            // 
+            // labelPageNumber
+            // 
+            this.labelPageNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelPageNumber.AutoSize = true;
+            this.labelPageNumber.Location = new System.Drawing.Point(346, 117);
+            this.labelPageNumber.Name = "labelPageNumber";
+            this.labelPageNumber.Size = new System.Drawing.Size(17, 20);
+            this.labelPageNumber.TabIndex = 16;
+            this.labelPageNumber.Text = "1";
+            // 
+            // label7
+            // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 117);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(346, 20);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Отображается макс. 100 писем. Страница: ";
             // 
             // labelMailsCount
             // 
             this.labelMailsCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelMailsCount.AutoSize = true;
-            this.labelMailsCount.Location = new System.Drawing.Point(374, 84);
+            this.labelMailsCount.Location = new System.Drawing.Point(404, 84);
             this.labelMailsCount.Name = "labelMailsCount";
             this.labelMailsCount.Size = new System.Drawing.Size(0, 20);
             this.labelMailsCount.TabIndex = 14;
@@ -88,11 +136,11 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(269, 84);
+            this.label1.Location = new System.Drawing.Point(238, 84);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(99, 20);
+            this.label1.Size = new System.Drawing.Size(160, 20);
             this.label1.TabIndex = 13;
-            this.label1.Text = "Количество:";
+            this.label1.Text = "Общее количество:";
             // 
             // buttonUpdateMails
             // 
@@ -100,7 +148,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonUpdateMails.Location = new System.Drawing.Point(5, 3);
             this.buttonUpdateMails.Name = "buttonUpdateMails";
-            this.buttonUpdateMails.Size = new System.Drawing.Size(414, 32);
+            this.buttonUpdateMails.Size = new System.Drawing.Size(437, 32);
             this.buttonUpdateMails.TabIndex = 12;
             this.buttonUpdateMails.Text = "Обновить список писем";
             this.buttonUpdateMails.UseVisualStyleBackColor = true;
@@ -110,7 +158,7 @@
             // 
             this.buttonFindByKeyWord.Location = new System.Drawing.Point(5, 78);
             this.buttonFindByKeyWord.Name = "buttonFindByKeyWord";
-            this.buttonFindByKeyWord.Size = new System.Drawing.Size(258, 32);
+            this.buttonFindByKeyWord.Size = new System.Drawing.Size(227, 32);
             this.buttonFindByKeyWord.TabIndex = 11;
             this.buttonFindByKeyWord.Text = "Найти по ключевому слову";
             this.buttonFindByKeyWord.UseVisualStyleBackColor = true;
@@ -122,7 +170,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxKeyWord.Location = new System.Drawing.Point(5, 46);
             this.textBoxKeyWord.Name = "textBoxKeyWord";
-            this.textBoxKeyWord.Size = new System.Drawing.Size(414, 26);
+            this.textBoxKeyWord.Size = new System.Drawing.Size(437, 26);
             this.textBoxKeyWord.TabIndex = 5;
             this.textBoxKeyWord.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -132,9 +180,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelMailsBox.AutoScroll = true;
-            this.panelMailsBox.Location = new System.Drawing.Point(3, 116);
+            this.panelMailsBox.Location = new System.Drawing.Point(3, 178);
             this.panelMailsBox.Name = "panelMailsBox";
-            this.panelMailsBox.Size = new System.Drawing.Size(418, 632);
+            this.panelMailsBox.Size = new System.Drawing.Size(441, 680);
             this.panelMailsBox.TabIndex = 0;
             // 
             // panel2
@@ -154,9 +202,9 @@
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.panel3);
-            this.panel2.Location = new System.Drawing.Point(444, 37);
+            this.panel2.Location = new System.Drawing.Point(467, 37);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(697, 753);
+            this.panel2.Size = new System.Drawing.Size(945, 863);
             this.panel2.TabIndex = 1;
             // 
             // labelCc
@@ -263,7 +311,7 @@
             this.panel3.Controls.Add(this.webBrowser);
             this.panel3.Location = new System.Drawing.Point(-1, 116);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(697, 636);
+            this.panel3.Size = new System.Drawing.Size(945, 746);
             this.panel3.TabIndex = 2;
             // 
             // webBrowser
@@ -274,7 +322,7 @@
             this.webBrowser.Location = new System.Drawing.Point(0, 0);
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(695, 634);
+            this.webBrowser.Size = new System.Drawing.Size(943, 744);
             this.webBrowser.TabIndex = 0;
             // 
             // menuStrip1
@@ -283,7 +331,7 @@
             this.действияToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1153, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1424, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -322,7 +370,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1153, 802);
+            this.ClientSize = new System.Drawing.Size(1424, 912);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
@@ -368,5 +416,9 @@
         private System.Windows.Forms.ToolStripMenuItem обновитьПисьмаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem закрытьПрограммуToolStripMenuItem;
         private System.Windows.Forms.WebBrowser webBrowser;
+        private System.Windows.Forms.Label labelPageNumber;
+        private System.Windows.Forms.Label label7;
+        internal System.Windows.Forms.Button buttonBackPage;
+        internal System.Windows.Forms.Button buttonNextPage;
     }
 }

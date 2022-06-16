@@ -11,6 +11,11 @@ namespace MailCollector.Client
 {
     public partial class ViewingMailsForm : TemplateForm
     {
+        private const int MaxMailssCountOnPage = 100;
+        private int _currentPage = 1;
+        private int _pagesCount;
+        private Mail[] _lastMails;
+
         private SqlServerShell _sqlServerShell;
         private MailControl _activeMailControl;
         private readonly List<MailControl> _mailsControls = new List<MailControl>();
@@ -32,6 +37,26 @@ namespace MailCollector.Client
             TryGetAndAddNewMails();
         }
 
+        private void ButtonBackPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage == 1)
+                return;
+
+            _currentPage--;
+            labelPageNumber.Text = _currentPage.ToString();
+            AddCurrentPageMails();
+        }
+
+        private void ButtonNextPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage == _pagesCount)
+                return;
+
+            _currentPage++;
+            labelPageNumber.Text = _currentPage.ToString();
+            AddCurrentPageMails();
+        }
+
         public int TryGetAndAddNewMails()
         {
             int newMails = 0;
@@ -40,40 +65,66 @@ namespace MailCollector.Client
                 const string orderBy = "ORDER BY " + nameof(Mail.Date) + " DESC"; 
                 var mails = _sqlServerShell.GetArrayOf<Mail>(Mail.TableName, orderBy: orderBy);
 
+                if (mails.Length == 0)
+                    return;
+
                 newMails = mails.Length - _mailsControls.Count;
                 if (newMails == 0)
                     return;
-                AddNewMails(mails);
+
+                _lastMails = mails;
+                _pagesCount = (int)Math.Ceiling((double)_lastMails.Length / (double)MaxMailssCountOnPage);
+                labelMailsCount.Text = _lastMails.Length.ToString();
+                AddCurrentPageMails();
 
             });
             return newMails;
         }
 
-        public void AddNewMails(Mail[] sortedMails)
+        public void AddCurrentPageMails()
         {
             TryCatch(() =>
             {
-                panelMailsBox.Controls.Clear();
-                _mailsControls.Clear();
+                var start = (_currentPage - 1) * MaxMailssCountOnPage;
+                var ostatok = _lastMails.Length - start;
+                var end = ostatok >= MaxMailssCountOnPage
+                    ? start + MaxMailssCountOnPage
+                    : start + ostatok;
 
-                var height = new MailControl().Size.Height;
-                for (int i = 0; i < sortedMails.Length; i++)
+                GenerateMailControls(start, end, _lastMails);
+            }, "Ошибка во время добавления писем", true);
+        }
+
+        private void GenerateMailControls(int start, int end, Mail[] mails)
+        {
+            panelMailsBox.Controls.Clear();
+            _mailsControls.Clear();
+
+            var height = new MailControl().Size.Height;
+            var count = 0;
+            for (int i = start; i < end; i++)
+            {
+                var newMailControl = new MailControl(mails[i])
                 {
-                    var newMailControl = new MailControl(sortedMails[i])
-                    {
-                        Location = new Point(0, (i * height) + 1),
-                    };
-                    _mailsControls.Insert(0, newMailControl);
-                    panelMailsBox.Controls.Add(newMailControl);
-                    newMailControl.ClickPanel.Click += NewMailControl_Click;
-                    foreach (var control in newMailControl.ClickPanel.Controls)
-                    {
-                        if (control is Label cL)
-                            cL.Click += NewMailControl_Click;
-                    }
+                    Location = new Point(0, (count++ * height) + 1),
+                    Width = panelMailsBox.Width - 18,
+                };
+                _mailsControls.Insert(0, newMailControl);
+                panelMailsBox.Controls.Add(newMailControl);
+                newMailControl.ClickPanel.Click += NewMailControl_Click;
+                foreach (var control in newMailControl.ClickPanel.Controls)
+                {
+                    if (control is Label cL)
+                        cL.Click += NewMailControl_Click;
                 }
+            }
+        }
 
-                labelMailsCount.Text = _mailsControls.Count.ToString();
+        public void AddSelectedMails(Mail[] sortedMails)
+        {
+            TryCatch(() =>
+            {
+                GenerateMailControls(0, sortedMails.Length, sortedMails);
             }, "Ошибка во время добавления новых писем", true);
         }
 
@@ -101,13 +152,14 @@ namespace MailCollector.Client
 
         private void OpenMailInWebBrowser(Mail mail)
         {
+            webBrowser.Navigate("about:blank");
+
             labelSubject.Text = mail.Subject;
             labelFrom.Text = Mail.AccsToString(mail.MFrom, false, false);
             labelTo.Text = Mail.AccsToString(mail.MTo, false, false);
             labelCc.Text = Mail.AccsToString(mail.MCc, false, false);
             labelDate.Text = mail.Date.ToLocalTime().ToString("f");
 
-            webBrowser.Navigate("about:blank");
             webBrowser.Document.OpenNew(false);
             webBrowser.Document.Write(mail.HtmlBody ?? string.Empty);
             webBrowser.Refresh();
@@ -173,7 +225,7 @@ namespace MailCollector.Client
                 }
             }
 
-            AddNewMails(mailsFilteredControls.OrderByDescending(x => x.Date).ToArray());
+            AddSelectedMails(mailsFilteredControls.OrderByDescending(x => x.Date).ToArray());
         }
 
         private void ЗакрытьПрограммуToolStripMenuItem_Click(object sender, EventArgs e)
