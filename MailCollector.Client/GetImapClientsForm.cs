@@ -13,7 +13,6 @@ namespace MailCollector.Client
 {
     public partial class GetImapClientsForm : TemplateForm
     {
-        private List<ImapClientParams> _resultImapClientParams = new List<ImapClientParams>();
         private readonly SqlServerShell _sqlServerShell;
 
         private Dictionary<string, ImapServerParams> _imapServers = new Dictionary<string, ImapServerParams>()
@@ -38,6 +37,10 @@ namespace MailCollector.Client
             var keys = _imapServers.Keys.ToArray();
             comboBoImapServersNames.Items.AddRange(keys);
             comboBoImapServersNames.SelectedIndex = 0;
+
+            var clients = _sqlServerShell.GetArrayOf<ImapClient>(ImapClient.TableName)
+                .Select(x => x.Login).Reverse().ToArray();
+            listBoxImapClients.Items.AddRange(clients);
         }
 
         private void CheckBoxHidePass_CheckedChanged(object sender, EventArgs e)
@@ -141,8 +144,7 @@ namespace MailCollector.Client
                     _sqlServerShell.Insert(server, ImapServer.TableName);
                     _sqlServerShell.Insert(client, ImapClient.TableName);
 
-                    listBoxImapClients.Items.Add(clientName);
-                    _resultImapClientParams.Add(clientParams);
+                    listBoxImapClients.Items.Insert(0, clientName);
                 }
                 else
                 {
