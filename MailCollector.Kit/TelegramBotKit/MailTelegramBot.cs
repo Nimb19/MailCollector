@@ -5,6 +5,7 @@ using MailCollector.Kit.SqlKit;
 using MailCollector.Kit.SqlKit.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -163,9 +164,9 @@ namespace MailCollector.Kit.TelegramBotKit
             }
         }
 
-        public void SendMessageToAllSubsAboutNewMails(ImapMailParams[] imapMails, ImapClient imapClient)
+        public void SendMessageToAllSubsAboutNewMails(List<ImapMailParams> imapMails, ImapClient imapClient)
         {
-            if (imapMails.Length == 0)
+            if (imapMails.Count == 0)
             {
                 _logger.Warning("Для отправки сообщений подписчикам пришло 0 писем");
                 return;
@@ -178,19 +179,19 @@ namespace MailCollector.Kit.TelegramBotKit
                     imapMails = imapMails
                         .Where(x => IsTextContainsAnyWordInArray(x.Subject, _serviceConfig.MailsFilterStrings)
                         || IsTextContainsAnyWordInArray(x.HtmlBody, _serviceConfig.MailsFilterStrings))
-                        .ToArray();
+                        .ToList();
                 }
             }
 
             string tgMessage;
             var mailFormat = "От '{0}', тема: '{1}', дата: {2}";
-            if (imapMails.Length == 1)
+            if (imapMails.Count == 1)
             {
                 var mail = imapMails.Single();
                 tgMessage = $"На почту '{imapClient.Login}' в папку '{mail.Folder.Name}' " +
                     $"было прислано письмо {string.Format(mailFormat.ToLower(), mail.From, mail.Subject, mail.Date)}";
             }
-            else if (imapMails.Length < 11)
+            else if (imapMails.Count < 11)
             {
                 var newTabLine = $"{Environment.NewLine}\t";
                 var mails = string.Join($";{newTabLine}"

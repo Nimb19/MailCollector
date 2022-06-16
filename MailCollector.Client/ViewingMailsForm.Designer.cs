@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.numericUpDownPageNum = new System.Windows.Forms.NumericUpDown();
             this.buttonNextPage = new System.Windows.Forms.Button();
             this.buttonBackPage = new System.Windows.Forms.Button();
-            this.labelPageNumber = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.labelMailsCount = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -58,6 +58,7 @@
             this.обновитьПисьмаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.закрытьПрограммуToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPageNum)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -68,9 +69,9 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.numericUpDownPageNum);
             this.panel1.Controls.Add(this.buttonNextPage);
             this.panel1.Controls.Add(this.buttonBackPage);
-            this.panel1.Controls.Add(this.labelPageNumber);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.labelMailsCount);
             this.panel1.Controls.Add(this.label1);
@@ -82,6 +83,25 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(449, 863);
             this.panel1.TabIndex = 0;
+            // 
+            // numericUpDownPageNum
+            // 
+            this.numericUpDownPageNum.Font = new System.Drawing.Font("Century Gothic", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericUpDownPageNum.Location = new System.Drawing.Point(355, 111);
+            this.numericUpDownPageNum.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownPageNum.Name = "numericUpDownPageNum";
+            this.numericUpDownPageNum.Size = new System.Drawing.Size(87, 26);
+            this.numericUpDownPageNum.TabIndex = 19;
+            this.numericUpDownPageNum.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownPageNum.ValueChanged += new System.EventHandler(this.NumericUpDownPageNum_ValueChanged);
             // 
             // buttonNextPage
             // 
@@ -102,16 +122,6 @@
             this.buttonBackPage.Text = "Предыдующая";
             this.buttonBackPage.UseVisualStyleBackColor = true;
             this.buttonBackPage.Click += new System.EventHandler(this.ButtonBackPage_Click);
-            // 
-            // labelPageNumber
-            // 
-            this.labelPageNumber.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelPageNumber.AutoSize = true;
-            this.labelPageNumber.Location = new System.Drawing.Point(346, 117);
-            this.labelPageNumber.Name = "labelPageNumber";
-            this.labelPageNumber.Size = new System.Drawing.Size(17, 20);
-            this.labelPageNumber.TabIndex = 16;
-            this.labelPageNumber.Text = "1";
             // 
             // label7
             // 
@@ -379,6 +389,7 @@
             this.Text = "Форма просмотра писем";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPageNum)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
@@ -416,9 +427,9 @@
         private System.Windows.Forms.ToolStripMenuItem обновитьПисьмаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem закрытьПрограммуToolStripMenuItem;
         private System.Windows.Forms.WebBrowser webBrowser;
-        private System.Windows.Forms.Label labelPageNumber;
         private System.Windows.Forms.Label label7;
         internal System.Windows.Forms.Button buttonBackPage;
         internal System.Windows.Forms.Button buttonNextPage;
+        private System.Windows.Forms.NumericUpDown numericUpDownPageNum;
     }
 }

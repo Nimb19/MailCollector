@@ -1,4 +1,5 @@
 ﻿using MailCollector.Kit.ImapKit;
+using MailCollector.Kit.ImapKit.Models;
 using MailCollector.Kit.Logger;
 using MailCollector.Kit.SqlKit;
 using MailCollector.Kit.TelegramBotKit;
@@ -13,6 +14,8 @@ namespace MailCollector.Kit.ServiceKit
 {
     public static class ServiceWorkerExtensions
     {
+        private const int MaxMailsPacketCount = 25;
+
         /// <summary>
         ///     Подгрузить для каждой папки только их новые письма, если они были.
         /// </summary>
@@ -42,21 +45,41 @@ namespace MailCollector.Kit.ServiceKit
                 {
                     sqlFolder = shell.CreateFolder(folder);
                 }
-                var lastIndex = shell.GetLastMailIndexFromFolder(sqlFolder.Uid);
-                var mails = folder.FetchLastMails(lastIndex + 1, cancellationToken, logger);
-                if (mails.Length == 0)
+                var startIndex = shell.GetLastMailIndexFromFolder(sqlFolder.Uid) + 1;
+
+                var messagesSummary = folder.Fetch(startIndex, -1, MessageSummaryItems.InternalDate, cancellationToken).ToArray();
+
+                if (messagesSummary.Length == 0)
                     continue;
 
-                foreach (var mail in mails)
+                var packetsCount = (int)Math.Ceiling((double)messagesSummary.Length / (double)MaxMailsPacketCount);
+
+                var allMails = new List<ImapMailParams>();
+                for (int i = 0; i < packetsCount; i++)
                 {
-                    shell.SaveMail(mail);
+                    var start = i * MaxMailsPacketCount + startIndex;
+                    var ostatok = messagesSummary.Length - (packetsCount * MaxMailsPacketCount);
+                    var end = ostatok >= MaxMailsPacketCount
+                        ? start + MaxMailsPacketCount - 1
+                        : start + ostatok - 1;
+
+                    logger.Debug($"У клиента '{shell.SqlClient}' будет сохранена пачка писем с индексом: {i} (пачка равна {MaxMailsPacketCount} письмам). " +
+                        $"Всего нужно сохранить ещё {ostatok}");
+                    var mails = folder.FetchLastMails(messagesSummary, start, end, cancellationToken, logger);
+
+                    foreach (var mail in mails)
+                    {
+                        shell.SaveMail(mail);
+                    }
+                    allMails.AddRange(mails);
                 }
 
                 if (isInited)
-                    tgBot?.SendMessageToAllSubsAboutNewMails(mails, shell.SqlClient);
+                    tgBot?.SendMessageToAllSubsAboutNewMails(allMails, shell.SqlClient);
 
                 logger.WriteLine($"С почты '{shell.SqlClient.Login}' были успешно сохранены сообщения" +
-                    $" из папки '{sqlFolder.FullName}', в количестве: {mails.Length}. Был ли клиент инициализирован: {isInited}");
+                    $" из папки '{sqlFolder.FullName}', в количестве: {allMails.Count}. " +
+                    $"{(isInited ? string.Empty : "Клиент был первый раз инициализирован")}");
             }
 
             if (!isInited)

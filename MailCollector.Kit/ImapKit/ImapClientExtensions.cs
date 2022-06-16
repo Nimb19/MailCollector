@@ -78,14 +78,13 @@ namespace MailCollector.Kit.ImapKit
             return isConnected;
         }
 
-        public static ImapMailParams[] FetchLastMails(this IMailFolder mailFolder
-            , int startIndex, CancellationToken cancellationToken, ILogger logger)
+        public static ImapMailParams[] FetchLastMails(this IMailFolder mailFolder, IMessageSummary[] messagesSummary
+            , int startIndex, int endIndex, CancellationToken cancellationToken, ILogger logger)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var mails = new List<ImapMailParams>();
 
             var j = 0;
-            var messageSummary = mailFolder.Fetch(startIndex, -1, MessageSummaryItems.InternalDate, cancellationToken).ToArray();
 
             var isTrace = logger != null && logger.LogLevel == LogLevel.Trace;
             for (int i = startIndex; i < mailFolder.Count; i++)
@@ -96,7 +95,7 @@ namespace MailCollector.Kit.ImapKit
                 var to = message.To.MailAddressToString();
                 var mail = new ImapMailParams() 
                 {
-                    Index = messageSummary[j].Index,
+                    Index = messagesSummary[j].Index,
                     Date = message.Date,
                     Subject = message.Subject,
                     Folder = mailFolder,

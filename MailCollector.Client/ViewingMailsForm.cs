@@ -37,23 +37,39 @@ namespace MailCollector.Client
             TryGetAndAddNewMails();
         }
 
+        private void NumericUpDownPageNum_ValueChanged(object sender, EventArgs e)
+        {
+            _currentPage = (int)numericUpDownPageNum.Value;
+            AddCurrentPageMails();
+        }
+
         private void ButtonBackPage_Click(object sender, EventArgs e)
+        {
+            BackPage();
+        }
+
+        private void BackPage()
         {
             if (_currentPage == 1)
                 return;
 
             _currentPage--;
-            labelPageNumber.Text = _currentPage.ToString();
+            numericUpDownPageNum.Value = _currentPage;
             AddCurrentPageMails();
         }
 
         private void ButtonNextPage_Click(object sender, EventArgs e)
         {
+            NextPage();
+        }
+
+        private void NextPage()
+        {
             if (_currentPage == _pagesCount)
                 return;
 
             _currentPage++;
-            labelPageNumber.Text = _currentPage.ToString();
+            numericUpDownPageNum.Value = _currentPage;
             AddCurrentPageMails();
         }
 
@@ -75,6 +91,7 @@ namespace MailCollector.Client
                 _lastMails = mails;
                 _pagesCount = (int)Math.Ceiling((double)_lastMails.Length / (double)MaxMailssCountOnPage);
                 labelMailsCount.Text = _lastMails.Length.ToString();
+                numericUpDownPageNum.Maximum = _pagesCount;
                 AddCurrentPageMails();
 
             });
@@ -88,8 +105,8 @@ namespace MailCollector.Client
                 var start = (_currentPage - 1) * MaxMailssCountOnPage;
                 var ostatok = _lastMails.Length - start;
                 var end = ostatok >= MaxMailssCountOnPage
-                    ? start + MaxMailssCountOnPage
-                    : start + ostatok;
+                    ? start + MaxMailssCountOnPage - 1
+                    : start + ostatok - 1;
 
                 GenerateMailControls(start, end, _lastMails);
             }, "Ошибка во время добавления писем", true);
