@@ -219,6 +219,8 @@ namespace MailCollector.Kit.TelegramBotKit
         {
             foreach (var filterSring in mailsFilterStrings)
             {
+                if (string.IsNullOrWhiteSpace(text))
+                    continue;
                 if (text.IndexOf(filterSring, StringComparison.OrdinalIgnoreCase) >= 0)
                     return true;
             }
