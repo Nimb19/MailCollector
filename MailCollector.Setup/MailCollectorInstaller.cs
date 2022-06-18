@@ -125,11 +125,7 @@ namespace MailCollector.Setup
                 CommonExtensions.CopyDir(_installerSettings.PathToServiceBuild, _installerSettings.InstallServicePath));
 
             // Генерация и выкладывание конфига к сервису
-            var serviceConfig = new ServiceConfig()
-            {
-                SqlServerSettings = _installerSettings.SqlServerSettings,
-                LogLevel = LogLevel.Debug,
-            };
+            var serviceConfig = ServiceConfig.DefaultSetupInstance(_installerSettings.SqlServerSettings, null);
             if (_isAddTgBot)
                 serviceConfig.TelegramBotApiToken = _installerSettings.TelegramBotToken;
             var configPath = Path.Combine(_installerSettings.InstallServicePath, "Config.json");
