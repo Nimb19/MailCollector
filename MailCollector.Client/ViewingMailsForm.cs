@@ -84,7 +84,11 @@ namespace MailCollector.Client
                 if (mails.Length == 0)
                     return;
 
-                newMails = mails.Length - _lastMails.Length;
+                if (_lastMails != null)
+                    newMails = mails.Length - _lastMails.Length;
+                else
+                    newMails = mails.Length;
+                
                 if (newMails == 0)
                     return;
 
