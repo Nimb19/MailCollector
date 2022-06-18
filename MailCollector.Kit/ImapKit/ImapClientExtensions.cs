@@ -89,11 +89,12 @@ namespace MailCollector.Kit.ImapKit
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var message = mailFolder.GetMessage(i, cancellationToken);
+                var mailIndex = messagesSummary[i].Index;
+                var message = mailFolder.GetMessage(mailIndex, cancellationToken);
                 var to = message.To.MailAddressToString();
                 var mail = new ImapMailParams() 
                 {
-                    Index = messagesSummary[i].Index,
+                    Index = mailIndex,
                     Date = message.Date,
                     Subject = message.Subject,
                     Folder = mailFolder,
@@ -105,7 +106,7 @@ namespace MailCollector.Kit.ImapKit
                 mails.Add(mail);
 
                 if (isTrace)
-                    logger.Trace($"Сохранено в временный лист письмо с индексом {i} на почту(ы): '{to}'. Его тема: '{mail.Subject}'");
+                    logger.Trace($"Сохранено в временный лист письмо с индексом {mailIndex} на почту(ы): '{to}'. Его тема: '{mail.Subject}'");
             }
 
             return mails.ToArray();

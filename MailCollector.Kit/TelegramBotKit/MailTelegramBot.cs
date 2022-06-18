@@ -191,13 +191,13 @@ namespace MailCollector.Kit.TelegramBotKit
             {
                 var mail = imapMails.Single();
                 tgMessage = $"На почту '{imapClient.Login}' в папку '{mail.Folder.Name}' " +
-                    $"было прислано письмо {string.Format(mailFormat.ToLower(), mail.From, mail.Subject, mail.Date)}";
+                    $"было прислано письмо {string.Format(mailFormat.ToLower(), mail.From, mail.Subject, FormatDate(mail.Date))}";
             }
             else if (imapMails.Count <= MaxMailsInfoCount)
             {
                 var newTabLine = $"{Environment.NewLine}\t";
                 var mails = string.Join($";{newTabLine}"
-                    , imapMails.Select(x => $"От '{x.From}', тема: '{x.Subject}', дата: {x.Date.ToString("f")}"));
+                    , imapMails.Select(x => $"От '{x.From}', тема: '{x.Subject}', дата: {FormatDate(x.Date)}"));
                 tgMessage = $"На почту '{imapClient.Login}' в папку '{imapMails.First().Folder.Name}' " +
                     $"были присланы следующие письма (порядок сохранён): {newTabLine}{mails}";
             }
@@ -208,6 +208,11 @@ namespace MailCollector.Kit.TelegramBotKit
             }
 
             SendMessageToAllSubs(tgMessage);
+        }
+
+        private string FormatDate(DateTimeOffset dateTime)
+        {
+            return dateTime.ToString("f");
         }
 
         private static bool IsTextContainsAnyWordInArray(string text, string[] mailsFilterStrings)
