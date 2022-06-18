@@ -45,32 +45,21 @@ namespace MailCollector.Client
 
         private void ButtonBackPage_Click(object sender, EventArgs e)
         {
-            BackPage();
-        }
-
-        private void BackPage()
-        {
             if (_currentPage == 1)
                 return;
 
             _currentPage--;
             numericUpDownPageNum.Value = _currentPage;
-            AddCurrentPageMails();
+            // после смены вызовется NumericUpDownPageNum_ValueChanged, где список проинициализируется на новую страницу
         }
 
         private void ButtonNextPage_Click(object sender, EventArgs e)
-        {
-            NextPage();
-        }
-
-        private void NextPage()
         {
             if (_currentPage == _pagesCount)
                 return;
 
             _currentPage++;
-            numericUpDownPageNum.Value = _currentPage;
-            AddCurrentPageMails();
+            numericUpDownPageNum.Value = _currentPage; 
         }
 
         public int TryGetAndAddNewMails()
