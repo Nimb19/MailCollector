@@ -47,12 +47,15 @@ namespace MailCollector.Kit.ServiceKit
                 }
                 var lastIndex = shell.GetLastMailIndexFromFolder(sqlFolder.Uid);
                 var messagesSummary = folder.Fetch(lastIndex + 1, -1, MessageSummaryItems.InternalDate, cancellationToken)
-                    .Reverse().ToArray();
+                    .ToArray();
 
                 if (messagesSummary.Length == 1 && lastIndex >= messagesSummary[0].Index)
                     continue;
                 if (messagesSummary.Length == 0)
                     continue;
+
+                if (messagesSummary.First().Date < messagesSummary.Last().Date)
+                    messagesSummary = messagesSummary.Reverse().ToArray();
 
                 var packetsCount = (int)Math.Ceiling((double)messagesSummary.Length / (double)MaxMailsPacketCount);
                 var lastSummaryIndex = messagesSummary.Length - 1;

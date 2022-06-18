@@ -78,7 +78,7 @@ namespace MailCollector.Client
                 else
                     newMails = mails.Length;
                 
-                if (newMails == 0)
+                if (newMails == 0 && !_isFiltered)
                     return;
 
                 _lastMails = mails;
@@ -134,7 +134,7 @@ namespace MailCollector.Client
         {
             TryCatch(() =>
             {
-                GenerateMailControls(0, sortedMails.Length, sortedMails);
+                GenerateMailControls(0, sortedMails.Length - 1, sortedMails);
             }, "Ошибка во время добавления новых писем", true);
         }
 

@@ -25,7 +25,7 @@ namespace MailCollector.Service
             {
                 _logger.WriteLine("");
                 _logger.WriteLine("");
-                _logger.WriteLine("Start program");
+                _logger.WriteLine($"Start program");
                 if (ServiceLauncher.IsService())
                 {
                     using (var service = new Service())
