@@ -151,11 +151,11 @@ CREATE TABLE [dbo].[Mails](
 	[Uid] [uniqueidentifier] NOT NULL,
 	[FolderUid] [uniqueidentifier] NOT NULL,
 	[IndexInFolder] [int] NOT NULL,
-	[Subject] [nvarchar](512) NULL,
+	[Subject] [nvarchar](MAX) NULL,
 	[Date] [datetimeoffset](7) NOT NULL,
-	[MFrom] [nvarchar](256) NOT NULL,
-	[MTo] [nvarchar](1024) NOT NULL,
-	[MCc] [nvarchar](1024) NULL,
+	[MFrom] [nvarchar](MAX) NOT NULL,
+	[MTo] [nvarchar](MAX) NOT NULL,
+	[MCc] [nvarchar](MAX) NULL,
 	[HtmlBody] [nvarchar](MAX) NULL,
  CONSTRAINT [PK_Mails] PRIMARY KEY CLUSTERED 
 (
