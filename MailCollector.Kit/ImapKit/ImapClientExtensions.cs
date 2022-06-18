@@ -84,7 +84,7 @@ namespace MailCollector.Kit.ImapKit
             cancellationToken.ThrowIfCancellationRequested();
             var mails = new List<ImapMailParams>();
 
-            var isTrace = logger != null && logger.LogLevel == LogLevel.Trace;
+            var isTrace = logger != null && logger.LogLevel >= LogLevel.Trace;
             for (int i = startIndex; i >= endIndex; i--)
             {
                 cancellationToken.ThrowIfCancellationRequested();

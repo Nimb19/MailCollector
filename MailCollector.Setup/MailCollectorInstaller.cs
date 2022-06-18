@@ -128,6 +128,7 @@ namespace MailCollector.Setup
             var serviceConfig = new ServiceConfig()
             {
                 SqlServerSettings = _installerSettings.SqlServerSettings,
+                LogLevel = LogLevel.Debug,
             };
             if (_isAddTgBot)
                 serviceConfig.TelegramBotApiToken = _installerSettings.TelegramBotToken;
