@@ -61,18 +61,13 @@ namespace MailCollector.Kit.ServiceKit
                 var allMails = new List<ImapMailParams>();
                 for (int i = 0; i < packetsCount; i++)
                 {
-                    //var start = i * MaxMailsPacketCount + lastIndex + 1;
-                    //var ostatok = messagesSummary.Length - (i * MaxMailsPacketCount);
-                    //var end = ostatok >= MaxMailsPacketCount
-                    //    ? start + MaxMailsPacketCount
-                    //    : start + ostatok;
-
                     var start = lastSummaryIndex - i * MaxMailsPacketCount;
                     var end = start >= maxMailsCount__
                         ? start - maxMailsCount__
                         : 0;
 
-                    logger.Debug($"У клиента '{shell.SqlClient}' будет сохранена пачка писем с индексом: {i} (пачка равна {MaxMailsPacketCount} письмам). " +
+                    logger.Debug($"У клиента '{shell.SqlClient}' будет сохранена пачка писем с индексом: {i} " +
+                        $"(пачка равна след. кол-ву писем: {(start - end) + 1}). " +
                         $"Не считая эту пачку, осталось сохранить: {end}");
                     var mails = folder.FetchLastMailsReverse(messagesSummary, start, end, cancellationToken, logger);
 

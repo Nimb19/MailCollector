@@ -182,6 +182,8 @@ namespace MailCollector.Kit.TelegramBotKit
                         .Where(x => IsTextContainsAnyWordInArray(x.Subject, _serviceConfig.MailsFilterStrings)
                         || IsTextContainsAnyWordInArray(x.HtmlBody, _serviceConfig.MailsFilterStrings))
                         .ToList();
+                    if (imapMails.Count == 0)
+                        return;
                 }
             }
 
