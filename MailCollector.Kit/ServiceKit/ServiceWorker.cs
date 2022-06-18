@@ -244,8 +244,7 @@ namespace MailCollector.Kit.ServiceKit
             {
                 var cts = new CancellationTokenSource();
 
-                var enter = Monitor.TryEnter(_disabledClientsListLock);
-                try
+                lock (_disabledClientsListLock)
                 {
                     var firstDisClient = _disabledClients
                         .FirstOrDefault(x => x.Client.Uid == clientWithServer.Client.Uid);
@@ -254,12 +253,6 @@ namespace MailCollector.Kit.ServiceKit
                         _disabledClients.Remove(firstDisClient);
                     }
                 }
-                finally
-                {
-                    if (enter)
-                        Monitor.Exit(_disabledClientsListLock);
-                }
-
 
                 var clientWorkerTask = Task.Factory.StartNew((a) => ClientWorker(clientWithServer)
                     , TaskContinuationOptions.LongRunning, cts.Token);

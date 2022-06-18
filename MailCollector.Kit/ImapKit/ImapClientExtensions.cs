@@ -78,16 +78,14 @@ namespace MailCollector.Kit.ImapKit
             return isConnected;
         }
 
-        public static ImapMailParams[] FetchLastMails(this IMailFolder mailFolder, IMessageSummary[] messagesSummary
+        public static ImapMailParams[] FetchLastMailsReverse(this IMailFolder mailFolder, IMessageSummary[] messagesSummary
             , int startIndex, int endIndex, CancellationToken cancellationToken, ILogger logger)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var mails = new List<ImapMailParams>();
 
-            var j = 0;
-
             var isTrace = logger != null && logger.LogLevel == LogLevel.Trace;
-            for (int i = startIndex; i < mailFolder.Count; i++)
+            for (int i = startIndex; i >= endIndex; i--)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -95,7 +93,7 @@ namespace MailCollector.Kit.ImapKit
                 var to = message.To.MailAddressToString();
                 var mail = new ImapMailParams() 
                 {
-                    Index = messagesSummary[j].Index,
+                    Index = messagesSummary[i].Index,
                     Date = message.Date,
                     Subject = message.Subject,
                     Folder = mailFolder,
@@ -105,7 +103,6 @@ namespace MailCollector.Kit.ImapKit
                     Cc = message.Cc.MailAddressToString(),
                 };
                 mails.Add(mail);
-                j++;
 
                 if (isTrace)
                     logger.Trace($"Сохранено в временный лист письмо с индексом {i} на почту(ы): '{to}'. Его тема: '{mail.Subject}'");

@@ -45,27 +45,36 @@ namespace MailCollector.Kit.ServiceKit
                 {
                     sqlFolder = shell.CreateFolder(folder);
                 }
-                var startIndex = shell.GetLastMailIndexFromFolder(sqlFolder.Uid) + 1;
+                var lastIndex = shell.GetLastMailIndexFromFolder(sqlFolder.Uid);
+                var messagesSummary = folder.Fetch(lastIndex + 1, -1, MessageSummaryItems.InternalDate, cancellationToken)
+                    .Reverse().ToArray();
 
-                var messagesSummary = folder.Fetch(startIndex, -1, MessageSummaryItems.InternalDate, cancellationToken).ToArray();
-
+                if (messagesSummary.Length == 1 && lastIndex >= messagesSummary[0].Index)
+                    continue;
                 if (messagesSummary.Length == 0)
                     continue;
 
                 var packetsCount = (int)Math.Ceiling((double)messagesSummary.Length / (double)MaxMailsPacketCount);
+                var lastSummaryIndex = messagesSummary.Length - 1;
+                var maxMailsCount__ = MaxMailsPacketCount - 1;
 
                 var allMails = new List<ImapMailParams>();
                 for (int i = 0; i < packetsCount; i++)
                 {
-                    var start = i * MaxMailsPacketCount + startIndex;
-                    var ostatok = messagesSummary.Length - (packetsCount * MaxMailsPacketCount);
-                    var end = ostatok >= MaxMailsPacketCount
-                        ? start + MaxMailsPacketCount - 1
-                        : start + ostatok - 1;
+                    //var start = i * MaxMailsPacketCount + lastIndex + 1;
+                    //var ostatok = messagesSummary.Length - (i * MaxMailsPacketCount);
+                    //var end = ostatok >= MaxMailsPacketCount
+                    //    ? start + MaxMailsPacketCount
+                    //    : start + ostatok;
+
+                    var start = lastSummaryIndex - i * MaxMailsPacketCount;
+                    var end = start >= maxMailsCount__
+                        ? start - maxMailsCount__
+                        : 0;
 
                     logger.Debug($"У клиента '{shell.SqlClient}' будет сохранена пачка писем с индексом: {i} (пачка равна {MaxMailsPacketCount} письмам). " +
-                        $"Всего нужно сохранить ещё {ostatok}");
-                    var mails = folder.FetchLastMails(messagesSummary, start, end, cancellationToken, logger);
+                        $"Не считая эту пачку, осталось сохранить: {end}");
+                    var mails = folder.FetchLastMailsReverse(messagesSummary, start, end, cancellationToken, logger);
 
                     foreach (var mail in mails)
                     {

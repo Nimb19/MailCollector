@@ -84,7 +84,7 @@ namespace MailCollector.Client
                 if (mails.Length == 0)
                     return;
 
-                newMails = mails.Length - _mailsControls.Count;
+                newMails = mails.Length - _lastMails.Length;
                 if (newMails == 0)
                     return;
 
@@ -119,7 +119,7 @@ namespace MailCollector.Client
 
             var height = new MailControl().Size.Height;
             var count = 0;
-            for (int i = start; i < end; i++)
+            for (int i = start; i <= end; i++)
             {
                 var newMailControl = new MailControl(mails[i])
                 {

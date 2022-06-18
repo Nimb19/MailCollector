@@ -164,6 +164,8 @@ namespace MailCollector.Kit.TelegramBotKit
             }
         }
 
+        public const int MaxMailsInfoCount = 10;
+
         public void SendMessageToAllSubsAboutNewMails(List<ImapMailParams> imapMails, ImapClient imapClient)
         {
             if (imapMails.Count == 0)
@@ -191,7 +193,7 @@ namespace MailCollector.Kit.TelegramBotKit
                 tgMessage = $"На почту '{imapClient.Login}' в папку '{mail.Folder.Name}' " +
                     $"было прислано письмо {string.Format(mailFormat.ToLower(), mail.From, mail.Subject, mail.Date)}";
             }
-            else if (imapMails.Count < 11)
+            else if (imapMails.Count <= MaxMailsInfoCount)
             {
                 var newTabLine = $"{Environment.NewLine}\t";
                 var mails = string.Join($";{newTabLine}"

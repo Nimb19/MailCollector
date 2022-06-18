@@ -766,15 +766,9 @@ namespace MailCollector.Kit.SqlKit
         {
             SqlCommand cmd;
 
-            var isEnter = Monitor.TryEnter(_executeLock);
-            try
+            lock (_executeLock)
             {
                 cmd = SqlCon.CreateCommand();
-            }
-            finally
-            {
-                if (isEnter)
-                    Monitor.Exit(_executeLock);
             }
 
             cmd.CommandTimeout = CommandTimeoutInSeconds;
@@ -786,51 +780,33 @@ namespace MailCollector.Kit.SqlKit
 
         public SqlDataReader ExecuteReader(string command, CommandType commandType = CommandType.Text)
         {
-            using (var cmd = CreateCommand(command, commandType))
+            lock (_executeLock)
             {
-                var isEnter = Monitor.TryEnter(_executeLock);
-                try
+                using (var cmd = CreateCommand(command, commandType))
                 {
                     return cmd.ExecuteReader();
-                }
-                finally
-                {
-                    if (isEnter)
-                        Monitor.Exit(_executeLock);
                 }
             }
         }
 
         public object ExecuteScalar(string command, CommandType commandType = CommandType.Text)
         {
-            using (var cmd = CreateCommand(command, commandType))
-            {
-                var isEnter = Monitor.TryEnter(_executeLock);
-                try
+            lock (_executeLock)
+            { 
+                using (var cmd = CreateCommand(command, commandType))
                 {
                     return cmd.ExecuteScalar();
-                }
-                finally
-                {
-                    if (isEnter)
-                        Monitor.Exit(_executeLock);
                 }
             }
         }
 
         public int ExecuteNonQuery(string command, CommandType commandType = CommandType.Text)
         {
-            using (var cmd = CreateCommand(command, commandType))
+            lock (_executeLock)
             {
-                var isEnter = Monitor.TryEnter(_executeLock);
-                try
+                using (var cmd = CreateCommand(command, commandType))
                 {
                     return cmd.ExecuteNonQuery();
-                }
-                finally
-                {
-                    if (isEnter)
-                        Monitor.Exit(_executeLock);
                 }
             }
         }
